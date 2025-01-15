@@ -56,7 +56,7 @@ export const actions: Actions = {
 		const username = formData.get('username');
 		const password = formData.get('password');
 		const email = formData.get('email');
-		const firtname = formData.get('firtname');
+		const firstname = formData.get('firstname');
 		const lastname = formData.get('lastname');
 
 		if (!validateUsername(username)) {
@@ -81,7 +81,7 @@ export const actions: Actions = {
 			// Insertar usuario en la base de datos
 			await db`
 				INSERT INTO users (id, email, username, hashed_password, first_name, last_name)
-				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firtname)}, ${String(lastname)})
+				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firstname)}, ${String(lastname)})
 				ON CONFLICT (id) DO NOTHING
 			`;
 

@@ -21,7 +21,7 @@
 	</label>
 	<label>
 		First Name
-		<input name="firtname" />
+		<input name="firstname" />
 	</label>
 	<label>
 		Last Name

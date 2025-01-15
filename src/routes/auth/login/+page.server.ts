@@ -16,12 +16,13 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	login: async (event) => {
 		const formData = await event.request.formData();
-		const username = formData.get('username');
+		const email = formData.get('email');
 		const password = formData.get('password');
 
-		if (!validateUsername(username)) {
+		console.log('Login', { email, password });
+		if (!validateEmail(email)) {
 			return fail(400, {
-				message: 'Invalid username (min 3, max 31 characters, alphanumeric only)'
+				message: 'Invalid email'
 			});
 		}
 		if (!validatePassword(password)) {
@@ -30,12 +31,13 @@ export const actions: Actions = {
 
 		// const results = await db.select().from(table.user).where(eq(table.user.username, username));
 
-		const [existingUser] = await db`SELECT * FROM public.users WHERE username = ${username}`;
+		const [existingUser] = await db`SELECT * FROM public.users WHERE email = ${String(email)}`;
 		if (!existingUser) {
 			return fail(400, { message: 'Incorrect username or password' });
 		}
 
-		const validPassword = await verify(existingUser.passwordHash, password, {
+		console.log('Existing user', existingUser);
+		const validPassword = await verify(existingUser.hashed_password, String(password), {
 			memoryCost: 19456,
 			timeCost: 2,
 			outputLen: 32,
@@ -56,7 +58,7 @@ export const actions: Actions = {
 		const username = formData.get('username');
 		const password = formData.get('password');
 		const email = formData.get('email');
-		const firtname = formData.get('firtname');
+		const firstname = formData.get('firstname');
 		const lastname = formData.get('lastname');
 
 		if (!validateUsername(username)) {
@@ -81,7 +83,7 @@ export const actions: Actions = {
 			// Insertar usuario en la base de datos
 			await db`
 				INSERT INTO users (id, email, username, hashed_password, first_name, last_name)
-				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firtname)}, ${String(lastname)})
+				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firstname)}, ${String(lastname)})
 				ON CONFLICT (id) DO NOTHING
 			`;
 
@@ -124,4 +126,8 @@ function validateUsername(username: unknown): username is string {
 
 function validatePassword(password: unknown): password is string {
 	return typeof password === 'string' && password.length >= 6 && password.length <= 255;
+}
+
+function validateEmail(email: unknown): email is string {
+	return typeof email === 'string' && email.length >= 3 && email.length <= 255;
 }
