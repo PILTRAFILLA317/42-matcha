@@ -10,6 +10,9 @@ export default {
 	theme: {
 		extend: {}
 	},
-
+	
 	plugins: [typography, forms, containerQueries, daisyui],
+	daisyui: {
+		themes: ["night", "dark"],
+	  },
 } satisfies Config;

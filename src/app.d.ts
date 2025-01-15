@@ -7,6 +7,26 @@ declare global {
 			session: import('$lib/server/auth').SessionValidationResult['session'];
 		}
 	}
+
+	enum sexualPreference{
+		Heterosexual,
+		Homosexual,
+		Bisexual,
+	}
+
+	interface db_user{
+		userId: number;
+		username: string;
+		firstName: string;
+		secondName: string;
+		gender: boolean;
+		sexualPreference: sexualPreference;
+		totalLikes: number;
+		userPreferences: Array<number>;
+	}
 }
+
+
+
 
 export {};
