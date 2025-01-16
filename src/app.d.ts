@@ -14,15 +14,21 @@ declare global {
 		Bisexual,
 	}
 
-	interface db_user{
+	interface User{
 		userId: number;
 		username: string;
 		firstName: string;
 		secondName: string;
-		gender: boolean;
-		sexualPreference: sexualPreference;
-		totalLikes: number;
-		userPreferences: Array<number>;
+		gender: boolean?;
+		sexualPreference: sexualPreference?;
+		totalLikes: number?;
+		userPreferences: Array<number>?;
+	}
+
+	interface Session{
+		id: number;
+		userId: number;
+		expiresAt: Date;
 	}
 }
 

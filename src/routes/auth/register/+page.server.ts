@@ -7,11 +7,15 @@ import { hash } from '@node-rs/argon2';
 import { generateUserId } from '$lib/helpers/user';
 import { db } from '$lib/server/db';
 
-export const load = (async (event) => {
-}) satisfies PageServerLoad;
+export const load: PageServerLoad = async (event) => {
+	if (event.locals.user) {
+		return redirect(302, '/');
+	}
+	return {};
+};
 
 export const actions: Actions = {
-    register: async (event) => {
+	register: async (event) => {
 		const formData = await event.request.formData();
 		const email = formData.get('email');
 		const username = formData.get('username');
@@ -19,17 +23,28 @@ export const actions: Actions = {
 		const lastname = formData.get('lastname');
 		const password = formData.get('password');
 		const repeatpassword = formData.get('repeatpassword');
-        console.log('Registering user', { email, username, firstname, lastname, password, repeatpassword });
+		console.log('Registering user', {
+			email,
+			username,
+			firstname,
+			lastname,
+			password,
+			repeatpassword
+		});
 
 		if (!validateUsername(username)) {
 			return fail(400, { message: 'Invalid username' });
 		}
-		if (!validators.validatePassword(password)) {
+		if (!validators.validatePasswords(password, repeatpassword)) {
 			return fail(400, { message: 'Invalid password' });
 		}
-        //To-do validar el resto de campos
-
+		//To-do validar el resto de campos
 		const userId = generateUserId();
+		if (typeof password !== 'string') {
+			//return fail(400, { message: 'Invalid password' });
+			alert('Invalid password');
+			throw new Error('Invalid password');
+		}
 		const passwordHash = await hash(password, {
 			memoryCost: 19456,
 			timeCost: 2,

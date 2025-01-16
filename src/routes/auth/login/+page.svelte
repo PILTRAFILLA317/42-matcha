@@ -23,9 +23,9 @@
 		<div class="mb-4">
 			<label for="Password" class="block text-sm font-medium text-secondary">Password</label>
 			<input
-				id="Password"
+				id="password"
 				type="password"
-				name="Password"
+				name="password"
 				class="input input-bordered mt-1 w-full"
 				placeholder="********"
 				required

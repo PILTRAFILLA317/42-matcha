@@ -25,7 +25,7 @@ export async function createSession(token: string, userId: string) {
 	return { id: sessionId, userId, expiresAt };
 }
 
-export async function validateSessionToken(token: string) {
+export async function validateSessionToken(token: string): Promise<{ session: Session | null, user: User | null; }> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
 	// Buscar sesión y usuario asociado
@@ -37,21 +37,28 @@ export async function validateSessionToken(token: string) {
 		INNER JOIN users u ON s.user_id = u.id
 		WHERE s.id = ${sessionId}
 	`;
+	console.log("result: \n", result);
 
 	// Si no hay sesión, retornamos null
 	if (!result) {
 		return { session: null, user: null };
 	}
 
-	const session = {
+	const session: Session = {
 		id: result.session_id,
 		userId: result.user_id,
 		expiresAt: new Date(result.expires_at),
 	};
 
-	const user = {
-		id: result.user_id,
+	const user : User = {
+		userId: result.user_id,
 		username: result.username,
+		firstName: "",
+		secondName: "",
+		gender: null,
+		sexualPreference: null,
+		totalLikes: null,
+		userPreferences: null,
 	};
 
 	// Si la sesión ha expirado, la eliminamos y retornamos null
@@ -76,7 +83,7 @@ export async function validateSessionToken(token: string) {
 
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;
 
-export async function invalidateSession(sessionId: string) {
+export async function invalidateSession(sessionId: number) {
 	await db`DELETE FROM sessions WHERE id = ${sessionId}`;
 }
 
