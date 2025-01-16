@@ -19,7 +19,6 @@ export const actions: Actions = {
 		const email = formData.get('email');
 		const password = formData.get('password');
 
-		console.log('Login', { email, password });
 		if (!validateEmail(email)) {
 			return fail(400, {
 				message: 'Invalid email'
@@ -36,8 +35,7 @@ export const actions: Actions = {
 			return fail(400, { message: 'Incorrect username or password' });
 		}
 
-		console.log('Existing user', existingUser);
-		const validPassword = await verify(existingUser.hashed_password, String(password), {
+		const validPassword = await verify(String(existingUser.password), String(password), {
 			memoryCost: 19456,
 			timeCost: 2,
 			outputLen: 32,
@@ -78,11 +76,10 @@ export const actions: Actions = {
 		});
 
 		try {
-			console.log('Inserting user', { id: userId, username, passwordHash });
 
 			// Insertar usuario en la base de datos
 			await db`
-				INSERT INTO users (id, email, username, hashed_password, first_name, last_name)
+				INSERT INTO users (id, email, username, password, first_name, last_name)
 				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firstname)}, ${String(lastname)})
 				ON CONFLICT (id) DO NOTHING
 			`;
