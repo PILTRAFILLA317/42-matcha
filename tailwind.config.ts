@@ -14,6 +14,17 @@ export default {
 	plugins: [typography, forms, containerQueries, daisyui],
 
 	daisyui: {
-		themes: ["dark"],
+		themes: [
+			{
+				mytheme: {
+					"primary": "#fd7e89",
+					"secondary": "#6d95f2",
+					"accent": "#9B3331",
+					"neutral": "#393939",
+					"base-100": "#1A1A1A",
+					"base-200": "#2D2D2D",
+				},
+			},
+		],
 	},
 } satisfies Config;
