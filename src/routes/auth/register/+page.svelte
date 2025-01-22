@@ -1,8 +1,5 @@
 <script lang="ts">
-    import type { ActionData, PageData } from './$types';
     import { enhance } from '$app/forms';
-    
-    let { form }: { form: ActionData } = $props();
 </script>
 
 <div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">

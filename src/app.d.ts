@@ -16,23 +16,22 @@ declare global {
 
 	interface User{
 		userId: number;
+		email: string;
 		username: string;
 		firstName: string;
-		secondName: string;
+		lastName: string;
 		gender: boolean?;
 		sexualPreference: sexualPreference?;
 		totalLikes: number?;
 		userPreferences: Array<number>?;
+		bio: string?;
 	}
 
 	interface Session{
-		id: number;
-		userId: number;
+		id: string;
+		userId: string;
 		expiresAt: Date;
 	}
 }
-
-
-
 
 export {};

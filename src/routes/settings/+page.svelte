@@ -1,0 +1,102 @@
+<script lang="ts">
+	import { applyAction, enhance } from '$app/forms';
+
+	export let data;
+	export const load = () => {
+		console.log('onload??');
+	};
+</script>
+
+<div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
+	<h1 class="mb-4 text-center text-2xl font-semibold text-secondary">Settings Page</h1>
+	<form method="post" use:enhance>
+		<div class="mb-4">
+			<label for="email" class="block text-sm font-medium text-secondary">Email</label>
+			<input
+				id="email"
+				type="text"
+				name="email"
+				class="input input-bordered mt-1 w-full"
+				placeholder="Your Email"
+				value={data.user.email}
+				required
+			/>
+		</div>
+		<div class="mb-4">
+			<label for="username" class="block text-sm font-medium text-secondary">Username</label>
+			<input
+				id="username"
+				type="text"
+				name="username"
+				class="input input-bordered mt-1 w-full"
+				placeholder="Your Username"
+				value={data.user.username}
+				required
+			/>
+		</div>
+		<div class="mb-4">
+			<label for="firstName" class="block text-sm font-medium text-secondary">First Name</label>
+			<input
+				id="firstName"
+				type="text"
+				name="firstname"
+				class="input input-bordered mt-1 w-full"
+				value={data.user.firstName}
+				placeholder="Your First Name"
+				required
+			/>
+		</div>
+		<div class="mb-4">
+			<label for="lastName" class="block text-sm font-medium text-secondary">Last Name</label>
+			<input
+				id="lastName"
+				type="text"
+				name="lastname"
+				class="input input-bordered mt-1 w-full"
+				value={data.user.lastName}
+				placeholder="Your Last Name"
+				required
+			/>
+		</div>
+		<div class="mb-4">
+			<label for="gender" class="block text-sm font-medium text-secondary">Gender</label>
+			<select name="gender" class="select select-bordered w-full max-w-xs">
+				<option disabled selected={data.user.gender == null}>Select your gender?</option>
+				<option selected={data.user.gender && data.user.gender != null}>Male</option>
+				<option selected={!data.user.gender && data.user.gender != null}>Female</option>
+			</select>
+		</div>
+		<div class="mb-4">
+			<label for="sexualPreference" class="block text-sm font-medium text-secondary">
+				Sexual Preference
+			</label>
+			<select name="sexualpreference" class="select select-bordered w-full max-w-xs">
+				<option disabled selected={data.user.sexualPreference == null}>
+					Select your sexual preference?
+				</option>
+				<option selected={data.user.sexualPreference == 0}>Homosexual</option>
+				<option selected={data.user.sexualPreference == 1}>Heterosexual</option>
+				<option selected={data.user.sexualPreference == 2}>Bisexual</option>
+			</select>
+		</div>
+		<div class="mb-4">
+			<label for="bio" class="block text-sm font-medium text-secondary">Bio</label>
+			<label for="bio" class="block text-sm font-medium text-secondary">{data.user.bio}</label>
+			<textarea
+				id="bio"
+				name="bio"
+				class="textarea textarea-bordered w-full"
+				placeholder="Write you biography here"
+				maxlength="200"
+				value={data.user.bio}
+			></textarea>
+		</div>
+		<button formaction={'?/updateUser'} type="submit" class="btn btn-secondary w-full">
+			Save Changes
+		</button>
+		<div class="h-4"></div>
+		<button formaction={'?/deleteUser'} type="submit" class="btn btn-secondary w-full">
+			Delete User
+		</button>
+	</form>
+</div>

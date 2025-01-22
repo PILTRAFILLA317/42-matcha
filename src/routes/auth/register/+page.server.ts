@@ -64,7 +64,7 @@ export const actions: Actions = {
 
 			// Crear sesión
 			const sessionToken = auth.generateSessionToken();
-			const session = await auth.createSession(sessionToken, userId);
+			const session: Session = await auth.createSession(sessionToken, userId);
 
 			// Guardar la sesión en la base de datos
 			await db`
@@ -77,7 +77,6 @@ export const actions: Actions = {
 		} catch (error) {
 			console.error('Error inserting user:', error);
 		}
-
 		return redirect(302, '/');
 	}
 };
