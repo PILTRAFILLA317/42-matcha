@@ -1,110 +1,50 @@
 <script lang="ts">
-  import { enhance } from "$app/forms";
-  import type { ActionData } from "./$types";
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
 
-  let { form }: { form: ActionData } = $props();
-
-  let isLogin = $state(true);
+	let { form }: { form: ActionData } = $props();
 </script>
 
-<div class="items-center justify-center p-20">
-  <div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-    <h2 class="text-2xl font-semibold text-center mb-4">
-      {isLogin ? "Login" : "Register"}
-    </h2>
+<div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
+	<h2 class="mb-4 text-center text-2xl font-semibold text-secondary">Login</h2>
 
-    <form method="post" use:enhance>
-      <!-- Campo de Username solo en el registro -->
-      {#if !isLogin}
-        <div class="mb-4">
-          <label for="username" class="block text-sm font-medium text-gray-700"
-            >Username</label
-          >
-          <input
-            id="username"
-            type="text"
-            name="username"
-            class="input input-bordered w-full mt-1"
-            placeholder="Your username"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label for="firstname" class="block text-sm font-medium text-gray-700"
-            >First Name</label
-          >
-          <input
-            id="firstname"
-            type="text"
-            name="firstname"
-            class="input input-bordered w-full mt-1"
-            placeholder="Your firstname"
-            required
-          />
-        </div>
-        <div class="mb-4">
-          <label for="lastname" class="block text-sm font-medium text-gray-700"
-            >Last Name</label
-          >
-          <input
-            id="lastname"
-            type="text"
-            name="lastname"
-            class="input input-bordered w-full mt-1"
-            placeholder="Your lastname"
-            required
-          />
-        </div>
-      {/if}
-
-      <!-- Campo de Email -->
-      <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-gray-700"
-          >Email</label
-        >
-        <input
-          id="email"
-          type="email"
-          name="email"
-          class="input input-bordered w-full mt-1"
-          placeholder="you@example.com"
-          required
-        />
-      </div>
-
-      <!-- Campo de Password -->
-      <div class="mb-4">
-        <label for="password" class="block text-sm font-medium text-gray-700"
-          >Password</label
-        >
-        <input
-          id="password"
-          type="password"
-          name="password"
-          class="input input-bordered w-full mt-1"
-          placeholder="Your password"
-          required
-        />
-      </div>
-
-      <!-- Botón de submit -->
-      <button
-        formaction={isLogin ? "?/login" : "?/register"}
-        type="submit"
-        class="btn btn-primary w-full mb-4"
-        >{isLogin ? "Login" : "Register"}</button
-      >
-    </form>
-
-    <div class="text-center">
-      <button
-        class="text-sm text-blue-500 hover:underline"
-        onclick={() => (isLogin = !isLogin)}
-      >
-        {isLogin
-          ? "Don't have an account? Register"
-          : "Already have an account? Login"}
-      </button>
-    </div>
-  </div>
+	<form method="post" use:enhance>
+		<div class="mb-4">
+			<label for="username" class="block text-sm font-medium text-secondary">Username</label>
+			<input
+				id="username"
+				type="text"
+				name="username"
+				class="input input-bordered mt-1 w-full"
+				placeholder="Your username"
+				required
+			/>
+		</div>
+		<div class="mb-4">
+			<label for="Password" class="block text-sm font-medium text-secondary">Password</label>
+			<input
+				id="password"
+				type="password"
+				name="password"
+				class="input input-bordered mt-1 w-full"
+				placeholder="********"
+				required
+			/>
+		</div>
+		<button
+			formaction={'?/login'}
+			type="submit"
+			class="btn btn-secondary mb-4 w-full">Login</button
+		>
+	</form>
+	<div class="text-center">
+		<a class="text-sm text-secondary hover:underline" href="/auth/register">
+			Don't have an account? Register
+		</a>
+	</div>
+	<div class="text-center">
+		<a class="text-sm text-secondary hover:underline" href="/auth/recoverpassword">
+			Forgot your password?
+    </a>
+	</div>
 </div>

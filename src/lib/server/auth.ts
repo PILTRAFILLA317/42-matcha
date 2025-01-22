@@ -7,25 +7,27 @@ const DAY_IN_MS = 1000 * 60 * 60 * 24;
 
 export const sessionCookieName = 'auth-session';
 
-export function generateSessionToken() {
+export function generateSessionToken(): string {
 	const bytes = crypto.getRandomValues(new Uint8Array(18));
-	const token = encodeBase64url(bytes);
+	const token: string = encodeBase64url(bytes);
 	return token;
 }
 
-export async function createSession(token: string, userId: string) {
-	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
-	const expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
+export async function createSession(token: string, userId: string): Promise<Session> {
+	const sessionId: string = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
+	const expiresAt: Date = new Date(Date.now() + DAY_IN_MS * 30);
 
 	await db`
 		INSERT INTO sessions (id, user_id, expires_at)
 		VALUES (${sessionId}, ${userId}, ${expiresAt.toISOString()})
 	`;
 
-	return { id: sessionId, userId, expiresAt };
+	return { id: sessionId, userId: userId, expiresAt: expiresAt };
 }
 
-export async function validateSessionToken(token: string) {
+export async function validateSessionToken(
+	token: string
+): Promise<{ session: Session | null; user: User | null }> {
 	const sessionId = encodeHexLowerCase(sha256(new TextEncoder().encode(token)));
 
 	// Buscar sesión y usuario asociado
@@ -43,24 +45,35 @@ export async function validateSessionToken(token: string) {
 		return { session: null, user: null };
 	}
 
-	const session = {
+	const session: Session = {
 		id: result.session_id,
 		userId: result.user_id,
-		expiresAt: new Date(result.expires_at),
+		expiresAt: new Date(result.expires_at)
 	};
 
-	const user = {
-		id: result.user_id,
+	const [userResult] = await db`
+		SELECT * FROM public.users WHERE id = ${result.user_id}`;
+	const user: User = {
+		userId: userResult.id,
+		email: userResult.email,
 		username: result.username,
+		firstName: userResult.first_name,
+		lastName: userResult.last_name,
+		gender: userResult.gender,
+		sexualPreference: userResult.sexual_preference,
+		totalLikes: userResult.total_likes,
+		userPreferences: userResult.user_preferences,
+		bio: userResult.bio
 	};
 
-	// Si la sesión ha expirado, la eliminamos y retornamos null
+	/*We compare the session's expiration date and if It has expired 
+	We delete the session and return an empty user*/
 	if (Date.now() >= session.expiresAt.getTime()) {
 		await db`DELETE FROM sessions WHERE id = ${session.id}`;
 		return { session: null, user: null };
 	}
 
-	// Si faltan menos de 15 días para expirar, renovamos la sesión
+	// If the date expires in less than 15 days we renew the session
 	if (Date.now() >= session.expiresAt.getTime() - DAY_IN_MS * 15) {
 		session.expiresAt = new Date(Date.now() + DAY_IN_MS * 30);
 		await db`
@@ -73,23 +86,23 @@ export async function validateSessionToken(token: string) {
 	return { session, user };
 }
 
-
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;
 
-export async function invalidateSession(sessionId: string) {
+export async function invalidateSession(sessionId: number): Promise<void>{
 	await db`DELETE FROM sessions WHERE id = ${sessionId}`;
 }
 
-
-export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date) {
+export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date): void {
 	event.cookies.set(sessionCookieName, token, {
+		httpOnly: true,
 		expires: expiresAt,
 		path: '/'
 	});
 }
 
-export function deleteSessionTokenCookie(event: RequestEvent) {
+export function deleteSessionTokenCookie(event: RequestEvent): void {
 	event.cookies.delete(sessionCookieName, {
+		httpOnly: true,
 		path: '/'
 	});
 }
