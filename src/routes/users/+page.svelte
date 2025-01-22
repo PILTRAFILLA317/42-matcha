@@ -6,6 +6,20 @@
 
   let { data }: { data: PageData } = $props();
 
+  let username = data.user.username;
+
+  if (!data) {
+    data = {
+      user: {
+        username: "User",
+        age: 18,
+        description: "Default description",
+      },
+    };
+  }
+
+  let isRegistered = true;
+
   let userDescription =
     "No veas lo que me gustan las tetas amai la cuki baby tu sabe lo que yo kiero aserte";
   let userAge = 18;
@@ -14,7 +28,7 @@
 <div
   class="shadow-2xl shadow-neutral p-3 m-10 md:m-5 text-white gap-4 rounded-3xl flex flex-col md:flex-row"
 >
-  <div class="carousel rounded-3xl relative aspect-[1/1] max-w-[600px]">
+  <div class="carousel rounded-2xl relative aspect-[1/1] max-w-[600px]">
     <div id="slide1" class="carousel-item relative w-full">
       <img
         src="https://static.wikia.nocookie.net/5ae56c9b-d6cc-40aa-9920-9cdc76f973d5/scale-to-width/755"
@@ -44,40 +58,53 @@
   </div>
   <div class="flex flex-col justify-between">
     <div>
-      <div class="flex items-center gap-1">
-        <h1 class="text-4xl font-bold mr-5">{data.user.username}</h1>
-        <p class="text-2xl font-bold text-primary">2</p>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="220.0741 46.564 161.7344 209.9264"
-          class="w-6"
-        >
-          <g />
-          <g
-            transform="matrix(11.55245590209961, 0, 0, 11.046404838562012, 162.3118438720703, 13.46955871582032)"
-            style=""
+      <div class="flex items-center gap-1 justify-between">
+        <div class="flex items-center gap-1">
+          <h1 class="text-4xl font-bold mr-5">{data.user.username}</h1>
+          <p class="text-2xl font-bold text-primary">2</p>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="220.0741 46.564 161.7344 209.9264"
+            class="w-6"
           >
-            <linearGradient
-              id="a"
-              x1="16"
-              x2="16"
-              y1="32.64"
-              y2="5"
-              gradientTransform="matrix(1 0 0 -1 0 34)"
-              gradientUnits="userSpaceOnUse"
+            <g />
+            <g
+              transform="matrix(11.55245590209961, 0, 0, 11.046404838562012, 162.3118438720703, 13.46955871582032)"
+              style=""
             >
-              <stop offset="0" stop-color="#fd6087" />
-              <stop offset="1" stop-color="#fd7e89" />
-            </linearGradient>
-            <path
-              d="M 12 22 C 10.1 22 8.4 21.3 7.1 19.9 C 5.7 18.6 5 16.9 5 15 C 5 13 5.9 10.7 7.3 9.3 L 7.4 9.2 C 8.6 8 10 6.5 10 4 C 10 3.6 10.2 3.2 10.6 3.1 C 11 2.9 11.4 3 11.7 3.3 C 12.9 4.5 15.182 7.364 13.782 10.664 C 13.982 10.664 14.1 11.3 15.2 9.5 C 15.3 9.2 15.6 9 15.9 9 C 16.2 9 16.5 9.1 16.7 9.3 C 17.8 10.5 19 13.1 19 15 C 19 16.9 18.3 18.6 16.9 19.9 C 15.6 21.3 13.9 22 12 22 Z"
-              fill="url(#a)"
-              opacity="1"
-              data-original="#000000"
-              class=""
-            />
-          </g>
-        </svg>
+              <path
+                d="M 12 22 C 10.1 22 8.4 21.3 7.1 19.9 C 5.7 18.6 5 16.9 5 15 C 5 13 5.9 10.7 7.3 9.3 L 7.4 9.2 C 8.6 8 10 6.5 10 4 C 10 3.6 10.2 3.2 10.6 3.1 C 11 2.9 11.4 3 11.7 3.3 C 12.9 4.5 15.182 7.364 13.782 10.664 C 13.982 10.664 14.1 11.3 15.2 9.5 C 15.3 9.2 15.6 9 15.9 9 C 16.2 9 16.5 9.1 16.7 9.3 C 17.8 10.5 19 13.1 19 15 C 19 16.9 18.3 18.6 16.9 19.9 C 15.6 21.3 13.9 22 12 22 Z"
+                fill="#fd7e89"
+                opacity="1"
+                data-original="#000000"
+                class=""
+              />
+            </g>
+          </svg>
+        </div>
+        {#if isRegistered}
+          <svg
+            viewBox="0 0 401.523 401"
+            style="enable-background:new 0 0 512 512"
+            xml:space="preserve"
+            class="w-12"
+            ><g
+              ><path
+                d="M370.59 250.973c-5.524 0-10 4.476-10 10v88.789c-.02 16.562-13.438 29.984-30 30H50c-16.563-.016-29.98-13.438-30-30V89.172c.02-16.559 13.438-29.98 30-30h88.79c5.523 0 10-4.477 10-10 0-5.52-4.477-10-10-10H50c-27.602.031-49.969 22.398-50 50v260.594c.031 27.601 22.398 49.968 50 50h280.59c27.601-.032 49.969-22.399 50-50v-88.793c0-5.524-4.477-10-10-10zm0 0"
+                fill="#ffffff"
+                opacity="1"
+                data-original="#000000"
+                class=""
+              /><path
+                d="M376.629 13.441c-17.574-17.574-46.067-17.574-63.64 0L134.581 191.848a9.997 9.997 0 0 0-2.566 4.402l-23.461 84.7a9.997 9.997 0 0 0 12.304 12.308l84.7-23.465a9.997 9.997 0 0 0 4.402-2.566l178.402-178.41c17.547-17.587 17.547-46.055 0-63.641zM156.37 198.348 302.383 52.332l47.09 47.09-146.016 146.016zm-9.406 18.875 37.62 37.625-52.038 14.418zM374.223 74.676 363.617 85.28l-47.094-47.094 10.61-10.605c9.762-9.762 25.59-9.762 35.351 0l11.739 11.734c9.746 9.774 9.746 25.59 0 35.36zm0 0"
+                fill="#ffffff"
+                opacity="1"
+                data-original="#000000"
+                class=""
+              /></g
+            ></svg
+          >
+        {/if}
       </div>
       <div class="flex mt-4">
         <div class="flex-row">
@@ -197,35 +224,54 @@
         <h2 class="text-2xl font-bold">Intereses</h2>
       </div>
       <div class="flex flex-wrap gap-3">
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
+        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
+        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
         <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
         <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
         <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-        <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
+        <div class="badge w-auto h-8 text-white badge-secondary badge-outline">
+          tetas
+        </div>
       </div>
     </div>
     <div>
-      <div class="flex mt-4 justify-end items-end">
-        <!-- <button class="btn btn-primary flex-grow mr-2">Corason</button> -->
-        <button class="btn rounded-3xl btn-accent text-white flex-grow mr-2">
-          <img src={HeartEmptyIcon} alt="Like Icon" class="w-12" />
-          Like!
-        </button>
-        <button
-          class="btn rounded-3xl btn-secondary flex items-center justify-center"
-        >
-          <img src={ChatIcon} alt="Chat Icon" class="w-10" />
-        </button>
-      </div>
+      {#if !isRegistered}
+        <div class="flex mt-4 justify-end items-end">
+          <button class="btn rounded-3xl btn-accent text-white flex-grow mr-2">
+            <img src={HeartEmptyIcon} alt="Like Icon" class="w-12" />
+            Like!
+          </button>
+          <button
+            class="btn rounded-3xl btn-secondary flex items-center justify-center"
+          >
+            <img src={ChatIcon} alt="Chat Icon" class="w-10" />
+          </button>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
