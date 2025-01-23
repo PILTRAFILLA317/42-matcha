@@ -1,5 +1,5 @@
 import { redirect, type Actions } from '@sveltejs/kit';
-import {updateEmail} from '$lib/server/updateUser';
+import {updateEmail} from '$lib/server/users';
 import type { PageServerLoad } from '../$types';
 
 export const load: PageServerLoad = async (event) => {
