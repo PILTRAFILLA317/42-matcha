@@ -67,3 +67,10 @@ A user must be notified in real-time6 of the following events:
 - When the user’s profile has been viewed.</br>
 - When the user receives a message.</br>
 - When “liked” user also “likes” the user back. • When a connected user “unlikes” the user.</br>
+
+
+## TO-DO
+
+- Devolver errores al front cuando haya errores en la edicion/creacion de usuario
+- Dejar no horrible la creacion de usuario/edicion/registro
+- Hacer lo de email de confirmacion
