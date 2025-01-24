@@ -5,8 +5,8 @@
 	import Page from './+page.svelte';
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
 
-	console.log('data1:');
-	console.log(data);
+	// console.log('data1:');
+	// console.log(data);
 
 	let open = $state(false);
 </script>

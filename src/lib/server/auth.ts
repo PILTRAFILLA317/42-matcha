@@ -51,8 +51,10 @@ export async function validateSessionToken(
 		expiresAt: new Date(result.expires_at)
 	};
 
+	
 	const [userResult] = await db`
-		SELECT * FROM public.users WHERE id = ${result.user_id}`;
+	SELECT * FROM public.users WHERE id = ${result.user_id}`;
+	console.log('userResult->', userResult);
 	const user: User = {
 		userId: userResult.id,
 		email: userResult.email,
@@ -60,7 +62,7 @@ export async function validateSessionToken(
 		firstName: userResult.first_name,
 		lastName: userResult.last_name,
 		gender: userResult.gender,
-		sexualPreference: userResult.sexual_preference,
+		sexualPreference: userResult.sexual_preferences,
 		totalLikes: userResult.total_likes,
 		userPreferences: userResult.user_preferences,
 		bio: userResult.bio
@@ -92,9 +94,15 @@ export async function invalidateSession(sessionId: number): Promise<void>{
 	await db`DELETE FROM sessions WHERE id = ${sessionId}`;
 }
 
+export async function getSessionTokenCookie(event: RequestEvent): Promise<string | null> {
+	const cookie: string | undefined = event.cookies.get(sessionCookieName);
+	return cookie ?? null;
+}
+
 export function setSessionTokenCookie(event: RequestEvent, token: string, expiresAt: Date): void {
 	event.cookies.set(sessionCookieName, token, {
 		httpOnly: true,
+		sameSite: "lax",
 		expires: expiresAt,
 		path: '/'
 	});
@@ -103,6 +111,8 @@ export function setSessionTokenCookie(event: RequestEvent, token: string, expire
 export function deleteSessionTokenCookie(event: RequestEvent): void {
 	event.cookies.delete(sessionCookieName, {
 		httpOnly: true,
+		sameSite: "lax",
+		maxAge: 0,
 		path: '/'
 	});
 }

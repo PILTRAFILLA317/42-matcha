@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { applyAction, enhance } from '$app/forms';
+	import { enhance } from '$app/forms';
 
 	export let data;
 	export const load = () => {
@@ -7,11 +7,11 @@
 	};
 </script>
 
-<div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
-	<h1 class="mb-4 text-center text-2xl font-semibold text-secondary">Settings Page</h1>
+<div class="mx-auto max-w-md rounded-lg bg-secondary p-6 shadow-md">
+	<h1 class="mb-4 text-center text-2xl font-semibold text-primary">Settings Page</h1>
 	<form method="post" use:enhance>
 		<div class="mb-4">
-			<label for="email" class="block text-sm font-medium text-secondary">Email</label>
+			<label for="email" class="block text-sm font-medium text-primary">Email</label>
 			<input
 				id="email"
 				type="text"
@@ -23,7 +23,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="username" class="block text-sm font-medium text-secondary">Username</label>
+			<label for="username" class="block text-sm font-medium text-primary">Username</label>
 			<input
 				id="username"
 				type="text"
@@ -35,7 +35,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="firstName" class="block text-sm font-medium text-secondary">First Name</label>
+			<label for="firstName" class="block text-sm font-medium text-primary">First Name</label>
 			<input
 				id="firstName"
 				type="text"
@@ -47,7 +47,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="lastName" class="block text-sm font-medium text-secondary">Last Name</label>
+			<label for="lastName" class="block text-sm font-medium text-primary">Last Name</label>
 			<input
 				id="lastName"
 				type="text"
@@ -59,7 +59,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="gender" class="block text-sm font-medium text-secondary">Gender</label>
+			<label for="gender" class="block text-sm font-medium text-primary">Gender</label>
 			<select name="gender" class="select select-bordered w-full max-w-xs">
 				<option disabled selected={data.user.gender == null}>Select your gender?</option>
 				<option selected={data.user.gender && data.user.gender != null}>Male</option>
@@ -67,7 +67,7 @@
 			</select>
 		</div>
 		<div class="mb-4">
-			<label for="sexualPreference" class="block text-sm font-medium text-secondary">
+			<label for="sexualPreference" class="block text-sm font-medium text-primary">
 				Sexual Preference
 			</label>
 			<select name="sexualpreference" class="select select-bordered w-full max-w-xs">
@@ -80,8 +80,7 @@
 			</select>
 		</div>
 		<div class="mb-4">
-			<label for="bio" class="block text-sm font-medium text-secondary">Bio</label>
-			<label for="bio" class="block text-sm font-medium text-secondary">{data.user.bio}</label>
+			<label for="bio" class="block text-sm font-medium text-primary">Bio</label>
 			<textarea
 				id="bio"
 				name="bio"
@@ -91,11 +90,11 @@
 				value={data.user.bio}
 			></textarea>
 		</div>
-		<button formaction={'?/updateUser'} type="submit" class="btn btn-secondary w-full">
+		<button formaction={'?/updateUser'} type="submit" class="btn btn-primary w-full">
 			Save Changes
 		</button>
 		<div class="h-4"></div>
-		<button formaction={'?/deleteUser'} type="submit" class="btn btn-secondary w-full">
+		<button formaction={'?/deleteUser'} type="submit" class="btn btn-primary w-full">
 			Delete User
 		</button>
 	</form>
