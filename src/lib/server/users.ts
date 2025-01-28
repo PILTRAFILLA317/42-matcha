@@ -1,6 +1,6 @@
 import { validateEmail } from '$lib/helpers/validators';
 import { db } from '$lib/server/db'; // Assuming you have a db module for database connection
-import { createClient } from '@supabase/supabase-js';
+// import { createClient } from '@supabase/supabase-js';
 
 export async function updateEmail(newEmail: string, user: User) {
     if (!user) throw new Error('User not found');
@@ -28,31 +28,28 @@ export async function getUser(username: string): Promise<User | null> {
         firstName: user.first_name,
         lastName: user.last,
         gender: user.gender,
-        sexualPreference: user.sexual_preference,
+        sexualPreference: user.sexual_preferences,
         totalLikes: user.total_likes,
         userPreferences: user.user_preferences,
+        location: user.location,
         bio: user.bio,
+        age: user.age,
     };
     return selectedUser;
 }
 
-const supabaseUrl = 'https://your-supabase-url.supabase.co';
-const supabaseKey = 'your-supabase-key';
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-export async function createFolderInBucket(username: string) {
-    const folderPath = `user_images/${username}/`;
-    const { error } = await supabase.storage.from('user_images').upload(`${folderPath}.keep`, new Blob(['']), {
-        cacheControl: '3600',
-        upsert: false
-    });
-
-    if (error) {
-        console.error('Error creating folder:', error);
-        throw new Error('Error creating folder');
+export async function updateUserLocation(username: string, latitude: number, longitude: number) {
+    if (!username) throw new Error('Username is required');
+    console.log('Updating location for user\nUsername is => ', username, '\nLatitude is => ', latitude, '\nLongitude is => ', longitude);
+    try {
+        await db`UPDATE users
+            SET location = ARRAY[${latitude}, ${longitude}]::float[] WHERE username = ${username};
+            `;
+        console.log('Location updated');
+    } catch (error) {
+        console.error('Error updating location', error);
+        throw new Error('Error updating location');
     }
-
-    console.log('Folder created successfully');
 }
 
 // export async function updateUsername(newUsername: string, user: User) {

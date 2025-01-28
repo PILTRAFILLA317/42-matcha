@@ -23,14 +23,6 @@ export const actions: Actions = {
 		const lastname = formData.get('lastname');
 		const password = formData.get('password');
 		const repeatpassword = formData.get('repeatpassword');
-		console.log('Registering user', {
-			email,
-			username,
-			firstname,
-			lastname,
-			password,
-			repeatpassword
-		});
 
 		if (!validateUsername(username)) {
 			return fail(400, { message: 'Invalid username' });

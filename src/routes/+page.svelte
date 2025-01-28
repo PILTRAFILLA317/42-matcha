@@ -3,9 +3,6 @@
 	import type { PageServerData } from './$types';
 
 	let { data }: { data: PageServerData } = $props();
-
-	console.log("data2:");
-	console.log(data);
 </script>
 
 <h1>Hi, {data.user.username}!</h1>

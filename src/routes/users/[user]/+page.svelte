@@ -1,42 +1,92 @@
 <script lang="ts">
-  import type { PageData } from "../$types";
   import ChatIcon from "/src/assets/chat.svg";
   import HeartFillIcon from "/src/assets/heart-fill.svg";
   import HeartEmptyIcon from "/src/assets/heart-empty.svg";
 
-  // let { data }: { data: PageData } = $props();
   export let data;
 
   let currentUser = data.currentUser;
 
-  // let username = data.user.username;
+  let registeredUser = data.user;
 
-  // if (!data) {
-  //   data = {
-  //     user: {
-  //       username: "User",
-  //       age: 18,
-  //       description: "Default description",
-  //     },
-  //   };
-  // }
+  let userDistance = userDistanceCalc();
 
-  let isRegistered = true;
+  function userDistanceCalc() {
+    if (
+      currentUser &&
+      currentUser.location &&
+      registeredUser &&
+      registeredUser.location
+    ) {
+      const [lat1, lon1] = currentUser.location; // Lat/Lon del usuario actual
+      const [lat2, lon2] = registeredUser.location; // Lat/Lon del usuario registrado
 
+      const toRadians = (degrees) => (degrees * Math.PI) / 180; // Conversión a radianes
+
+      const R = 6371; // Radio de la Tierra en kilómetros
+      const dLat = toRadians(lat2 - lat1); // Diferencia de latitudes en radianes
+      const dLon = toRadians(lon2 - lon1); // Diferencia de longitudes en radianes
+
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRadians(lat1)) *
+          Math.cos(toRadians(lat2)) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
+
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+      const distance = R * c; // Distancia en kilómetros
+      return Math.floor(distance); // Redondear hacia abajo
+    }
+
+    return 0; // Si faltan datos
+  }
+
+  async function getLocationAddress() {
+    if (currentUser && currentUser.location) {
+      try {
+        const res = await fetch("../api/reverse-geocode", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            latitude: currentUser.location[0],
+            longitude: currentUser.location[1],
+          }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          console.log(data);
+          return data.city;
+        }
+      } catch (error) {
+        return "No location";
+      }
+    }
+    return "No location";
+  }
+
+  let currentUserLocation: string | undefined;
+  async function fetchLocation() {
+    currentUserLocation = await getLocationAddress();
+  }
+  fetchLocation();
 </script>
 
 {#if !currentUser}
-<img
-src="https://pbs.twimg.com/media/F8mH-keWMAANehe.jpg"
-class=""
-alt="Gato"
-/>
+  <img
+    src="https://pbs.twimg.com/media/F8mH-keWMAANehe.jpg"
+    class=""
+    alt="Gato"
+  />
 {/if}
 {#if currentUser}
   <div
-    class="shadow-2xl shadow-neutral p-3 m-10 md:m-5 text-white gap-4 rounded-3xl flex flex-col md:flex-row"
+    class="shadow-2xl max-w-[1200px] shadow-neutral p-3 m-10 md:m-5 text-white gap-4 rounded-3xl flex flex-col md:flex-row"
   >
-    <div class="carousel rounded-2xl relative aspect-[1/1] max-w-[600px]">
+    <div class="carousel rounded-2xl relative aspect-1/1 max-w-[600px]">
       <div id="slide1" class="carousel-item relative w-full">
         <img
           src="https://static.wikia.nocookie.net/5ae56c9b-d6cc-40aa-9920-9cdc76f973d5/scale-to-width/755"
@@ -70,7 +120,9 @@ alt="Gato"
           <div class="flex items-center gap-1">
             <h1 class="text-4xl font-bold mr-5">{currentUser?.username}</h1>
             <!-- <p class="text-2xl font-bold text-primary">2</p> -->
-            <p class="text-2xl font-bold text-primary">{currentUser.totalLikes}</p>
+            <p class="text-2xl font-bold text-primary">
+              {currentUser.totalLikes}
+            </p>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="220.0741 46.564 161.7344 209.9264"
@@ -91,7 +143,7 @@ alt="Gato"
               </g>
             </svg>
           </div>
-          {#if isRegistered}
+          {#if registeredUser.userId == currentUser.userId}
             <svg
               viewBox="0 0 401.523 401"
               style="enable-background:new 0 0 512 512"
@@ -133,7 +185,10 @@ alt="Gato"
                 ></svg
               >
               <!-- <p class="text-2xl mr-3">Hombre heterosexual</p> -->
-              <p class="text-2xl mr-3">{currentUser.gender} {currentUser.sexualPreference}</p>
+              <p class="text-2xl mr-3">
+                {currentUser.gender ? "Hombre" : "Mujer"}
+                {currentUser.sexualPreference}
+              </p>
             </div>
           </div>
         </div>
@@ -164,10 +219,9 @@ alt="Gato"
               />
             </g></svg
           >
-          <!-- <p class="text-xl">Madrid, España (5km away)</p> -->
-          <p class="text-xl">{currentUser.location}</p>
+          <p class="text-2xl">{currentUserLocation} (A {userDistance}km)</p>
         </div>
-        <p class="flex items-center text-xl gap-3 mt-4">
+        <p class="flex items-center text-2xl gap-3 mt-4">
           <svg
             class="w-8"
             viewBox="0 0 24 24"
@@ -215,7 +269,7 @@ alt="Gato"
           >
           <h2 class="text-2xl font-bold">Sobre mi</h2>
         </div>
-        <p class="text-lg mb-4 mr-8">{currentUser.bio}</p>
+        <p class="text-lg mb-4 mr-8" style="white-space: pre-wrap; word-break: break-word;">{currentUser.bio}</p>
         <div class="flex items-center gap-3 mt-8 mb-4">
           <svg
             viewBox="0 0 512 512"
@@ -235,71 +289,32 @@ alt="Gato"
           <h2 class="text-2xl font-bold">Intereses</h2>
         </div>
         <div class="flex flex-wrap gap-3">
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
-          <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
-          <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
-          <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-          <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
-          <div class="badge w-auto h-8 text-white badge-secondary">tetas</div>
-          <div
-            class="badge w-auto h-8 text-white badge-secondary badge-outline"
-          >
-            tetas
-          </div>
+          {#if currentUser.userPreferences}
+            {#each currentUser.userPreferences as preference}
+              <div
+                class="badge w-auto h-8 text-white badge-secondary {registeredUser.userPreferences.includes(
+                  preference
+                )
+                  ? ''
+                  : 'badge-outline'}"
+              >
+                {preference}
+              </div>
+            {/each}
+          {/if}
         </div>
       </div>
       <div>
-        {#if !isRegistered}
+        {#if currentUser.userId != registeredUser.userId}
           <div class="flex mt-4 justify-end items-end">
-            <button
-              class="btn rounded-3xl btn-accent text-white flex-grow mr-2"
-            >
-              <img src={HeartEmptyIcon} alt="Like Icon" class="w-12" />
+            <button class="btn rounded-3xl btn-accent text-white grow mr-2">
+              <img src={HeartEmptyIcon} alt="Like Icon" class="w-10" />
               Like!
             </button>
             <button
               class="btn rounded-3xl btn-secondary flex items-center justify-center"
             >
-              <img src={ChatIcon} alt="Chat Icon" class="w-10" />
+              <img src={ChatIcon} alt="Chat Icon" class="w-8" />
             </button>
           </div>
         {/if}

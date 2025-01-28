@@ -8,8 +8,6 @@ export const load: PageServerLoad = async (event) => {
     if (!event.locals.user) {
         return redirect(302, '/auth/login');
     }
-    console.log('Getting user');
-    console.log('Event params: ', event.params);
     const currentUser = await users.getUser(String(event.params.user));
     if (!currentUser)
         return {user: event.locals.user};
@@ -26,14 +24,4 @@ export const actions: Actions = {
 
         return redirect(302, '/auth/login');
     },
-
-    // getUser: async (event) => {
-    //     console.log('Getting user');
-    //     console.log('Event params: ', event.params);
-    //     const user = await users.getUser(event.params.user);
-    //     if (!user) {
-    //         return fail(404, 'User not found');
-    //     }
-    //     return { user };
-    // }
 };

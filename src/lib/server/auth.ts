@@ -63,6 +63,7 @@ export async function validateSessionToken(
 		sexualPreference: userResult.sexual_preference,
 		totalLikes: userResult.total_likes,
 		userPreferences: userResult.user_preferences,
+		location: userResult.location,
 		bio: userResult.bio
 	};
 
