@@ -133,10 +133,14 @@
 	{/if}
 </nav>
 
-<main class="flex min-h-[calc(100vh-5rem-5rem)] flex-1 items-center justify-center">
+<!-- <main class="flex min-h-[calc(100vh-5rem-5rem)] flex-1 items-center justify-center">
+	{@render children()}
+</main> -->
+
+<main class="flex flex-1 items-center justify-center">
 	{@render children()}
 </main>
 
-<footer class=" w-full bg-slate-700 p-4 text-center text-white">
+<footer class="w-full bg-slate-700 p-4 text-center text-white fixed bottom-0">
 	<p>© 2025 - MatchPoint - Todos los derechos reservados</p>
 </footer>

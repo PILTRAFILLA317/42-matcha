@@ -26,7 +26,7 @@ export async function getUser(username: string): Promise<User | null> {
         email: user.email,
         username: user.username,
         firstName: user.first_name,
-        lastName: user.last,
+        lastName: user.last_name,
         gender: user.gender,
         sexualPreference: user.sexual_preferences,
         totalLikes: user.total_likes,

@@ -79,7 +79,7 @@
   <img
     src="https://pbs.twimg.com/media/F8mH-keWMAANehe.jpg"
     class=""
-    alt="Gato"
+    alt="ese pibe no esiste"
   />
 {/if}
 {#if currentUser}
@@ -116,9 +116,12 @@
     </div>
     <div class="flex flex-col justify-between">
       <div>
+        <div>
+          <h1 class="text-5xl font-bold mb-5">{currentUser?.firstName} {currentUser?.lastName}</h1>
+        </div>
         <div class="flex items-center gap-1 justify-between">
           <div class="flex items-center gap-1">
-            <h1 class="text-4xl font-bold mr-5">{currentUser?.username}</h1>
+            <h1 class="text-3xl font-bold mr-5">@{currentUser?.username}</h1>
             <!-- <p class="text-2xl font-bold text-primary">2</p> -->
             <p class="text-2xl font-bold text-primary">
               {currentUser.totalLikes}
