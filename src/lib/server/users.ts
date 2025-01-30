@@ -1,4 +1,4 @@
-import { validateEmail } from '$lib/helpers/validators';
+import { usernameExists, validateBio, validateEmail, validateName, validateSexualPreference, validateUsername } from '$lib/helpers/validators';
 import { db } from '$lib/server/db'; // Assuming you have a db module for database connection
 import { hash, verify } from '@node-rs/argon2';
 import type { RequestEvent } from '@sveltejs/kit';
@@ -40,12 +40,14 @@ export async function updateUsername(
 	const session: Session | null = event.locals.session;
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
+	if (!validateUsername(newUsername)) throw new Error('Username lenght 3-31 & Alphanumnerical');
+	if (await usernameExists(newUsername, user.userId)) throw new Error('Username already taken');
 	try {
 		await db`UPDATE users
             SET username = ${newUsername} WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
-		console.log('Email updated');
+		console.log('Username updated');
 	} catch (error) {
 		throw new Error('Error updating username');
 	}
@@ -59,11 +61,12 @@ export async function updateFirstName(
 	const session: Session | null = event.locals.session;
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
+	if (!validateName(newFirstName)) throw new Error('Invalid first name, just Alphabetical');
 	try {
 		await db`UPDATE users
-            SET first_name = ${newFirstName} WHERE id = ${user.userId}
-			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
-            `;
+		SET first_name = ${newFirstName} WHERE id = ${user.userId}
+		AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
+		`;
 		console.log('Email updated');
 	} catch (error) {
 		throw new Error('Error updating first_name');
@@ -78,6 +81,7 @@ export async function updateLastName(
 	const session: Session | null = event.locals.session;
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
+	if (!validateName(newLastName)) throw new Error('Invalid last name, just Alphabetical');
 	try {
 		await db`UPDATE users
             SET last_name = ${newLastName} WHERE id = ${user.userId}
@@ -97,7 +101,6 @@ export async function updateGender(
 	const session: Session | null = event.locals.session;
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
-	console.log('trying to update gender to =>', gender);
 	try {
 		const res = await db`UPDATE users
             SET gender = ${gender} WHERE id = ${user.userId}
@@ -117,6 +120,8 @@ export async function updateSexualPreference(
 	const session: Session | null = event.locals.session;
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
+	if (!validateSexualPreference(preference)) throw new Error('Invalid sexual preference');
+	console.log("preference: ", preference);
 	try {
 		await db`UPDATE users
             SET sexual_preferences = ${preference} WHERE id = ${user.userId}
@@ -136,6 +141,7 @@ export async function updateBio(
 	const session: Session | null = event.locals.session;
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
+	if (!validateBio(bio as string)) throw new Error('Invalid bio');
 	try {
 		await db`UPDATE users
             SET bio = ${bio} WHERE id = ${user.userId}

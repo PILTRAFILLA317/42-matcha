@@ -1,13 +1,16 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
+	import type { PageData, ActionData } from './$types';
 
-	export let data;
+
+	
+	let { data, form }: { data: PageData, form: ActionData } = $props();
 	export const load = () => {
 		console.log('onload??');
 	};
 </script>
 
-<div class="mx-auto max-w-md rounded-lg bg-secondary p-6 shadow-md">
+<div class="mx-auto w-xl rounded-lg bg-secondary p-6 shadow-md">
 	<h1 class="mb-4 text-center text-2xl font-semibold text-primary">Settings Page</h1>
 	<form method="post" use:enhance>
 		<div class="mb-4">
@@ -74,9 +77,9 @@
 				<option disabled selected={data.user.sexualPreference == null}>
 					Select your sexual preference?
 				</option>
-				<option selected={data.user.sexualPreference == 0}>Homosexual</option>
-				<option selected={data.user.sexualPreference == 1}>Heterosexual</option>
-				<option selected={data.user.sexualPreference == 2}>Bisexual</option>
+				<option selected={data.user.sexualPreference?.toString() == "Homosexual"}>Homosexual</option>
+				<option selected={data.user.sexualPreference?.toString() == "Heterosexual"}>Heterosexual</option>
+				<option selected={data.user.sexualPreference?.toString() == "Bisexual"}>Bisexual</option>
 			</select>
 		</div>
 		<div class="mb-4">
@@ -86,7 +89,7 @@
 				name="bio"
 				class="textarea textarea-bordered w-full"
 				placeholder="Write you biography here"
-				maxlength="200"
+				maxlength="500"
 				value={data.user.bio}
 			></textarea>
 		</div>
@@ -98,4 +101,7 @@
 			Delete User
 		</button>
 	</form>
+	<div class="h-4">
+		<div class="text-center text-red-500">{form?.error}</div>
+	</div>
 </div>

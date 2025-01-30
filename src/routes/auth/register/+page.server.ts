@@ -4,7 +4,7 @@ import * as auth from '$lib/server/auth';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { validateUsername } from '$lib/helpers/validators';
 import { hash } from '@node-rs/argon2';
-import { generateUserId } from '$lib/helpers/user';
+import { generateUserId, sendVerificationEmail } from '$lib/helpers/user';
 import { db } from '$lib/server/db';
 
 export const load: PageServerLoad = async (event) => {
@@ -61,7 +61,6 @@ export const actions: Actions = {
 				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firstname)}, ${String(lastname)})
 				ON CONFLICT (id) DO NOTHING
 			`;
-
 			// Crear sesión
 			const sessionToken = auth.generateSessionToken();
 			const session: Session = await auth.createSession(sessionToken, userId);
@@ -71,6 +70,12 @@ export const actions: Actions = {
 				INSERT INTO sessions (id, user_id, expires_at)
 				VALUES (${sessionToken}, ${userId}, ${session.expiresAt.toISOString()})
 			`;
+			const verify_id = generateUserId();
+			sendVerificationEmail(email, verify_id)
+			await db`
+				INSERT INTO verification (verify_id, user_id)
+				VALUES (${verify_id}, ${userId})
+			`
 
 			// Configurar la cookie de sesión
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);

@@ -1,6 +1,22 @@
-import { redirect, type Actions } from '@sveltejs/kit';
-import { updateBio, updateEmail, updateFirstName, updateGender, updateLastName, updateSexualPreference, updateUsername } from '$lib/server/users';
+import { fail, redirect, type Actions } from '@sveltejs/kit';
+import {
+	updateBio,
+	updateEmail,
+	updateFirstName,
+	updateGender,
+	updateLastName,
+	updateSexualPreference,
+	updateUsername
+} from '$lib/server/users';
 import type { PageServerLoad } from '../$types';
+import {
+	usernameExists,
+	validateBio,
+	validateEmail,
+	validateName,
+	validateSexualPreference,
+	validateUsername
+} from '$lib/helpers/validators';
 
 export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
@@ -17,25 +33,26 @@ export const actions: Actions = {
 		const username = formData.get('username');
 		const firstName = formData.get('firstname');
 		const lastName = formData.get('lastname');
-		const gender: boolean = formData.get('gender') == "Male" ? true : false;
+		const gender: boolean = formData.get('gender') == 'Male' ? true : false;
 		// const sexualPreference: sexualPreference | null= initSexualPreference(formData.get('sexualpreference') as string);
 		const sexualPreference = formData.get('sexualpreference') as string;
+		console.log('sexualPreference: ', sexualPreference);
 		const bio = formData.get('bio');
 		if (user === null) {
 			return redirect(302, '/');
 		}
 		try {
-            if (email !== null && email !== user.email) {
-                await updateEmail(email!.toString(), event);
+			if (email !== null && email !== user.email) {
+				await updateEmail(email!.toString(), event);
 			}
 			if (username !== null && username !== user.username) {
-                await updateUsername(username.toString(), event);
+				await updateUsername(username.toString(), event);
 			}
 			if (firstName !== null && firstName !== user.firstName) {
-                await updateFirstName(firstName.toString(), event);
+				await updateFirstName(firstName.toString(), event);
 			}
 			if (lastName !== null && lastName !== user.lastName) {
-                await updateLastName(lastName.toString(), event);
+				await updateLastName(lastName.toString(), event);
 			}
 			if (gender !== null && gender !== user.gender) {
 				await updateGender(gender, event);
@@ -47,9 +64,9 @@ export const actions: Actions = {
 				await updateBio(bio as string, event);
 			}
 		} catch (error) {
+			fail(400, { error: error });
 			console.log('Error updatiing user:\n', error);
 		}
-		// return updated user
 	},
 	deleteUser: async (event) => {
 		console.log('user should be deleted here');
