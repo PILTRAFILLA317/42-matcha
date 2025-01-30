@@ -5,7 +5,7 @@
   let {
     class: clazz = "w-2/3 p-4",
     minValue = $bindable(0),
-    maxValue = $bindable(100),
+    maxValue = $bindable(99),
     min = 0,
     max = 100,
   }: {
@@ -94,31 +94,31 @@
 
     <div
       bind:this={sliderElement}
-      class="slider-container relative h-12 touch-none"
+      class="slider-container mr-3 ml-3 relative h-12 touch-none"
       on:mousedown|preventDefault={(e) => handleInput(e, getClosestThumb(e))}
       on:touchstart|preventDefault={(e) => handleInput(e, getClosestThumb(e))}
     >
       <!-- Visual track -->
       <div
-        class="bg-base-300 absolute top-1/2 h-2 w-full -translate-y-1/2 rounded-full"
+        class="bg-teal-50 absolute top-1/2 h-1/4 w-full -translate-y-1/2 rounded-full"
       />
 
       <!-- Active range -->
       <div
-        class="bg-primary absolute top-1/2 h-2 -translate-y-1/2 rounded-full"
-        style="left: {minPosition}%; right: {100 - maxPosition}%"
+        class="bg-accent absolute top-1/2 h-1/2 -translate-y-1/2 rounded-full"
+        style="left: {minPosition - 3.5}%; right: {96.5 - maxPosition}%"
       />
 
       <!-- Interactive Thumbs -->
       <div
-        class="translate-x-[-50%] bg-primary border-primary-content absolute top-1/2 z-40 h-6 w-6 -translate-y-1/2 cursor-pointer rounded-full border-2
+        class="translate-x-[-50%] bg-emerald-900 border-transparent absolute top-1/2 z-40 h-4 w-4 -translate-y-1/2 cursor-pointer rounded-full border-2
                        shadow transition-transform duration-100 hover:scale-110"
         style="left: {minPosition}%"
         on:mousedown|stopPropagation={() => handleInput(event, "min")}
         on:touchstart|stopPropagation={() => handleInput(event, "min")}
       />
       <div
-        class="translate-x-[-50%] bg-primary border-primary-content absolute top-1/2 z-40 h-6 w-6 -translate-y-1/2 cursor-pointer rounded-full border-2
+        class="translate-x-[-50%] bg-emerald-900 border-transparent absolute top-1/2 z-40 h-4 w-4 -translate-y-1/2 cursor-pointer rounded-full border-2
                        shadow transition-transform duration-100 hover:scale-110"
         style="left: {maxPosition}%"
         role="application"
