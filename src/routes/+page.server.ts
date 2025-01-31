@@ -29,13 +29,10 @@ export const actions: Actions = {
 		}
 		const verify_id = generateUserId();
 		try {
-			console.log("UserId: ", event.locals.user.userId);
-			console.log("VerifyId: ", verify_id);
 			const result = await db`
 				INSERT INTO verification (verify_id, user_id)
 				VALUES (${verify_id}, ${event.locals.user.userId})
 			`;
-			console.log('Verification insert result: ', result);
 			sendVerificationEmail(verify_id, event.locals.user.email);
 		} catch (e) {
 			console.error('Error sending verification email: ', e);

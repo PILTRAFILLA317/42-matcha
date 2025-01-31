@@ -43,7 +43,7 @@
 		</a>
 	</div>
 	<div class="text-center">
-		<a class="text-sm text-secondary hover:underline" href="/auth/recoverpassword">
+		<a class="text-sm text-secondary hover:underline" href="/auth/login/forgotpassword">
 			Forgot your password?
     </a>
 	</div>

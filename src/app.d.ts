@@ -29,6 +29,7 @@ declare global {
 		totalLikes: number?;
 		userPreferences: Array<number>?;
 		bio: string?;
+		verified: boolean = false,
 	}
 
 	interface Session{

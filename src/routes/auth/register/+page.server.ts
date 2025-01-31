@@ -31,7 +31,9 @@ export const actions: Actions = {
 			password,
 			repeatpassword
 		});
-
+		if (!email) {
+			return fail(400, { message: 'Email missing' });
+		}
 		if (!validateUsername(username)) {
 			return fail(400, { message: 'Invalid username' });
 		}
@@ -71,11 +73,11 @@ export const actions: Actions = {
 				VALUES (${sessionToken}, ${userId}, ${session.expiresAt.toISOString()})
 			`;
 			const verify_id = generateUserId();
-			sendVerificationEmail(email, verify_id)
+			sendVerificationEmail(email, verify_id);
 			await db`
 				INSERT INTO verification (verify_id, user_id)
 				VALUES (${verify_id}, ${userId})
-			`
+			`;
 
 			// Configurar la cookie de sesión
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);

@@ -1,45 +1,42 @@
 <script lang="ts">
-    import type { PageData, PageLoad } from './$types';
-    // import { env } from '$env/dynamic/private';
+	import { onMount } from 'svelte';
+    import { page } from '$app/stores';
+	import type { PageData, PageLoad } from './$types';
+	// import { env } from '$env/dynamic/private';
 
-    let { data }: { data: PageData } = $props();
-    let isLoading = $state(true);
-    export const load = (async ({ params }) => {
-	try {
-		const res = await fetch(`/${params.mailReference}`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ mailReference: params.mailReference }),
-            }
-        );
-		console.log(res);
-		if (!res.ok) {
-			return { error: res.statusText };
-		}
-        isLoading = false;
-	} catch (error) {
-		console.error(error);
-	}
-	return {};
-}) satisfies PageLoad;
+	let { data }: { data: PageData } = $props();
+	let isLoading = $state<boolean>(data.user?.verified === false ? true : false);
 
-
+	onMount(async () => {
+		// console.log('HOLA ME ESTOY CREANDO');
+		// try {
+		// 	const res = await fetch(`/${page.params.mailReference}`, {
+		// 		method: 'POST',
+		// 		headers: {
+		// 			'Content-Type': 'application/json'
+		// 		},
+		// 		body: JSON.stringify({ mailReference: params.mailReference })
+		// 	});
+		// 	console.log('fetch result is==> ', res);
+		// 	if (!res.ok) {
+		// 		return { error: res.statusText };
+		// 	}
+		// 	isLoading = false;
+		// } catch (error) {
+		// 	console.error(error);
+		// }
+	});
 </script>
 
-<div class="h-screen w-screen flex items-center justify-center bg-secondary">
-    <div class="bg-slate-900 p-8 rounded-2xl shadow-lg text-center w-96">
-        <h1 class="text-2xl font-bold mb-4">Email Verification</h1>
-        {#if isLoading}
-            <div class="flex justify-center">
-                <span class="loading loading-spinner loading-lg"></span>
-            </div>
-        {:else}
-            <p class="text-sm text-left text-slate-300">
-                Email verification successful. You can now login to your account.
-            </p>
-        {/if}
-    </div>
+<div class="flex h-screen w-screen items-center justify-center bg-secondary">
+	<div class="w-96 rounded-2xl bg-slate-900 p-8 text-center shadow-lg">
+		<h1 class="mb-4 text-2xl font-bold">Email Verification</h1>
+		{#if isLoading}
+			<div class="flex justify-center">
+				<span class="loading loading-spinner loading-lg"></span>
+			</div>
+		{:else}
+			<p class="text-left text-sm text-slate-300">Email verification successful!</p>
+		{/if}
+	</div>
 </div>
