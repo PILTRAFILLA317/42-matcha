@@ -102,6 +102,6 @@
 		</button>
 	</form>
 	<div class="h-4">
-		<div class="text-center text-red-500">{form?.error}</div>
+		<div class="text-center text-red-500">{form?.message ?? ''}</div>
 	</div>
 </div>

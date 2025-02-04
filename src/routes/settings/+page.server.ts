@@ -46,7 +46,7 @@ export const actions: Actions = {
 				await updateEmail(email!.toString(), event);
 			}
 			if (username !== null && username !== user.username) {
-				await updateUsername(username.toString(), event);
+				return await updateUsername(username.toString(), event);
 			}
 			if (firstName !== null && firstName !== user.firstName) {
 				await updateFirstName(firstName.toString(), event);
@@ -63,9 +63,10 @@ export const actions: Actions = {
 			if (bio !== null && bio !== user.bio!) {
 				await updateBio(bio as string, event);
 			}
+			return { success: true, status: 201, message: 'Password changed successfully' };
 		} catch (error) {
-			fail(400, { error: error });
 			console.log('Error updatiing user:\n', error);
+			return fail(400, { message: error });
 		}
 	},
 	deleteUser: async (event) => {

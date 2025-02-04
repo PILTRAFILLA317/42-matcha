@@ -25,7 +25,10 @@ export const actions: Actions = {
 						'Password must be at least 8 characters long, contain at least one uppercase letter, one lowercase letter, one number, and one special character.'
 				});
 			}
-			const passwordHash: string = await hash(String(newPassword), {
+			if (typeof newPassword !== 'string') {
+				return fail(401, { message: 'Invalid password' });
+			}
+			const passwordHash: string = await hash(newPassword, {
 				memoryCost: 19456,
 				timeCost: 2,
 				outputLen: 32,
@@ -33,7 +36,6 @@ export const actions: Actions = {
 			});
 			const ret = updatePasswordRecover(passwordHash, event.params.passwordRecovery);
 			return ret;
-			return { status: 200, body: { message: 'Password changed successfully' } };
 		} catch (error) {
 			console.log('error: ', error);
 			return fail(401, { body: { message: 'Unexpected error' } });

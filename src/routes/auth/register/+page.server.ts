@@ -43,9 +43,7 @@ export const actions: Actions = {
 		//To-do validar el resto de campos
 		const userId = generateUserId();
 		if (typeof password !== 'string') {
-			//return fail(400, { message: 'Invalid password' });
-			alert('Invalid password');
-			throw new Error('Invalid password');
+			return fail(400, { message: 'Invalid password' });
 		}
 		const passwordHash = await hash(password, {
 			memoryCost: 19456,
@@ -55,8 +53,6 @@ export const actions: Actions = {
 		});
 
 		try {
-			console.log('Inserting user', { id: userId, username, passwordHash });
-
 			// Insertar usuario en la base de datos
 			await db`
 				INSERT INTO users (id, email, username, password, first_name, last_name)
@@ -73,7 +69,8 @@ export const actions: Actions = {
 				VALUES (${sessionToken}, ${userId}, ${session.expiresAt.toISOString()})
 			`;
 			const verify_id = generateUserId();
-			sendVerificationEmail(email, verify_id);
+			if (email === null) return fail(401, { message: 'Email is required' });
+			sendVerificationEmail(email as string, verify_id);
 			await db`
 				INSERT INTO verification (verify_id, user_id)
 				VALUES (${verify_id}, ${userId})
@@ -81,8 +78,10 @@ export const actions: Actions = {
 
 			// Configurar la cookie de sesión
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+			// return ({ status: 201, message: 'User registered' });
 		} catch (error) {
 			console.error('Error inserting user:', error);
+			return fail(400, { message: 'Unexpected error' });
 		}
 		return redirect(302, '/');
 	}

@@ -1,5 +1,8 @@
 <script lang="ts">
     import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
+
+	let { form }: { form: ActionData } = $props();
 </script>
 
 <div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
@@ -12,7 +15,7 @@
 			<label for="email" class="block text-sm font-medium text-secondary">Email</label>
 			<input
 				id="email"
-				type="text"
+				type="email"
 				name="email"
 				class="input input-bordered mt-1 w-full"
 				placeholder="Your email"
@@ -73,6 +76,9 @@
 				placeholder="********"
 				required
 			/>
+		</div>
+		<div class="flex mb-4 align-center justify-center">
+			<p class="text-white">{form?.message ?? ''}</p>
 		</div>
 		<button
 			formaction={'?/register'}
