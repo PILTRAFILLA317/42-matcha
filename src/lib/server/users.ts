@@ -1,7 +1,14 @@
-import { usernameExists, validateBio, validateEmail, validateName, validateSexualPreference, validateUsername } from '$lib/helpers/validators';
+import {
+	usernameExists,
+	validateBio,
+	validateEmail,
+	validateName,
+	validateSexualPreference,
+	validateUsername
+} from '$lib/helpers/validators';
 import { db } from '$lib/server/db'; // Assuming you have a db module for database connection
 import { hash, verify } from '@node-rs/argon2';
-import type { RequestEvent } from '@sveltejs/kit';
+import { fail, json, type RequestEvent } from '@sveltejs/kit';
 
 /*
 	The code here is really ugly Is really ugly
@@ -121,7 +128,7 @@ export async function updateSexualPreference(
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
 	if (!validateSexualPreference(preference)) throw new Error('Invalid sexual preference');
-	console.log("preference: ", preference);
+	console.log('preference: ', preference);
 	try {
 		await db`UPDATE users
             SET sexual_preferences = ${preference} WHERE id = ${user.userId}
@@ -168,6 +175,31 @@ export async function updatePassword(
 		`;
 	} catch (error) {
 		throw new Error('Error updating second_name');
+	}
+}
+
+export async function updatePasswordRecover(password: string, recoverId: string) {
+	if (!password) throw new Error('Password is required');
+	if (!recoverId) throw new Error('Recovery id is required');
+	try {
+		const whatever = await db`SELECT user_id
+		FROM password_recovery WHERE id = ${recoverId}`;
+		const result = await db`UPDATE users
+		SET password = ${password} WHERE id = ${whatever[0].user_id}
+		`;
+		console.log('result: ', result);
+		if (!result) {
+			return fail(401, { message: 'Error sending email' });
+		}
+		const res = await db`DELETE FROM password_recovery WHERE id = ${recoverId}`;
+		console.log('res: ', res);
+		if (!res){
+			return fail(401, { message: 'Error deleting verifyID' });
+		}
+		return {success: true, status: 201, message: "Password changed successfully"};
+	} catch (error) {
+		console.log('error: ', error);
+		return fail(401, { message: 'Unexpected error' });
 	}
 }
 

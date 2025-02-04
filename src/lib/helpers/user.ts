@@ -1,7 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import Mailjet from 'node-mailjet';
 import { env } from '$env/dynamic/private';
-import { verify } from '@node-rs/argon2';
 
 export function generateUserId() {
 	// ID with 120 bits of entropy, or about the same as UUID v4.

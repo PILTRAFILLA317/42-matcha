@@ -36,10 +36,10 @@ export const actions: Actions = {
 			outputLen: 32,
 			parallelism: 1
 		});
-		console.log('Valid password');
 		if (!validPassword) {
 			return fail(401, { message: 'Incorrect password' });
 		}
+		console.log('Valid password');
 
 		const sessionToken = auth.generateSessionToken();
 		const session = await auth.createSession(sessionToken, existingUser.id);

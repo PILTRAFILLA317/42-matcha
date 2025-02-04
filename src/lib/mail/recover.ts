@@ -1,5 +1,6 @@
 import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
+import { fail } from '@sveltejs/kit';
 import Mailjet from 'node-mailjet';
 
 function sendEmail(email: string, recover_id: string, user: User) {
@@ -35,30 +36,31 @@ function sendEmail(email: string, recover_id: string, user: User) {
 	request
 		.then((result) => {
 			console.log(result.body);
+			return {status: 201, message: `Recovery email sent to ${email}`};
 		})
 		.catch((err) => {
 			console.log(err.statusCode);
+			return fail(401, {message: "Error sending email"});
 		});
 }
 
 export async function recoverPassword(email: string, recover_id: string) {
-	try {
+	try{
 		const [user] = await db`SELECT * FROM users WHERE email = ${email}`;
 		if (!user) {
-			console.log('User not found');
-			return;
+			return fail(401, { message: 'Email not found' });
 		}
-		console.log('User found: ', user.id);
 		const result = await db`
-			INSERT INTO password_recovery (id, user_id) 
-			VALUES (${recover_id}, ${user.id})
+		INSERT INTO password_recovery (id, user_id) 
+		VALUES (${recover_id}, ${user.id})
 		`;
-		if (!result){
-			console.log('Error inserting password recovery');
-			return;
+		if (!result) {
+			return fail(401, { message: 'Unexpected error, try again later' });
 		}
-		sendEmail(email, recover_id, user as User);
-	} catch (error) {
-		console.error('There was an error sending the recovery email: ', email, '\n', error);
+		const ret = sendEmail(email, recover_id, user as User);
+		return ret;
+	} catch (error){
+		console.log(error);
+		return fail(401, { message: error.message });
 	}
 }

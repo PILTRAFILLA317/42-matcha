@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { PageData } from './$types';
+	import type { ActionData } from './$types';
 
-	let { data }: { data: PageData } = $props();
+	let { form }: { form: ActionData } = $props();
 </script>
 
 <div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
@@ -18,6 +18,9 @@
 				required
 			/>
         </div>
+		<div class="flex mb-4 align-center justify-center">
+			<p class="text-white">{form?.message ?? ''}</p>
+		</div>
         <div>
             <button formaction={'?/recover'} type="submit" class="btn btn-secondary mb-4 w-full">
                 Send email

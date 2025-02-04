@@ -36,7 +36,9 @@
 				/>
 			{/if}
 		</div>
-		<p class="text-black">{form?.message ?? ''}</p>
+		<div class="flex mb-4 align-center justify-center">
+			<p class="text-black">{form?.message ?? ''}</p>
+		</div>
 		<div>
 			<button formaction={'?/changepassword'} type="submit" class="btn btn-secondary mb-4 w-full">
 				Change Password
