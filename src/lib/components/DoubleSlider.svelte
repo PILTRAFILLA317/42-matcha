@@ -100,7 +100,7 @@
     >
       <!-- Visual track -->
       <div
-        class="bg-teal-50 absolute top-1/2 h-1/4 w-full -translate-y-1/2 rounded-full"
+        class="bg-accent absolute top-1/2 h-1/4 w-full -translate-y-1/2 rounded-full opacity-10"
       />
 
       <!-- Active range -->

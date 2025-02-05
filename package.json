@@ -36,6 +36,7 @@
 		"melt": "^0.7.0",
 		"oslo": "^1.2.1",
 		"postgres": "^3.4.5",
+		"svelte-5-range-slider": "^0.0.6",
 		"svelte-loader": "^3.2.4",
 		"uuid": "^11.0.5",
 		"yootils": "^0.3.1"

@@ -8,7 +8,7 @@ declare global {
 		}
 	}
 
-	enum sexualPreference{
+	enum sexual_preferences{
 		Heterosexual,
 		Homosexual,
 		Bisexual,
@@ -21,9 +21,9 @@ declare global {
 		firstName: string;
 		lastName: string;
 		gender: boolean?;
-		sexualPreference: sexualPreference?;
+		sexual_preferences: sexual_preferences?;
 		totalLikes: number?;
-		userPreferences: Array<number>?;
+		user_preferences: Array<number>?;
 		location: Array<float>?;
 		bio: string?;
 	}

@@ -67,16 +67,16 @@
 			</select>
 		</div>
 		<div class="mb-4">
-			<label for="sexualPreference" class="block text-sm font-medium text-secondary">
+			<label for="sexual_preferences" class="block text-sm font-medium text-secondary">
 				Sexual Preference
 			</label>
-			<select name="sexualpreference" class="select select-bordered w-full max-w-xs">
-				<option disabled selected={data.user.sexualPreference == null}>
+			<select name="sexual_preferences" class="select select-bordered w-full max-w-xs">
+				<option disabled selected={data.user.sexual_preferences == null}>
 					Select your sexual preference?
 				</option>
-				<option selected={data.user.sexualPreference == 0}>Homosexual</option>
-				<option selected={data.user.sexualPreference == 1}>Heterosexual</option>
-				<option selected={data.user.sexualPreference == 2}>Bisexual</option>
+				<option selected={data.user.sexual_preferences == 0}>Homosexual</option>
+				<option selected={data.user.sexual_preferences == 1}>Heterosexual</option>
+				<option selected={data.user.sexual_preferences == 2}>Bisexual</option>
 			</select>
 		</div>
 		<div class="mb-4">

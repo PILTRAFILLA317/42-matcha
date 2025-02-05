@@ -17,7 +17,7 @@ export const load: PageServerLoad = async (event) => {
 
 // deletePicture: async (event) => {},
 
-// changeSexualPreference: async (event) => {},
+// changesexual_preferences: async (event) => {},
 
 // changeGender: async (event) => {},
 
@@ -30,7 +30,7 @@ export const actions: Actions = {
         const firstName = formData.get('firstname');
         const lastName = formData.get('lastname');
         const gender = formData.get('gender');
-        const sexualPreference = formData.get('sexualpreference');
+        const sexual_preferences = formData.get('sexual_preferences');
         const bio = formData.get('bio');
         try{
             if (email !== null && event.locals.user && email !== event.locals.user!.email) {

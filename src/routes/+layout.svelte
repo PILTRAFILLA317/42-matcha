@@ -5,10 +5,14 @@
 	import { onMount } from 'svelte';
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
 	import { locationStore } from '$lib/stores/location';
+	import NotificationIcon from '/src/assets/notifications.svg';
+	let evenSource;
+
+	let notificationsOn = true;
 
 	// Obtener ubicación al cargar la página
 	async function getLocation() {
-		if (data.user?.location){
+		if (data.user?.location) {
 			return;
 		}
 
@@ -116,19 +120,32 @@
 		<a class="relative ml-auto" href="/auth/login">Login</a>
 	{/if}
 	{#if data.user?.userId}
-		<div class="avatar dropdown dropdown-hover dropdown-end relative ml-auto w-12 cursor-pointer">
-			<img
-				class="rounded-xl"
-				src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-				alt="User avatar"
-			/>
-			<ul class="menu dropdown-content rounded-box bg-base-100 z-1 w-52 p-2 shadow-sm">
-				<li><a href={`/users/${data.user.username}`} class="block h-full w-full">Profile</a></li>
-				<li><a href="/settings" class="block h-full w-full">Settings</a></li>
-				<li>
-					<a href="/logout" class="block h-full w-full" onclick={() => invalidateAll()}>Log Out</a>
-				</li>
-			</ul>
+		<div class="ml-auto flex items-center gap-4">
+			<div class="avatar avatar-online before:w-2 before:h-2" class:before:bg-pink-500={notificationsOn} class:before:bg-black={!notificationsOn}>
+				<div class="w-8 rounded-full">
+					<img src={NotificationIcon} alt="notifications" />
+				</div>
+			</div>
+			<!-- <div class="avatar avatar-offline">
+				<div class="w-24 rounded-full">
+					<img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+				</div>
+			</div> -->
+			<div class="avatar dropdown dropdown-hover dropdown-end relative ml-auto w-12 cursor-pointer">
+				<img
+					class="rounded-xl"
+					src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+					alt="User avatar"
+				/>
+				<ul class="menu dropdown-content rounded-box bg-base-100 z-1 w-52 p-2 shadow-sm">
+					<li><a href={`/users/${data.user.username}`} class="block h-full w-full">Profile</a></li>
+					<li><a href="/settings" class="block h-full w-full">Settings</a></li>
+					<li>
+						<a href="/logout" class="block h-full w-full" onclick={() => invalidateAll()}>Log Out</a
+						>
+					</li>
+				</ul>
+			</div>
 		</div>
 	{/if}
 </nav>
@@ -137,10 +154,10 @@
 	{@render children()}
 </main> -->
 
-<main class="flex flex-1 items-center justify-center">
+<main class="mb-16 flex flex-1 items-center justify-center">
 	{@render children()}
 </main>
 
-<footer class="w-full bg-slate-700 p-4 text-center text-white fixed bottom-0">
-	<p>© 2025 - MatchPoint - Todos los derechos reservados</p>
+<footer class="relative bottom-0 w-full bg-slate-700 p-4 text-center text-white">
+	<p>© 2025 - MatchPoint - Ningún derecho reservado realmente</p>
 </footer>

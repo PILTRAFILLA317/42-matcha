@@ -6,13 +6,6 @@ const API_KEY = env.IPGEOLOCATION_API_KEY;
 
 export const GET = async ({ request }) => {
   try {
-    // Obtén la IP del cliente desde los encabezados
-    // const clientIp =
-    //   request.headers.get('x-forwarded-for') || // Si usas un proxy/CDN
-    //   request.headers.get('cf-connecting-ip') || // Cloudflare
-    //   request.headers.get('x-real-ip') || // Otros proxies
-    //   '';
-
     // Si no puedes obtener la IP del cliente desde los encabezados, puedes usar la IP del servidor
     const clientIp = await fetch('https://api.ipgeolocation.io/getip').then((res) => res.json()).then((data) => data.ip);
     console.log('clientIp', clientIp);

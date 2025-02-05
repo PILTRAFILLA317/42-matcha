@@ -11,7 +11,7 @@ export const load: PageServerLoad = async (event) => {
     const currentUser = await users.getUser(String(event.params.user));
     if (!currentUser)
         return {user: event.locals.user};
-    return { user: event.locals.user, currentUser};
+    return { user: event.locals.user, currentUser, session: event.locals.session};
 };
 
 export const actions: Actions = {
