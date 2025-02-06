@@ -6,6 +6,11 @@ export async function getAllTags() {
     return tags;
 }
 
+export async function getUsernameById(userId: number) {
+    const username = await db`SELECT username FROM users WHERE id = ${userId}`;
+    return username;
+}
+
 function userDistanceCalc(currentUser, registeredUser) {
     if (
       currentUser &&
@@ -41,13 +46,6 @@ function userDistanceCalc(currentUser, registeredUser) {
 export async function userResearch(minAge: number, maxAge: number, minFR: number, maxFR: number, distance: number, tags: number[], currentUser: User) {
     const users = await db`SELECT * FROM users`;
     const usersWithLocation = users.filter(user => user.location && user.username !== currentUser.username);
-    // usersWithLocation.forEach(user => {
-    //     console.log('USER:', user);
-    //     console.log('AGE:', user.age, 'MINAGE:', minAge, 'MAXAGE:', maxAge);
-    //     console.log('FAME RATING:', user.total_likes, 'MINFR:', minFR, 'MAXFR:', maxFR);
-    //     console.log('DISTANCE:', userDistanceCalc(user.location, currentUser.location), 'MAXDISTANCE:', distance);
-    //     console.log('TAGS:', user.user_preferences, 'TAGS:', tags);
-    // });
 
 
     const filteredUsers = usersWithLocation.filter(user => 

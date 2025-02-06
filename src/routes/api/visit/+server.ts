@@ -1,6 +1,7 @@
 import postgres from 'postgres';
 import { json } from '@sveltejs/kit';
 import { env } from '$env/dynamic/private';
+import { getUsernameById } from '$lib/server/utils';
 if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 
 const sql = postgres(env.DATABASE_URL, {
@@ -17,7 +18,9 @@ export async function POST({ request }) {
     const type = 'visit';
 
     // Inserta la notificación en la base de datos
-    const message = `${visitedUserId} ha visto tu perfil`;
+    const visitedUsername = await getUsernameById(visitedUserId);
+    console.log('visitedUsername:', visitedUsername[0].username);
+    const message = `${visitedUsername[0].username} ha visto tu perfil`;
 
     await sql`
     INSERT INTO notifications (user_id, sender_id, type, message)
@@ -25,10 +28,16 @@ export async function POST({ request }) {
   `;
 
     // Notificación en el canal específico del usuario
+//     console.log('userId:', userId);
+//     console.log('message:', message);
 //     await sql`
-//     SELECT pg_notify('user_notifications_' || ${userId}, json_build_object(
-//       'message', ${message}
-//     )::text);
+//     SELECT pg_notify(
+//       'user_notifications_' || ${userId}, 
+//       json_build_object(
+//         'message', ${message}::text,
+//         'type', ${type}::text
+//       )::text
+//     );
 //   `;
 
     return json({ success: true });

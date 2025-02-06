@@ -6,9 +6,16 @@
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
 	import { locationStore } from '$lib/stores/location';
 	import NotificationIcon from '/src/assets/notifications.svg';
-	let evenSource;
+	import { parse } from 'svelte/compiler';
+	let eventSource: EventSource;
 
-	let notificationsOn = true;
+	type Notification = {
+		message: string;
+		type: string;
+	};
+
+	let notifications = $state<Notification[]>([]);
+	let notificationsOn = $state(false);
 
 	// Obtener ubicación al cargar la página
 	async function getLocation() {
@@ -103,9 +110,75 @@
 		}
 	}
 
+	function parseNotification(jsonString: string) {
+		try {
+			const data = JSON.parse(jsonString);
+
+			if (typeof data.message !== 'string' || typeof data.type !== 'string') {
+				throw new Error('Formato inválido de notificación');
+			}
+
+			return {
+				message: data.message,
+				type: data.type
+			};
+		} catch (error) {
+			console.error('Error al parsear la notificación:', error);
+			return null;
+		}
+	}
+
 	// Ejecutar la lógica al cargar la página
 	onMount(() => {
+		console.log('🚀 Iniciando...');
 		getLocation();
+		// 🚨 Inicia una conexión SSE hacia el backend
+		// if (eventSource) {
+		// 	eventSource.close(); // Cierra la conexión anterior antes de abrir otra
+		// }
+		try {
+			if (eventSource) {
+				console.log('🚨 Cerrando conexión anterior...');
+				eventSource.close();
+			}
+
+			console.log('🚀 Iniciando conexión SSE...');
+			eventSource = new EventSource(`/api/notifications/stream`);
+			// eventSource = new EventSource(`/api/notifications/stream`);
+
+			console.log('🚀 Conexión establecida con el servidor de eventos.');
+
+			if (!eventSource) {
+				console.error('❌ No se pudo establecer la conexión con el servidor de eventos.');
+				return;
+			}
+
+			eventSource.onopen = () => {
+				console.log('✅ Conexión establecida con SSE.');
+			};
+
+			eventSource.onmessage = (event) => {
+				try {
+					const parsedData = JSON.parse(event.data);
+					const parse = parseNotification(parsedData);
+					const notification: Notification = {
+						message: parse?.message,
+						type: parse?.type
+					};
+					notifications = [...notifications, notification];
+					notificationsOn = true;
+				} catch (err) {
+					console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
+				}
+			};
+
+			eventSource.onerror = (error) => {
+				console.error('❌ ERROR1 en SSE:', error);
+				eventSource.close();
+			};
+		} catch (error) {
+			console.error('❌ ERROR2 en SSE:', error);
+		}
 	});
 </script>
 
@@ -121,9 +194,30 @@
 	{/if}
 	{#if data.user?.userId}
 		<div class="ml-auto flex items-center gap-4">
-			<div class="avatar avatar-online before:w-2 before:h-2" class:before:bg-pink-500={notificationsOn} class:before:bg-black={!notificationsOn}>
-				<div class="w-8 rounded-full">
-					<img src={NotificationIcon} alt="notifications" />
+			<div class="dropdown dropdown-end relative">
+				<div
+					tabindex="-1"
+					role="button"
+					class="avatar avatar-online before:h-2 before:w-2"
+					class:before:bg-pink-500={notificationsOn}
+					class:before:bg-black={!notificationsOn}
+				>
+					<div tabindex="-1" class="dropdown-content card card-sm bg-base-100 z-1 w-64 shadow-md">
+						<div class="card-body">
+							{#if notifications.length == 0}
+								<p class="text-center text-xl text-gray-500">No tienes notificaciones.</p>
+							{:else}
+								{#each notifications as notification}
+									<div class="flex items-center gap-2">
+										<p class="text-lg">{notification.message}</p>
+									</div>
+								{/each}
+							{/if}
+						</div>
+					</div>
+					<div class="w-8 rounded-full">
+						<img src={NotificationIcon} alt="notifications" />
+					</div>
 				</div>
 			</div>
 			<!-- <div class="avatar avatar-offline">

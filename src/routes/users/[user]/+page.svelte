@@ -107,6 +107,7 @@
 	onMount(async () => {
     // console.log('Session:', data);
 	if (currentUser?.username != registeredUser?.username){
+		console.log('Visita');
 		await profileVisit();
 	}
     await fetchLocation();
