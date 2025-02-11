@@ -19,8 +19,7 @@ export async function POST({ request }) {
 
     // Inserta la notificación en la base de datos
     const visitedUsername = await getUsernameById(visitedUserId);
-    console.log('visitedUsername:', visitedUsername[0].username);
-    const message = `${visitedUsername[0].username} ha visto tu perfil`;
+    const message = `${visitedUsername[0].username}`;
 
     await sql`
     INSERT INTO notifications (user_id, sender_id, type, message)

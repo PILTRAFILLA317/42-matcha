@@ -17,6 +17,26 @@
 	let notifications = $state<Notification[]>([]);
 	let notificationsOn = $state(false);
 
+	async function getUnreadNotifications() {
+		console.log('Obteniendo notificaciones no leídas...');
+		try {
+			const res = await fetch(`/api/notifications/get-unread?userId=${data.user?.userId}`);
+			const resData = await res.json();
+
+			if (res.ok) {
+				notifications = resData;
+				if (resData.length > 0) {
+					notificationsOn = true;
+				}
+				return resData;
+			} else {
+				console.error('Error al obtener las notificaciones no leídas.');
+			}
+		} catch (err) {
+			console.error('Error al obtener las notificaciones no leídas.');
+		}
+	}
+
 	// Obtener ubicación al cargar la página
 	async function getLocation() {
 		if (data.user?.location) {
@@ -49,6 +69,13 @@
 			console.log('Geolocation is not supported by this browser.');
 			await getLocationByIP(); // Respaldo con IP
 		}
+	}
+
+	function redirectToNotifications() {
+		notificationsOn = false;
+		notifications = [];
+		window.location.href = '/notifications';
+		console.log('Redirigiendo a notificaciones...');
 	}
 
 	// Respaldo: Ubicación por IP
@@ -130,6 +157,7 @@
 
 	// Ejecutar la lógica al cargar la página
 	onMount(() => {
+		getUnreadNotifications();
 		console.log('🚀 Iniciando...');
 		getLocation();
 		// 🚨 Inicia una conexión SSE hacia el backend
@@ -194,31 +222,35 @@
 	{/if}
 	{#if data.user?.userId}
 		<div class="ml-auto flex items-center gap-4">
-			<div class="dropdown dropdown-end relative">
-				<div
-					tabindex="-1"
-					role="button"
+			<div class="dropdown dropdown-end">
+				<button
+					type="button"
 					class="avatar avatar-online before:h-2 before:w-2"
 					class:before:bg-pink-500={notificationsOn}
 					class:before:bg-black={!notificationsOn}
 				>
-					<div tabindex="-1" class="dropdown-content card card-sm bg-base-100 z-1 w-64 shadow-md">
-						<div class="card-body">
+					<div class="dropdown-content card card-sm bg-base-100 z-10 max-h-48 w-96 shadow-md">
+						<div class="card-body max-h-36 overflow-y-auto">
 							{#if notifications.length == 0}
-								<p class="text-center text-xl text-gray-500">No tienes notificaciones.</p>
+								<p class="text-center text-xl text-gray-500">No tienes nuevas notificaciones.</p>
 							{:else}
 								{#each notifications as notification}
-									<div class="flex items-center gap-2">
-										<p class="text-lg">{notification.message}</p>
+									<div class="flex flex-row items-center justify-start gap-2">
+										<text class="flex flex-row text-start text-base gap-1">
+											<p>{notification.message}</p>
+											<p>{notification.type === 'visit' ? 'ha visto tu perfil 👀' : ''}</p>
+											<text />
+										</text>
 									</div>
 								{/each}
 							{/if}
 						</div>
+						<div class="btn btn-primary w-xs" role="button" tabindex="0" onclick={redirectToNotifications}>Ver todas</div>
 					</div>
 					<div class="w-8 rounded-full">
 						<img src={NotificationIcon} alt="notifications" />
 					</div>
-				</div>
+				</button>
 			</div>
 			<!-- <div class="avatar avatar-offline">
 				<div class="w-24 rounded-full">
