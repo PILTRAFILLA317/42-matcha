@@ -16,10 +16,10 @@
 	<a href="/">
 		<img src="/src/assets/logo.png" alt="MatchPoint" class="h-16 w-auto" />
 	</a>
-	{#if !data.user?.id}
+	{#if !data.user?.userId}
 		<a class="relative ml-auto" href="/auth/login">Login</a>
 	{/if}
-	{#if data.user?.id}
+	{#if data.user?.userId}
 		<div class="avatar relative ml-auto dropdown dropdown-hover dropdown-end w-12 cursor-pointer">
 				<img
 					class="rounded-xl "

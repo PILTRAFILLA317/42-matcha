@@ -71,6 +71,4 @@ A user must be notified in real-time6 of the following events:
 
 ## TO-DO
 
-- Devolver errores al front cuando haya errores en la edicion/creacion de usuario
-- Dejar no horrible la creacion de usuario/edicion/registro
-- Hacer lo de email de confirmacion
+<a href="https://www.flaticon.com/free-icons/message" title="message icons">Message icons created by Freepik - Flaticon</a>
