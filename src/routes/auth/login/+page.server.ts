@@ -1,5 +1,4 @@
-import { hash, verify } from '@node-rs/argon2';
-import { encodeBase32LowerCase } from '@oslojs/encoding';
+import { verify } from '@node-rs/argon2';
 import { fail, redirect } from '@sveltejs/kit';
 import * as auth from '$lib/server/auth';
 import { db } from '$lib/server/db';
@@ -27,6 +26,7 @@ export const actions: Actions = {
 		}
 		const [existingUser] =
 			await db`SELECT * FROM public.users WHERE username = ${String(username)}`;
+		console.log('existingUser: ', existingUser);
 		if (!existingUser) {
 			return fail(401, { message: 'Incorrect username' });
 		}
@@ -36,10 +36,10 @@ export const actions: Actions = {
 			outputLen: 32,
 			parallelism: 1
 		});
-		console.log('Valid password');
 		if (!validPassword) {
 			return fail(401, { message: 'Incorrect password' });
 		}
+		console.log('semen');
 
 		const sessionToken = auth.generateSessionToken();
 		const session = await auth.createSession(sessionToken, existingUser.id);

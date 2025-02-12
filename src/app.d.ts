@@ -2,30 +2,35 @@
 // for information about these interfaces
 declare global {
 	namespace App {
+		// interface Locals {
+		// 	user: import('$lib/server/auth').SessionValidationResult['user'];
+		// 	session: import('$lib/server/auth').SessionValidationResult['session'];
+		// }
 		interface Locals {
-			user: import('$lib/server/auth').SessionValidationResult['user'];
-			session: import('$lib/server/auth').SessionValidationResult['session'];
+			user: User | null;
+			session: Session | null;
 		}
 	}
 
-	enum sexual_preferences{
+	enum sexualPreferences{
 		Heterosexual,
 		Homosexual,
 		Bisexual,
 	}
 
 	interface User{
-		userId: number;
+		userId: string;
 		email: string;
 		username: string;
 		firstName: string;
 		lastName: string;
 		gender: boolean?;
-		sexual_preferences: sexual_preferences?;
+		sexualPreferences: sexual_preferences?;
 		totalLikes: number?;
-		user_preferences: Array<number>?;
+		userPreferences: Array<number>?;
 		location: Array<float>?;
 		bio: string?;
+		verified: boolean = false,
 	}
 
 	interface Session{

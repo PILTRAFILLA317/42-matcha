@@ -280,7 +280,7 @@
 					{#if data.user.user_preferences}
 						{#each data.user.user_preferences as preference}
 							<div
-								class="badge badge-secondary h-8 w-auto text-white {data.registeredUser.user_preferences.includes(
+								class="badge badge-secondary h-8 w-auto text-white {data.registeredUser.userPreferences.includes(
 									preference
 								)
 									? ''

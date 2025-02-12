@@ -67,3 +67,8 @@ A user must be notified in real-time6 of the following events:
 - When the user’s profile has been viewed.</br>
 - When the user receives a message.</br>
 - When “liked” user also “likes” the user back. • When a connected user “unlikes” the user.</br>
+
+
+## TO-DO
+
+<a href="https://www.flaticon.com/free-icons/message" title="message icons">Message icons created by Freepik - Flaticon</a>

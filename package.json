@@ -34,6 +34,7 @@
 		"@tailwindcss/vite": "^4.0.0",
 		"add": "^2.0.6",
 		"melt": "^0.7.0",
+		"node-mailjet": "^6.0.6",
 		"oslo": "^1.2.1",
 		"postgres": "^3.4.5",
 		"svelte-5-range-slider": "^0.0.6",

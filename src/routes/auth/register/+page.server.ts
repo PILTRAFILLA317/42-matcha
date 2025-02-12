@@ -4,7 +4,7 @@ import * as auth from '$lib/server/auth';
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import { validateUsername } from '$lib/helpers/validators';
 import { hash } from '@node-rs/argon2';
-import { generateUserId } from '$lib/helpers/user';
+import { generateUserId, sendVerificationEmail } from '$lib/helpers/user';
 import { db } from '$lib/server/db';
 
 export const load: PageServerLoad = async (event) => {
@@ -23,7 +23,17 @@ export const actions: Actions = {
 		const lastname = formData.get('lastname');
 		const password = formData.get('password');
 		const repeatpassword = formData.get('repeatpassword');
-
+		console.log('Registering user', {
+			email,
+			username,
+			firstname,
+			lastname,
+			password,
+			repeatpassword
+		});
+		if (!email) {
+			return fail(400, { message: 'Email missing' });
+		}
 		if (!validateUsername(username)) {
 			return fail(400, { message: 'Invalid username' });
 		}
@@ -33,9 +43,7 @@ export const actions: Actions = {
 		//To-do validar el resto de campos
 		const userId = generateUserId();
 		if (typeof password !== 'string') {
-			//return fail(400, { message: 'Invalid password' });
-			alert('Invalid password');
-			throw new Error('Invalid password');
+			return fail(400, { message: 'Invalid password' });
 		}
 		const passwordHash = await hash(password, {
 			memoryCost: 19456,
@@ -45,15 +53,12 @@ export const actions: Actions = {
 		});
 
 		try {
-			console.log('Inserting user', { id: userId, username, passwordHash });
-
 			// Insertar usuario en la base de datos
 			await db`
 				INSERT INTO users (id, email, username, password, first_name, last_name)
 				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firstname)}, ${String(lastname)})
 				ON CONFLICT (id) DO NOTHING
 			`;
-
 			// Crear sesión
 			const sessionToken = auth.generateSessionToken();
 			const session: Session = await auth.createSession(sessionToken, userId);
@@ -63,11 +68,20 @@ export const actions: Actions = {
 				INSERT INTO sessions (id, user_id, expires_at)
 				VALUES (${sessionToken}, ${userId}, ${session.expiresAt.toISOString()})
 			`;
+			const verify_id = generateUserId();
+			if (email === null) return fail(401, { message: 'Email is required' });
+			sendVerificationEmail(email as string, verify_id);
+			await db`
+				INSERT INTO verification (verify_id, user_id)
+				VALUES (${verify_id}, ${userId})
+			`;
 
 			// Configurar la cookie de sesión
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+			// return ({ status: 201, message: 'User registered' });
 		} catch (error) {
 			console.error('Error inserting user:', error);
+			return fail(400, { message: 'Unexpected error' });
 		}
 		return redirect(302, '/');
 	}
