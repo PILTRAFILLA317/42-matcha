@@ -1,11 +1,33 @@
 import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { db } from '$lib/server/db';
+
+async function getMatches(userId: string){
+    try{
+        let usernameList: Array<string> = [];
+        const response = await db`
+            SELECT liked_users FROM users WHERE id = ${userId}
+        `;
+        const likedUsers = response[0].liked_users;
+        for (let i = 0; i < likedUsers.length; i++){
+            let username = await db`
+                SELECT username FROM users WHERE id = ${likedUsers[i]}
+            `;
+            usernameList.push(username[0].username);
+        }
+        return usernameList;
+    }catch(error){
+        console.log('error: ', error);
+        return [];
+    }
+}
 
 export const load = (async (event) => {
-        if (!event.locals.user) {
-            return redirect(302, '/');
-        }
-    return { user: event.locals.user };
+    if (!event.locals.user) {
+        return redirect(302, '/');
+    }
+    const matchedUsersList = await getMatches(event.locals.user!.userId);
+    return { user: event.locals.user, matchList: matchedUsersList };
 }) satisfies PageServerLoad;
 
 
