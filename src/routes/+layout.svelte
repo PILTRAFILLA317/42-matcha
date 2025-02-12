@@ -1,4 +1,5 @@
 <script lang="ts">
+/// <reference types="node" />
 	import '../app.css';
 	import type { LayoutServerData } from './$types';
 	import { invalidateAll } from '$app/navigation';
@@ -6,8 +7,9 @@
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
 	import { locationStore } from '$lib/stores/location';
 	import NotificationIcon from '/src/assets/notifications.svg';
-	import { parse } from 'svelte/compiler';
+
 	let eventSource: EventSource;
+	let reconnectAttempts = 0;
 
 	type Notification = {
 		message: string;
@@ -71,9 +73,27 @@
 		}
 	}
 
-	function redirectToNotifications() {
+	async function setReadNotifications() {
+		console.log('Obteniendo todas las notificaciones...');
+		try {
+			const res = await fetch(`/api/notifications/set-read?userId=${data.user?.userId}`);
+			const resData = await res.json();
+
+			if (res.ok) {
+				// notifications = resData;
+				return;
+			} else {
+				console.error('Error al obtener las notificaciones.');
+			}
+		} catch (err) {
+			console.error('Error al obtener las notificaciones.');
+		}
+	}
+
+	async function redirectToNotifications() {
 		notificationsOn = false;
 		notifications = [];
+		await setReadNotifications();
 		window.location.href = '/notifications';
 		console.log('Redirigiendo a notificaciones...');
 	}
@@ -93,8 +113,6 @@
 					error: null
 				};
 				updateLocation(location);
-				// locationStore.set(location);
-				// localStorage.setItem('user-location', JSON.stringify(location)); // Guarda en localStorage
 			} else {
 				console.log('Error al obtener la ubicación por IP.');
 			}
@@ -155,24 +173,15 @@
 		}
 	}
 
-	// Ejecutar la lógica al cargar la página
-	onMount(() => {
-		getUnreadNotifications();
-		console.log('🚀 Iniciando...');
-		getLocation();
-		// 🚨 Inicia una conexión SSE hacia el backend
-		// if (eventSource) {
-		// 	eventSource.close(); // Cierra la conexión anterior antes de abrir otra
-		// }
+	async function startSSERequest() {
 		try {
 			if (eventSource) {
 				console.log('🚨 Cerrando conexión anterior...');
 				eventSource.close();
 			}
 
-			console.log('🚀 Iniciando conexión SSE...');
+			// console.log('🚀 Iniciando conexión SSE...');
 			eventSource = new EventSource(`/api/notifications/stream`);
-			// eventSource = new EventSource(`/api/notifications/stream`);
 
 			console.log('🚀 Conexión establecida con el servidor de eventos.');
 
@@ -181,13 +190,19 @@
 				return;
 			}
 
-			eventSource.onopen = () => {
-				console.log('✅ Conexión establecida con SSE.');
-			};
+			// eventSource.onopen = () => {
+			// 	console.log('✅ Conexión establecida con SSE.');
+			// };
 
 			eventSource.onmessage = (event) => {
+				reconnectAttempts = 0;
 				try {
+					if (event.data == "connected") {
+						console.log('✅ Conexión establecida con el servidor de eventos.');
+						return;
+					}
 					const parsedData = JSON.parse(event.data);
+					console.log('📩 Mensaje recibido:', parsedData);
 					const parse = parseNotification(parsedData);
 					const notification: Notification = {
 						message: parse?.message,
@@ -203,10 +218,25 @@
 			eventSource.onerror = (error) => {
 				console.error('❌ ERROR1 en SSE:', error);
 				eventSource.close();
+				const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
+				reconnectAttempts++;
+				setTimeout(startSSERequest, delay);
 			};
 		} catch (error) {
 			console.error('❌ ERROR2 en SSE:', error);
 		}
+	}
+
+	// Ejecutar la lógica al cargar la página
+	onMount(() => {
+		getUnreadNotifications();
+		console.log('🚀 Iniciando...');
+		getLocation();
+		startSSERequest();
+		return () => {
+            eventSource?.close();
+            reconnectAttempts = 0;
+        };
 	});
 </script>
 
@@ -236,7 +266,7 @@
 							{:else}
 								{#each notifications as notification}
 									<div class="flex flex-row items-center justify-start gap-2">
-										<text class="flex flex-row text-start text-base gap-1">
+										<text class="flex flex-row gap-1 text-start text-base">
 											<p>{notification.message}</p>
 											<p>{notification.type === 'visit' ? 'ha visto tu perfil 👀' : ''}</p>
 											<text />
@@ -245,7 +275,14 @@
 								{/each}
 							{/if}
 						</div>
-						<div class="btn btn-primary w-xs" role="button" tabindex="0" onclick={redirectToNotifications}>Ver todas</div>
+						<div
+							class="btn btn-primary w-xs"
+							role="button"
+							tabindex="0"
+							onclick={redirectToNotifications}
+						>
+							Ver todas
+						</div>
 					</div>
 					<div class="w-8 rounded-full">
 						<img src={NotificationIcon} alt="notifications" />

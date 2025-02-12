@@ -10,9 +10,6 @@ const sql = postgres(env.DATABASE_URL, {
 });
 
 export async function POST({ request }) {
-    // console.log('request:', request);
-    // console.log('request.body:', request.body);
-    // console.log('request.body.userId:', request.body.userId);
     const { visitedUserId, userId } = await request.json();
 
     const type = 'visit';
