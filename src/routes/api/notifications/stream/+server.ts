@@ -1,7 +1,6 @@
 // src/routes/api/sse/+server.ts
 import { db } from '$lib/server/db';
 import type { RequestHandler } from './$types';
-import { dev } from '$app/environment';
 
 // Track active listeners per user
 const activeListeners = new Map<
@@ -21,7 +20,6 @@ async function setupGlobalListener() {
   console.log('Global listener not set up, setting up now');
 
   globalListener = db.listen(`user_notifications`, (payload) => {
-    // const userId = channel.replace('user_notifications_', '');
     const userId = JSON.parse(payload).userID;
     const listener = activeListeners.get(userId);
 
