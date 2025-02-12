@@ -1,69 +1,78 @@
 // src/routes/api/sse/+server.ts
-import postgres from 'postgres';
-import type { RequestHandler } from './$types';
-import { env } from '$env/dynamic/private';
-import { dev } from '$app/environment';
-if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
 import { db } from '$lib/server/db';
+import type { RequestHandler } from './$types';
+import { dev } from '$app/environment';
 
-// Track active connections
-const activeConnections = new Set<postgres.Sql>();
+// Track active listeners per user
+const activeListeners = new Map<
+  string,
+  {
+    controller: ReadableStreamDefaultController;
+    unsubscribe: () => Promise<void>;
+  }
+>();
+
+// Single global listener for all notifications
+let globalListener: Promise<void> | null = null;
+
+async function setupGlobalListener() {
+  console.log('Setting up global listener');
+  if (globalListener) return globalListener;
+  console.log('Global listener not set up, setting up now');
+
+  globalListener = db.listen(`user_notifications`, (payload) => {
+    // const userId = channel.replace('user_notifications_', '');
+    const userId = JSON.parse(payload).userID;
+    const listener = activeListeners.get(userId);
+
+    if (listener) {
+      const encoder = new TextEncoder();
+      listener.controller.enqueue(
+        encoder.encode(`data: ${JSON.stringify(payload)}\n\n`)
+      );
+    }
+  }).then(unlisten => {
+    return () => unlisten().catch(console.error);
+  });
+
+  return globalListener;
+}
 
 export const GET: RequestHandler = async ({ locals }) => {
-  // const sql = postgres(env.DATABASE_URL, {
-  //   ssl: 'require',
-  //   max: 1,
-  //   connect_timeout: 20,
-  //   idle_timeout: 60
-  // });
+  const userId = locals.user?.userId;
+  if (!userId) return new Response('Unauthorized', { status: 401 });
 
-  activeConnections.add(db);
-  if (dev) console.log('Active connections:', activeConnections.size);
+  // Set up global listener if not already running
+  await setupGlobalListener();
 
-  const stream = new ReadableStream({
-    async start(controller) {
-      const encoder = new TextEncoder();
-      let unsubscribe: () => Promise<void>;
+  return new Response(
+    new ReadableStream({
+      async start(controller) {
+        const encoder = new TextEncoder();
 
-      try {
-        const userId = locals.user?.userId;
+        // Send initial connection message
         controller.enqueue(encoder.encode('data: connected\n\n'));
-        unsubscribe = db.listen(`user_notifications_${userId}`, (payload) => {
-          console.log('Sending payload:', payload);
-          controller.enqueue(`data: ${JSON.stringify(payload)}\n\n`);
-        }
-        );
 
-        // HMR cleanup
+        // Store controller reference
+        activeListeners.set(userId, { controller, unsubscribe: () => Promise.resolve() });
+
+        // Cleanup on HMR
         if (import.meta.hot) {
-          import.meta.hot.dispose(async () => {
-            console.log('Disposing SSE connection');
-            unsubscribe?.();
-            activeConnections.delete(db);
-            // await db.end();
+          import.meta.hot.dispose(() => {
+            activeListeners.delete(userId);
           });
         }
-      } catch (err) {
-        console.error('SSE Error:', err);
-        controller.close();
+      },
+      cancel() {
+        activeListeners.delete(userId);
       }
-
-      return async () => {
-        unsubscribe?.();
-        activeConnections.delete(db);
-        // await db.end();
-      };
-    },
-    cancel() {
-      activeConnections.delete(db);
-      // db.end().catch(() => { });
+    }),
+    {
+      headers: {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+      }
     }
-  });
-
-  return new Response(stream, {
-    headers: {
-      'Content-Type': 'text/event-stream',
-      'Cache-Control': 'no-cache'
-    }
-  });
+  );
 };
