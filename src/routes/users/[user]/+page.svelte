@@ -4,7 +4,7 @@
 	import HeartEmptyIcon from '/src/assets/heart-empty.svg';
 	import { onMount } from 'svelte';
 
-	export let data;
+	const { data } = $props();
 
 	let currentUser = data.currentUser;
 
@@ -12,12 +12,101 @@
 
 	let userDistance = userDistanceCalc();
 
+	let isLiked = $state(false);
+	let isMatched = $state(false);
+
+	let eventSource: EventSource;
+	let reconnectAttempts = 0;
+
+	type Notification = {
+		message: string;
+		type: string;
+	};
+
+	let notifications = $state<Notification[]>([]);
+	let notificationsOn = $state(false);
+
+	async function checkIfUserLiked() {
+		const response = await fetch('/api/check-like', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				likedUserUsername: currentUser?.username
+			})
+		});
+		const result = await response.json();
+		isLiked = result;
+	}
+
+	async function areMatched() {
+		const response = await fetch('/api/match', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userId: currentUser?.userId,
+				matchedUser: registeredUser.username
+			})
+		});
+		const result = await response.json();
+		console.log(result);
+	}
+
+	async function likeUser() {
+		const response = await fetch('/api/like-user', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				likedUserUsername: currentUser?.username,
+				liked: true
+			})
+		});
+		const result = await response.json();
+		isLiked = !isLiked;
+		console.log(result);
+	}
+
+	async function blockUser() {
+		const response = await fetch('/api/block', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userId: currentUser?.userId,
+				blockedUserId: registeredUser.userId
+			})
+		});
+		const result = await response.json();
+		console.log(result);
+	}
+
+	async function reportUser() {
+		const response = await fetch('/api/report', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				userId: currentUser?.userId,
+				reportedUserId: registeredUser.userId
+			})
+		});
+		const result = await response.json();
+		console.log(result);
+	}
+
 	function userDistanceCalc() {
 		if (currentUser && currentUser.location && registeredUser && registeredUser.location) {
 			const [lat1, lon1] = currentUser.location; // Lat/Lon del usuario actual
 			const [lat2, lon2] = registeredUser.location; // Lat/Lon del usuario registrado
 
-			const toRadians = (degrees) => (degrees * Math.PI) / 180; // Conversión a radianes
+			const toRadians = (degrees: number) => (degrees * Math.PI) / 180; // Conversión a radianes
 
 			const R = 6371; // Radio de la Tierra en kilómetros
 			const dLat = toRadians(lat2 - lat1); // Diferencia de latitudes en radianes
@@ -54,7 +143,6 @@
 				});
 				const data = await res.json();
 				if (res.ok) {
-					console.log(data);
 					return data.city;
 				}
 			} catch (error) {
@@ -64,27 +152,10 @@
 		return 'No location';
 	}
 
-	let currentUserLocation: string | undefined;
+	let currentUserLocation = $state<string | undefined>(undefined);
 	async function fetchLocation() {
 		currentUserLocation = await getLocationAddress();
 	}
-
-	// async function likeUser() {
-	// 	const res = await fetch('../api/like', {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json'
-	// 		},
-	// 		body: JSON.stringify({
-	// 			userId: currentUser.userId,
-	// 			likedUserId: registeredUser.userId
-	// 		})
-	// 	});
-	// 	const data = await res.json();
-	// 	if (res.ok) {
-	// 		console.log(data);
-	// 	}
-	// }
 
 	async function profileVisit() {
 		console.log('Visita: ', currentUser?.userId, registeredUser.userId);
@@ -104,15 +175,82 @@
 		}
 	}
 
-	onMount(async () => {
-    // console.log('Session:', data);
-	if (currentUser?.username != registeredUser?.username){
-		console.log('Visita');
-		await profileVisit();
-	}
-    await fetchLocation();
-	});
+	function parseNotification(jsonString: string) {
+		try {
+			const data = JSON.parse(jsonString);
 
+			if (typeof data.message !== 'string' || typeof data.type !== 'string') {
+				throw new Error('Formato inválido de notificación');
+			}
+
+			return {
+				message: data.message,
+				type: data.type
+			};
+		} catch (error) {
+			console.error('Error al parsear la notificación:', error);
+			return null;
+		}
+	}
+
+	async function startSSERequest() {
+		try {
+			if (eventSource) {
+				eventSource.close();
+			}
+
+			eventSource = new EventSource(`/api/notifications/stream`);
+
+			if (!eventSource) {
+				console.error('❌ No se pudo establecer la conexión con el servidor de eventos.');
+				return;
+			}
+
+			eventSource.onmessage = (event) => {
+				reconnectAttempts = 0;
+				try {
+					if (event.data == 'connected') {
+						return;
+					}
+					const parsedData = JSON.parse(event.data);
+					const parse = parseNotification(parsedData);
+					// const notification: Notification = {
+					// 	message: parse?.message,
+					// 	type: parse?.type
+					// };
+					// notifications = [...notifications, notification];
+					// notificationsOn = true;
+					console.log('🟢 Notificaciones:', event.data);
+					if (parse?.type == 'match') {
+						isMatched = true;
+					}
+				} catch (err) {
+					console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
+				}
+			};
+
+			eventSource.onerror = (error) => {
+				console.error('❌ ERROR1 en SSE:', error);
+				eventSource.close();
+				const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
+				reconnectAttempts++;
+				setTimeout(startSSERequest, delay);
+			};
+		} catch (error) {
+			console.error('❌ ERROR2 en SSE:', error);
+		}
+	}
+
+	onMount(async () => {
+		// console.log('Session:', data);
+		if (currentUser?.username != registeredUser?.username) {
+			console.log('Visita');
+			await profileVisit();
+		}
+		await fetchLocation();
+		await checkIfUserLiked();
+		// startSSERequest();
+	});
 </script>
 
 {#if !currentUser}
@@ -223,7 +361,7 @@
 							<!-- <p class="text-2xl mr-3">Hombre heterosexual</p> -->
 							<p class="mr-3 text-2xl">
 								{currentUser.gender ? 'Hombre' : 'Mujer'}
-								{currentUser.sexual_preferences}
+								{currentUser.sexualPreferences}
 							</p>
 						</div>
 					</div>
@@ -319,10 +457,10 @@
 					<h2 class="text-2xl font-bold">Intereses</h2>
 				</div>
 				<div class="flex flex-wrap gap-3">
-					{#if currentUser.user_preferences}
-						{#each currentUser.user_preferences as preference}
+					{#if currentUser.userPreferences}
+						{#each currentUser.userPreferences as preference}
 							<div
-								class="badge badge-secondary h-8 w-auto text-white {registeredUser.user_preferences.includes(
+								class="badge badge-secondary h-8 w-auto text-white {registeredUser?.userPreferences?.includes(
 									preference
 								)
 									? ''
@@ -337,13 +475,15 @@
 			<div>
 				{#if currentUser.userId != registeredUser.userId}
 					<div class="mt-4 flex items-end justify-end">
-						<button class="btn btn-accent mr-2 grow rounded-3xl text-white">
-							<img src={HeartEmptyIcon} alt="Like Icon" class="w-10" />
-							Like!
+						<button onclick={likeUser} class="btn btn-accent mr-2 grow rounded-3xl text-white">
+							<img src={isLiked ? HeartFillIcon : HeartEmptyIcon} alt="Like Icon" class="w-10" />
+							{isLiked ? 'Liked!' : 'Like!'}
 						</button>
-						<button class="btn btn-secondary flex items-center justify-center rounded-3xl">
-							<img src={ChatIcon} alt="Chat Icon" class="w-8" />
-						</button>
+						{#if isMatched}
+							<button class="btn btn-secondary flex items-center justify-center rounded-3xl">
+								<img src={ChatIcon} alt="Chat Icon" class="w-8" />
+							</button>
+						{/if}
 					</div>
 				{/if}
 			</div>

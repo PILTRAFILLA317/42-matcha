@@ -20,6 +20,4 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	event.locals.session = session;
 	return resolve(event);
 };
-
-console.log('HOLAAAAA');
 export const handle: Handle = handleAuth;

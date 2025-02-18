@@ -26,6 +26,8 @@ declare global {
 		lastName: string;
 		gender: boolean?;
 		sexualPreferences: sexual_preferences?;
+		location: Array<float>?;
+		age: number?;
 		totalLikes: number?;
 		userPreferences: Array<number>?;
 		location: Array<float>?;

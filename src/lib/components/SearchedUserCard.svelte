@@ -13,6 +13,10 @@
 
 	let userDistance = userDistanceCalc(data.user, data.registeredUser);
 
+	function viewProfile() {
+		console.log('view profile');
+	}
+
 	function userDistanceCalc(currentUser, registeredUser) {
 		if (currentUser && currentUser.location && registeredUser && registeredUser.location) {
 			const [lat1, lon1] = currentUser.location; // Lat/Lon del usuario actual
@@ -105,7 +109,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="flex flex-col justify-between">
+		<div class="flex flex-col justify-between w-full">
 			<div>
 				<div>
 					<h1 class="mb-5 text-5xl font-bold">
@@ -293,17 +297,15 @@
 				</div>
 			</div>
 			<div>
-				<!-- {#if data.user.userId != data.registeredUser.userId}
+				{#if data.user.userId != data.registeredUser.userId}
 						<div class="mt-4 flex items-end justify-end">
-							<button class="btn btn-accent mr-2 grow rounded-3xl text-white">
-								<img src={HeartEmptyIcon} alt="Like Icon" class="w-10" />
-								Like!
-							</button>
-							<button class="btn btn-secondary flex items-center justify-center rounded-3xl">
-								<img src={ChatIcon} alt="Chat Icon" class="w-8" />
-							</button>
+							<a href="/users/{data.user.username}" class="btn btn-secondary mr-2 grow rounded-3xl text-white">
+								<!-- <img src={HeartEmptyIcon} alt="Like Icon" class="w-10" /> -->
+								Ver perfil 👀
+							</a>
+							
 						</div>
-					{/if} -->
+					{/if}
 			</div>
 		</div>
 	</div>

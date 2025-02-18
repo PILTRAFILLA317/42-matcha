@@ -20,7 +20,6 @@
 	let notificationsOn = $state(false);
 
 	async function getUnreadNotifications() {
-		console.log('Obteniendo notificaciones no leídas...');
 		try {
 			const res = await fetch(`/api/notifications/get-unread?userId=${data.user?.userId}`);
 			const resData = await res.json();
@@ -173,17 +172,14 @@
 		}
 	}
 
-	async function startSSERequest() {
+	async function startSSERequest() { 
 		try {
 			if (eventSource) {
-				console.log('🚨 Cerrando conexión anterior...');
 				eventSource.close();
 			}
 
 			// console.log('🚀 Iniciando conexión SSE...');
 			eventSource = new EventSource(`/api/notifications/stream`);
-
-			console.log('🚀 Conexión establecida con el servidor de eventos.');
 
 			if (!eventSource) {
 				console.error('❌ No se pudo establecer la conexión con el servidor de eventos.');
@@ -198,11 +194,9 @@
 				reconnectAttempts = 0;
 				try {
 					if (event.data == "connected") {
-						console.log('✅ Conexión establecida con el servidor de eventos.');
 						return;
 					}
 					const parsedData = JSON.parse(event.data);
-					console.log('📩 Mensaje recibido:', parsedData);
 					const parse = parseNotification(parsedData);
 					const notification: Notification = {
 						message: parse?.message,
@@ -230,7 +224,6 @@
 	// Ejecutar la lógica al cargar la página
 	onMount(() => {
 		getUnreadNotifications();
-		console.log('🚀 Iniciando...');
 		getLocation();
 		startSSERequest();
 		return () => {

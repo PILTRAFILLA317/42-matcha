@@ -25,7 +25,8 @@ export async function getUser(username: string): Promise<User | null> {
         userPreferences: user.user_preferences,
         location: user.location,
         bio: user.bio,
-        age: user.age,
+		age: user.age,
+		verified: user.verified,
     };
     return selectedUser;
 }

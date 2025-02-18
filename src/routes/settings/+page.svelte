@@ -74,12 +74,12 @@
 				Sexual Preference
 			</label>
 			<select name="sexual_preferences" class="select select-bordered w-full max-w-xs">
-				<option disabled selected={data.user.sexual_preferences == null}>
+				<option disabled selected={data.user.sexualPreferences == null}>
 					Select your sexual preference?
 				</option>
-				<option selected={data.user.sexualPreference?.toString() == "Homosexual"}>Homosexual</option>
-				<option selected={data.user.sexualPreference?.toString() == "Heterosexual"}>Heterosexual</option>
-				<option selected={data.user.sexualPreference?.toString() == "Bisexual"}>Bisexual</option>
+				<option selected={data.user.sexualPreferences?.toString() == "Homosexual"}>Homosexual</option>
+				<option selected={data.user.sexualPreferences?.toString() == "Heterosexual"}>Heterosexual</option>
+				<option selected={data.user.sexualPreferences?.toString() == "Bisexual"}>Bisexual</option>
 			</select>
 		</div>
 		<div class="mb-4">
