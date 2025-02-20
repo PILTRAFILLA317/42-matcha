@@ -38,6 +38,11 @@ declare global {
 		userId: string;
 		expiresAt: Date;
 	}
+
+	interface Messages{
+		sender: string;
+		content: string;
+	}
 }
 
 export {};
