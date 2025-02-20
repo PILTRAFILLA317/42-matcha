@@ -3,6 +3,7 @@
 	import HeartFillIcon from '/src/assets/heart-fill.svg';
 	import HeartEmptyIcon from '/src/assets/heart-empty.svg';
 	import { onMount } from 'svelte';
+	import { notificationState } from '$lib/stores/notifications.svelte';
 
 	const { data } = $props();
 
@@ -15,16 +16,15 @@
 	let isLiked = $state(false);
 	let isMatched = $state(false);
 
-	let eventSource: EventSource;
-	let reconnectAttempts = 0;
-
-	type Notification = {
-		message: string;
-		type: string;
-	};
-
-	let notifications = $state<Notification[]>([]);
-	let notificationsOn = $state(false);
+	let notifications = $derived(notificationState.AllNotifications);
+	$effect(() => {
+		// notifications;
+		notifications.length;
+		if (notificationState.getLastNotification()?.type === 'match' && notificationState.getLastNotification()?.message === currentUser?.username) {
+			matchAnimation();
+			isMatched = true;
+		}
+	});
 
 	async function checkIfUserLiked() {
 		const response = await fetch('/api/check-like', {
@@ -52,7 +52,7 @@
 			})
 		});
 		const result = await response.json();
-		console.log(result);
+		// console.log(result);
 	}
 
 	async function likeUser() {
@@ -68,7 +68,7 @@
 		});
 		const result = await response.json();
 		isLiked = !isLiked;
-		console.log(result);
+		// console.log(result);
 	}
 
 	async function blockUser() {
@@ -83,7 +83,7 @@
 			})
 		});
 		const result = await response.json();
-		console.log(result);
+		// console.log(result);
 	}
 
 	async function reportUser() {
@@ -98,7 +98,7 @@
 			})
 		});
 		const result = await response.json();
-		console.log(result);
+		// console.log(result);
 	}
 
 	function userDistanceCalc() {
@@ -158,7 +158,7 @@
 	}
 
 	async function profileVisit() {
-		console.log('Visita: ', currentUser?.userId, registeredUser.userId);
+		// console.log('Visita: ', currentUser?.userId, registeredUser.userId);
 		const res = await fetch('../api/visit', {
 			method: 'POST',
 			headers: {
@@ -171,80 +171,23 @@
 		});
 		const data = await res.json();
 		if (res.ok) {
-			console.log(data);
+			// console.log(data);
 		}
 	}
 
-	function parseNotification(jsonString: string) {
-		try {
-			const data = JSON.parse(jsonString);
-
-			if (typeof data.message !== 'string' || typeof data.type !== 'string') {
-				throw new Error('Formato inválido de notificación');
-			}
-
-			return {
-				message: data.message,
-				type: data.type
-			};
-		} catch (error) {
-			console.error('Error al parsear la notificación:', error);
-			return null;
-		}
+	async function matchAnimation() {
+		modal?.showModal();
+		await new Promise((resolve) => setTimeout(resolve, 2000));
+		modal?.close();
 	}
 
-	async function startSSERequest() {
-		try {
-			if (eventSource) {
-				eventSource.close();
-			}
-
-			eventSource = new EventSource(`/api/notifications/stream`);
-
-			if (!eventSource) {
-				console.error('❌ No se pudo establecer la conexión con el servidor de eventos.');
-				return;
-			}
-
-			eventSource.onmessage = (event) => {
-				reconnectAttempts = 0;
-				try {
-					if (event.data == 'connected') {
-						return;
-					}
-					const parsedData = JSON.parse(event.data);
-					const parse = parseNotification(parsedData);
-					// const notification: Notification = {
-					// 	message: parse?.message,
-					// 	type: parse?.type
-					// };
-					// notifications = [...notifications, notification];
-					// notificationsOn = true;
-					console.log('🟢 Notificaciones:', event.data);
-					if (parse?.type == 'match') {
-						isMatched = true;
-					}
-				} catch (err) {
-					console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
-				}
-			};
-
-			eventSource.onerror = (error) => {
-				console.error('❌ ERROR1 en SSE:', error);
-				eventSource.close();
-				const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
-				reconnectAttempts++;
-				setTimeout(startSSERequest, delay);
-			};
-		} catch (error) {
-			console.error('❌ ERROR2 en SSE:', error);
-		}
-	}
+	let modal: HTMLDialogElement | null = $state(null);
 
 	onMount(async () => {
-		// console.log('Session:', data);
+		// matchAnimation();
+		// modal?.showModal();
 		if (currentUser?.username != registeredUser?.username) {
-			console.log('Visita');
+			// console.log('Visita');
 			await profileVisit();
 		}
 		await fetchLocation();
@@ -257,6 +200,14 @@
 	<img src="https://pbs.twimg.com/media/F8mH-keWMAANehe.jpg" class="" alt="ese pibe no esiste" />
 {/if}
 {#if currentUser}
+	<dialog bind:this={modal} class="modal p-40 backdrop-blur-sm">
+		<text class="text-9xl">Bocata lomo hoy!</text>
+		<img
+			src="https://pbs.twimg.com/media/F8mH-keWMAANehe.jpg"
+			class="mask mask-heart size-100"
+			alt="ese pibe no esiste"
+		/>
+	</dialog>
 	<div
 		class="shadow-neutral m-10 flex max-w-[1200px] flex-col gap-4 rounded-3xl p-3 text-white shadow-2xl md:m-5 md:flex-row"
 	>
@@ -480,9 +431,11 @@
 							{isLiked ? 'Liked!' : 'Like!'}
 						</button>
 						{#if isMatched}
-							<button class="btn btn-secondary flex items-center justify-center rounded-3xl">
-								<img src={ChatIcon} alt="Chat Icon" class="w-8" />
-							</button>
+						<button
+							class="btn btn-secondary flex items-center justify-center rounded-3xl"
+						>
+							<img src={ChatIcon} alt="Chat Icon" class="w-8" />
+						</button>
 						{/if}
 					</div>
 				{/if}

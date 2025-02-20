@@ -7,16 +7,17 @@
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
 	import { locationStore } from '$lib/stores/location';
 	import NotificationIcon from '/src/assets/notifications.svg';
+	import { notificationState } from '$lib/stores/notifications.svelte';
 
 	let eventSource: EventSource;
 	let reconnectAttempts = 0;
 
-	type Notification = {
+	type NotificationType = {
 		message: string;
 		type: string;
 	};
 
-	let notifications = $state<Notification[]>([]);
+	let notifications = $state<NotificationType[]>([]);
 	let notificationsOn = $state(false);
 
 	async function getUnreadNotifications() {
@@ -25,6 +26,10 @@
 			const resData = await res.json();
 
 			if (res.ok) {
+				// notificationState.setAll(resData);
+				for (let i = 0; i < resData.length; i++) {
+					notificationState.addNotification({ message: resData[i].message, type: resData[i].type });
+				}
 				notifications = resData;
 				if (resData.length > 0) {
 					notificationsOn = true;
@@ -76,7 +81,7 @@
 		console.log('Obteniendo todas las notificaciones...');
 		try {
 			const res = await fetch(`/api/notifications/set-read?userId=${data.user?.userId}`);
-			const resData = await res.json();
+			// const resData = await res.json();
 
 			if (res.ok) {
 				// notifications = resData;
@@ -91,7 +96,7 @@
 
 	async function redirectToNotifications() {
 		notificationsOn = false;
-		notifications = [];
+		notificationState.removeAll();
 		await setReadNotifications();
 		window.location.href = '/notifications';
 		console.log('Redirigiendo a notificaciones...');
@@ -198,11 +203,12 @@
 					}
 					const parsedData = JSON.parse(event.data);
 					const parse = parseNotification(parsedData);
-					const notification: Notification = {
+					const notification: NotificationType = {
 						message: parse?.message,
 						type: parse?.type
 					};
-					notifications = [...notifications, notification];
+					notificationState.addNotification(notification);
+					notifications = notificationState.getNotifications();
 					notificationsOn = true;
 				} catch (err) {
 					console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
@@ -261,7 +267,7 @@
 									<div class="flex flex-row items-center justify-start gap-2">
 										<text class="flex flex-row gap-1 text-start text-base">
 											<p>{notification.message}</p>
-											<p>{notification.type === 'visit' ? 'ha visto tu perfil 👀' : ''}</p>
+											<p>{notification.type === 'visit' ? 'ha visto tu perfil 👀' : notification.type ===  'like' ? 'te ha dado like 💖' : 'es un nuevo match 💘'}</p>
 											<text />
 										</text>
 									</div>

@@ -14,8 +14,48 @@ export async function removeLikedUser(userId: string, likedUser: string) {
   return true;
 }
 
+export async function notificator(userId: string, notifiedUser: string, type: string, message: string) {
+  const notifiedUserId = await getIdByUsername(notifiedUser);
+  if (!notifiedUserId) return false;
+  console.log("userId", userId);
+  console.log("notifiedUser", notifiedUser)
+  await db`
+  INSERT INTO notifications (user_id, sender_id, type, message)
+  VALUES (${userId}, ${notifiedUserId[0].id}, ${type}, ${message});
+  `;
+}
+
+export async function checkMatchNoNotification(userId: string, secondUserId: string) {
+  const userLikes = await db`SELECT liked_users FROM users WHERE id = ${userId}`;
+  const secondUserLikes = await db`SELECT liked_users FROM users WHERE id = ${secondUserId}`;
+  // const secondUser = await getUsernameById(secondUserId);
+  // const user = await getUsernameById(userId);
+  if (userLikes[0].liked_users.includes(secondUserId) && secondUserLikes[0].liked_users.includes(userId)) {
+    return true;
+  }
+  return false;
+}
+
+export async function checkMatch(userId: string, secondUserId: string) {
+  const userLikes = await db`SELECT liked_users FROM users WHERE id = ${userId}`;
+  const secondUserLikes = await db`SELECT liked_users FROM users WHERE id = ${secondUserId}`;
+  const secondUser = await getUsernameById(secondUserId);
+  const user = await getUsernameById(userId);
+  if (userLikes[0].liked_users.includes(secondUserId) && secondUserLikes[0].liked_users.includes(userId)) {
+    console.log("ENTRA");
+    console.log("userId", userId);
+    console.log("secondUserId", secondUserId);
+    notificator(userId, secondUser[0].username, "match", secondUser[0].username);
+    notificator(secondUserId, user[0].username, "match", user[0].username);
+    return;
+  }
+  return;
+}
+
+
 export async function addLikedUser(userId: string, likedUser: string) {
   const likedUserId = await getIdByUsername(likedUser);
+  const likerUsername = await getUsernameById(userId);
   if (!likedUserId) return false;
   await db`
   UPDATE users
@@ -24,6 +64,9 @@ export async function addLikedUser(userId: string, likedUser: string) {
   )
   WHERE id = ${userId};
 `;
+  // console.log("likerUsername", likerUsername[0].username);
+  notificator(likedUserId[0].id, likedUser, "like", likerUsername[0].username);
+  checkMatch(userId, likedUserId[0].id);
   return true;
 }
 
