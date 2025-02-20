@@ -10,5 +10,6 @@
     <div class="flex flex-row items-center gap-8">
         <button class="btn btn-xs sm:btn-sm btn-primary md:btn-md lg:btn-lg xl:btn-xl">Descubrir</button>
         <button class="btn btn-xs sm:btn-sm btn-primary md:btn-md lg:btn-lg xl:btn-xl" onclick={() => window.location.href = '/search'}>Buscar</button>
+        <button class="btn btn-xs sm:btn-sm btn-primary md:btn-md lg:btn-lg xl:btn-xl" onclick={() => window.location.href = '/chat'}>Chat</button>
     </div>
 </div>
