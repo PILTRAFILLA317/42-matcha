@@ -2,19 +2,23 @@
 	import { enhance } from '$app/forms';
 	import type { PageData, ActionData } from './$types';
 
-
-	
-	let { data, form }: { data: PageData, form: ActionData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
 	export const load = () => {
 		console.log('onload??');
 	};
 </script>
 
-<div class="mx-auto w-xl rounded-lg bg-secondary p-6 shadow-md">
-	<h1 class="mb-4 text-center text-2xl font-semibold text-primary">Settings Page</h1>
+<div data-sveltekit-preload-data="hover" class="bg-secondary mx-auto w-xl rounded-lg p-6 shadow-md">
+	<h1 class="text-primary mb-4 text-center text-2xl font-semibold">Settings Page</h1>
+	<div class="breadcrumbs mb-4">
+		<a href="settings/password" class="link link-hover">Change password &gt;</a>
+	</div>
+	<div class="breadcrumbs mb-4">
+		<a href="settings/pictures" class="link link-hover">Change pictures &gt;</a>
+	</div>
 	<form method="post" use:enhance>
 		<div class="mb-4">
-			<label for="email" class="block text-sm font-medium text-primary">Email</label>
+			<label for="email" class="text-primary block text-sm font-medium">Email</label>
 			<input
 				id="email"
 				type="text"
@@ -26,7 +30,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="username" class="block text-sm font-medium text-primary">Username</label>
+			<label for="username" class="text-primary block text-sm font-medium">Username</label>
 			<input
 				id="username"
 				type="text"
@@ -38,7 +42,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="firstName" class="block text-sm font-medium text-primary">First Name</label>
+			<label for="firstName" class="text-primary block text-sm font-medium">First Name</label>
 			<input
 				id="firstName"
 				type="text"
@@ -50,7 +54,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="lastName" class="block text-sm font-medium text-primary">Last Name</label>
+			<label for="lastName" class="text-primary block text-sm font-medium">Last Name</label>
 			<input
 				id="lastName"
 				type="text"
@@ -62,7 +66,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="gender" class="block text-sm font-medium text-primary">Gender</label>
+			<label for="gender" class="text-primary block text-sm font-medium">Gender</label>
 			<select name="gender" class="select select-bordered w-full max-w-xs">
 				<option disabled selected={data.user.gender == null}>Select your gender?</option>
 				<option selected={data.user.gender && data.user.gender != null}>Male</option>
@@ -70,20 +74,24 @@
 			</select>
 		</div>
 		<div class="mb-4">
-			<label for="sexualPreference" class="block text-sm font-medium text-primary">
+			<label for="sexualPreference" class="text-primary block text-sm font-medium">
 				Sexual Preference
 			</label>
 			<select name="sexual_preferences" class="select select-bordered w-full max-w-xs">
 				<option disabled selected={data.user.sexualPreferences == null}>
 					Select your sexual preference?
 				</option>
-				<option selected={data.user.sexualPreferences?.toString() == "Homosexual"}>Homosexual</option>
-				<option selected={data.user.sexualPreferences?.toString() == "Heterosexual"}>Heterosexual</option>
-				<option selected={data.user.sexualPreferences?.toString() == "Bisexual"}>Bisexual</option>
+				<option selected={data.user.sexualPreferences?.toString() == 'Homosexual'}
+					>Homosexual</option
+				>
+				<option selected={data.user.sexualPreferences?.toString() == 'Heterosexual'}
+					>Heterosexual</option
+				>
+				<option selected={data.user.sexualPreferences?.toString() == 'Bisexual'}>Bisexual</option>
 			</select>
 		</div>
 		<div class="mb-4">
-			<label for="bio" class="block text-sm font-medium text-primary">Bio</label>
+			<label for="bio" class="text-primary block text-sm font-medium">Bio</label>
 			<textarea
 				id="bio"
 				name="bio"
