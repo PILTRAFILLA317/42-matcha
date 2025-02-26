@@ -4,6 +4,7 @@
 	import HeartEmptyIcon from '/src/assets/heart-empty.svg';
 	import { onMount } from 'svelte';
 	import { notificationState } from '$lib/stores/notifications.svelte';
+	import { goto } from '$app/navigation';
 
 	const { data } = $props();
 
@@ -20,9 +21,18 @@
 	$effect(() => {
 		// notifications;
 		notifications.length;
-		if (notificationState.getLastNotification()?.type === 'match' && notificationState.getLastNotification()?.message === currentUser?.username) {
+		if (
+			notificationState.getLastNotification()?.type === 'match' &&
+			notificationState.getLastNotification()?.message === currentUser?.username
+		) {
 			matchAnimation();
 			isMatched = true;
+		}
+		if (
+			notificationState.getLastNotification()?.type === 'unlike' &&
+			notificationState.getLastNotification()?.message === currentUser?.username
+		) {
+			isMatched = false;
 		}
 	});
 
@@ -47,12 +57,14 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				userId: currentUser?.userId,
-				matchedUser: registeredUser.username
+				username: currentUser?.username
 			})
 		});
 		const result = await response.json();
-		// console.log(result);
+		console.log(result);
+		if (result === true) {
+			isMatched = true;
+		}
 	}
 
 	async function likeUser() {
@@ -67,8 +79,12 @@
 			})
 		});
 		const result = await response.json();
-		isLiked = !isLiked;
-		// console.log(result);
+		if (isLiked) {
+			isLiked = false;
+			isMatched = false;
+		}
+		else
+			isLiked = true;
 	}
 
 	async function blockUser() {
@@ -83,7 +99,6 @@
 			})
 		});
 		const result = await response.json();
-		// console.log(result);
 	}
 
 	async function reportUser() {
@@ -98,7 +113,6 @@
 			})
 		});
 		const result = await response.json();
-		// console.log(result);
 	}
 
 	function userDistanceCalc() {
@@ -158,7 +172,6 @@
 	}
 
 	async function profileVisit() {
-		// console.log('Visita: ', currentUser?.userId, registeredUser.userId);
 		const res = await fetch('../api/visit', {
 			method: 'POST',
 			headers: {
@@ -171,7 +184,6 @@
 		});
 		const data = await res.json();
 		if (res.ok) {
-			// console.log(data);
 		}
 	}
 
@@ -183,16 +195,17 @@
 
 	let modal: HTMLDialogElement | null = $state(null);
 
+	function chatUser() {
+		goto(`/chat?user=${currentUser?.username}`);
+	}
+
 	onMount(async () => {
-		// matchAnimation();
-		// modal?.showModal();
 		if (currentUser?.username != registeredUser?.username) {
-			// console.log('Visita');
 			await profileVisit();
 		}
+		await areMatched();
 		await fetchLocation();
 		await checkIfUserLiked();
-		// startSSERequest();
 	});
 </script>
 
@@ -431,11 +444,9 @@
 							{isLiked ? 'Liked!' : 'Like!'}
 						</button>
 						{#if isMatched}
-						<button
-							class="btn btn-secondary flex items-center justify-center rounded-3xl"
-						>
-							<img src={ChatIcon} alt="Chat Icon" class="w-8" />
-						</button>
+							<button onclick={chatUser} class="btn btn-secondary flex items-center justify-center rounded-3xl">
+								<img src={ChatIcon} alt="Chat Icon" class="w-8" />
+							</button>
 						{/if}
 					</div>
 				{/if}

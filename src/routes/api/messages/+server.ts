@@ -48,7 +48,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
             ) 
             SELECT * FROM messages WHERE chat_id = (SELECT id FROM chat)
         `;
-		console.log('Mensajes: ', res);
+		// console.log('Mensajes: ', res);
 		const messages = await parseMessages(res, locals.user!.userId);
 		return json({ body: messages }, { status: 200 });
 	} catch (error) {

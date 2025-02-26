@@ -1,5 +1,5 @@
 <script lang="ts">
-/// <reference types="node" />
+	/// <reference types="node" />
 	import '../app.css';
 	import type { LayoutServerData } from './$types';
 	import { invalidateAll } from '$app/navigation';
@@ -177,7 +177,7 @@
 		}
 	}
 
-	async function startSSERequest() { 
+	async function startSSERequest() {
 		try {
 			if (eventSource) {
 				eventSource.close();
@@ -198,7 +198,7 @@
 			eventSource.onmessage = (event) => {
 				reconnectAttempts = 0;
 				try {
-					if (event.data == "connected") {
+					if (event.data == 'connected') {
 						return;
 					}
 					const parsedData = JSON.parse(event.data);
@@ -233,9 +233,9 @@
 		getLocation();
 		startSSERequest();
 		return () => {
-            eventSource?.close();
-            reconnectAttempts = 0;
-        };
+			eventSource?.close();
+			reconnectAttempts = 0;
+		};
 	});
 </script>
 
@@ -267,7 +267,15 @@
 									<div class="flex flex-row items-center justify-start gap-2">
 										<text class="flex flex-row gap-1 text-start text-base">
 											<p>{notification.message}</p>
-											<p>{notification.type === 'visit' ? 'ha visto tu perfil 👀' : notification.type ===  'like' ? 'te ha dado like 💖' : 'es un nuevo match 💘'}</p>
+											<p>
+												{notification.type === 'visit'
+													? 'ha visto tu perfil 👀'
+													: notification.type === 'like'
+														? 'te ha dado like 💖'
+														: notification.type === 'match'
+														? 'es un nuevo match 💘'
+														: 'ha quitado el like 💔'}
+											</p>
 											<text />
 										</text>
 									</div>

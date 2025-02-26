@@ -40,7 +40,7 @@ async function sendMessage(senderId: string, reciverUser: string, message: strin
             VALUES ((SELECT id FROM chat), ${senderId}, ${message})
             RETURNING *;
         `;
-        console.log("Mensaje enviado: ", res);
+        // console.log("Mensaje enviado: ", res);
 	} catch (error) {
 		console.log('error: ', error);
 	}

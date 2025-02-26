@@ -1,7 +1,25 @@
 import { validateEmail } from '$lib/helpers/validators';
 import { db } from '$lib/server/db';
 
+export async function addLikedUser(userId: string, likedUser: string) {
+  const likedUserId = await getIdByUsername(likedUser);
+  const likerUsername = await getUsernameById(userId);
+  if (!likedUserId) return false;
+  await db`
+  UPDATE users
+  SET liked_users = ARRAY(
+  SELECT DISTINCT unnest(liked_users || ${likedUserId[0].id}::uuid)
+  )
+  WHERE id = ${userId};
+`;
+  // console.log("likerUsername", likerUsername[0].username);
+  notificator(likedUserId[0].id, likedUser, "like", likerUsername[0].username);
+  checkMatch(userId, likedUserId[0].id);
+  return true;
+}
+
 export async function removeLikedUser(userId: string, likedUser: string) {
+  const likerUsername = await getUsernameById(userId);
   const likedUserId = await getIdByUsername(likedUser);
   if (!likedUserId) return false;
   await db`
@@ -11,7 +29,8 @@ export async function removeLikedUser(userId: string, likedUser: string) {
   )
   WHERE id = ${userId};
 `;
-  return true;
+  notificator(likedUserId[0].id, likedUser, "unlike", likerUsername[0].username);
+  return;
 }
 
 export async function notificator(userId: string, notifiedUser: string, type: string, message: string) {
@@ -42,34 +61,13 @@ export async function checkMatch(userId: string, secondUserId: string) {
   const secondUser = await getUsernameById(secondUserId);
   const user = await getUsernameById(userId);
   if (userLikes[0].liked_users.includes(secondUserId) && secondUserLikes[0].liked_users.includes(userId)) {
-    console.log("ENTRA");
-    console.log("userId", userId);
-    console.log("secondUserId", secondUserId);
+    await db `INSERT INTO chats (user_1, user_2) VALUES (${userId}, ${secondUserId})`;
     notificator(userId, secondUser[0].username, "match", secondUser[0].username);
     notificator(secondUserId, user[0].username, "match", user[0].username);
     return;
   }
   return;
 }
-
-
-export async function addLikedUser(userId: string, likedUser: string) {
-  const likedUserId = await getIdByUsername(likedUser);
-  const likerUsername = await getUsernameById(userId);
-  if (!likedUserId) return false;
-  await db`
-  UPDATE users
-  SET liked_users = ARRAY(
-  SELECT DISTINCT unnest(liked_users || ${likedUserId[0].id}::uuid)
-  )
-  WHERE id = ${userId};
-`;
-  // console.log("likerUsername", likerUsername[0].username);
-  notificator(likedUserId[0].id, likedUser, "like", likerUsername[0].username);
-  checkMatch(userId, likedUserId[0].id);
-  return true;
-}
-
 
 export async function getIdByUsername(username: string) {
   const id = await db`SELECT id FROM users WHERE username = ${username}`;
@@ -85,10 +83,7 @@ export async function checkUserLikes(userId: string, likedUser: string) {
     return false;
   }
   for (let i = 0; i < likes.length; i++) {
-    console.log("LIKES:", likes[i].liked_user);
-    console.log("LIKED USER ID:", likedUserId[0].id);
-    if (likes[i].liked_user === likedUserId[0].id){
-      console.log("LIKE FOUND");
+    if (likes[i].liked_user === likedUserId[0].id) {
       return true;
     }
   }
@@ -151,9 +146,4 @@ export async function userResearch(minAge: number, maxAge: number, minFR: number
     tags.every(tag => user.user_preferences.includes(tag))
   );
   return filteredUsers;
-}
-
-export async function visitUserPage(currentUser: User, visitedUser: User) {
-  const visit = await db`INSERT INTO visits (visitor, visited) VALUES (${currentUser.userId}, ${visitedUser.userId})`;
-  return visit;
 }

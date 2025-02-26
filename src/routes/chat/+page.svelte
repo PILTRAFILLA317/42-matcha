@@ -2,6 +2,8 @@
 	import { enhance } from '$app/forms';
 	import ChatMessage from '$lib/components/chat/ChatMessage.svelte';
 	import MiniProfile from '$lib/components/chat/MiniProfile.svelte';
+	import { onMount } from 'svelte';
+	import { page } from '$app/stores';
 
 	import type { PageData } from './$types';
 
@@ -10,22 +12,71 @@
 
 	let chatMessages: Array<Messages> = $state([]);
 	let activeChat: string | null = $state(null);
+	let eventSource: EventSource;
+	let reconnectAttempts = 0;
+
 	$effect(async () => {
 		if (activeChat) {
-			console.log('activeChat', activeChat);
-			try{
-				const res = await fetch(`../api/messages?user=${activeChat}`, {				method: 'GET',
+			try {
+				const res = await fetch(`../api/messages?user=${activeChat}`, {
+					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json'
-					},
+					}
 				});
 				const response = await res.json();
 				chatMessages = response.body;
-				console.log("response is: ", chatMessages[0]);
 			} catch (e) {
 				console.log(e);
 			}
 		}
+	});
+
+	async function startSSERequest() {
+		try {
+			if (eventSource) {
+				eventSource.close();
+			}
+			eventSource = new EventSource(`/api/chat/stream`);
+			if (!eventSource) {
+				console.error('❌ No se pudo establecer la conexión con el servidor de eventos.');
+				return;
+			}
+			eventSource.onmessage = (event) => {
+				reconnectAttempts = 0;
+				try {
+					if (event.data == 'connected') {
+						return;
+					}
+					const parsedData = JSON.parse(event.data);
+					if (parsedData.sender[0].username === activeChat || parsedData.receiver[0].username === activeChat) {
+						// chatMessages.push({ sender: parsedData.sender[0].username, content: parsedData.content });
+						chatMessages = [{ sender: parsedData.sender[0].username, content: parsedData.content }, ...chatMessages];
+					}
+				} catch (err) {
+					console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
+				}
+			};
+
+			eventSource.onerror = (error) => {
+				console.error('❌ ERROR1 en SSE:', error);
+				eventSource.close();
+				const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
+				reconnectAttempts++;
+				setTimeout(startSSERequest, delay);
+			};
+		} catch (error) {
+			console.error('❌ ERROR2 en SSE:', error);
+		}
+	}
+
+	onMount(() => {
+		let link;
+		page.subscribe(($page) => {
+			link = $page.url.searchParams.get('user');
+			activeChat = link;
+		});
+		startSSERequest();
 	});
 </script>
 
