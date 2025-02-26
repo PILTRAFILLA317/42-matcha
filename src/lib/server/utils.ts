@@ -29,6 +29,7 @@ export async function removeLikedUser(userId: string, likedUser: string) {
   )
   WHERE id = ${userId};
 `;
+  deleteChat(userId, likedUserId[0].id);
   notificator(likedUserId[0].id, likedUser, "unlike", likerUsername[0].username);
   return;
 }
@@ -98,6 +99,14 @@ export async function getAllTags() {
 export async function getUsernameById(userId: string) {
   const username = await db`SELECT username FROM users WHERE id = ${userId}`;
   return username;
+}
+
+export async function deleteChat(userId: string, secondUserId: string) {
+  const chat = await db`SELECT * FROM chats WHERE user_1 = ${userId} AND user_2 = ${secondUserId} OR user_1 = ${secondUserId} AND user_2 = ${userId}`;
+  if (chat.length === 0) return;
+  console.log(chat[0].id);
+  await db`DELETE FROM chats WHERE id = ${chat[0].id}`;
+
 }
 
 function userDistanceCalc(currentUser: User, registeredUser: User) {

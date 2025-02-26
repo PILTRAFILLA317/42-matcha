@@ -19,20 +19,12 @@ async function getReciverID(chatID: string, userID: string) {
   const chat = await db`SELECT * FROM chats WHERE id = ${chatID}`;
   if (chat.length === 0) {
     throw new Error('Chat not found');
+    // return;
   }
   console.log('Chat:', chat);
   const receiverID = chat[0].user_1 === userID ? chat[0].user_2 : chat[0].user_1;
   console.log('Receiver ID:', receiverID);
   return receiverID;
-}
-
-async function getChatByID(chatID: string) {
-  const chat = await db`SELECT * FROM chats WHERE id = ${chatID}`;
-  // console.log('Chat:', chat);
-  if (chat.length === 0) {
-    throw new Error('Chat not found');
-  }
-  return chat;
 }
 
 async function setupGlobalListener() {

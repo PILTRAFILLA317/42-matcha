@@ -7,6 +7,8 @@
 
 	import type { PageData } from './$types';
 
+	let allMatches: string[] = $state([]);
+
 	let { data }: { data: PageData } = $props();
 	// let selectedUser = $state(data.matchList);
 
@@ -14,6 +16,30 @@
 	let activeChat: string | null = $state(null);
 	let eventSource: EventSource;
 	let reconnectAttempts = 0;
+
+	import { notificationState } from '$lib/stores/notifications.svelte';
+
+	let notifications = $derived(notificationState.AllNotifications);
+	$effect(() => {
+		// notifications;
+		notifications.length;
+		if (
+			notificationState.getLastNotification()?.type === 'match' &&
+			!allMatches.includes(notificationState.getLastNotification()?.message)
+		) {
+			// console.log("LENGHT:", notifications.length);
+			allMatches.push(notificationState.getLastNotification()?.message);
+			return;
+		}
+		if (
+			notificationState.getLastNotification()?.type === 'unlike' &&
+			allMatches.includes(notificationState.getLastNotification()?.message)
+		) {
+			allMatches = allMatches.filter((user) => user !== activeChat);
+			activeChat = null;
+			return;
+		}
+	});
 
 	$effect(async () => {
 		if (activeChat) {
@@ -32,6 +58,20 @@
 		}
 	});
 
+	async function areMatched(chatUsername: string) {
+		const response = await fetch('/api/match', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				username: chatUsername
+			})
+		});
+		const result = await response.json();
+		return result;
+	}
+
 	async function startSSERequest() {
 		try {
 			if (eventSource) {
@@ -46,12 +86,23 @@
 				reconnectAttempts = 0;
 				try {
 					if (event.data == 'connected') {
+						console.log('✅ Conectado al servidor de eventos SSE');
 						return;
 					}
 					const parsedData = JSON.parse(event.data);
-					if (parsedData.sender[0].username === activeChat || parsedData.receiver[0].username === activeChat) {
+					if (
+						parsedData.sender[0].username === activeChat ||
+						parsedData.receiver[0].username === activeChat
+					) {
 						// chatMessages.push({ sender: parsedData.sender[0].username, content: parsedData.content });
-						chatMessages = [{ sender: parsedData.sender[0].username, content: parsedData.content }, ...chatMessages];
+						if (!chatMessages) {
+							chatMessages = [{ sender: parsedData.sender[0].username, content: parsedData.content }];
+						} else {
+						chatMessages = [
+							{ sender: parsedData.sender[0].username, content: parsedData.content },
+							...chatMessages
+						];
+						}
 					}
 				} catch (err) {
 					console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
@@ -71,10 +122,14 @@
 	}
 
 	onMount(() => {
+		allMatches = data.matchList;
 		let link;
-		page.subscribe(($page) => {
+		page.subscribe(async ($page) => {
 			link = $page.url.searchParams.get('user');
-			activeChat = link;
+			if (link) {
+				if (await areMatched(link)) activeChat = link;
+				else console.log('❌ No estás conectado con este usuario');
+			}
 		});
 		startSSERequest();
 	});
@@ -83,14 +138,14 @@
 <div class="x-auto bg-primary m-5 h-[80vh] w-full rounded-lg p-2 shadow-md">
 	<div class="flex items-start justify-between">
 		<h1 class="start pb-2 text-6xl font-bold text-white">Chats</h1>
-		<a class="end pb-2 text-6xl font-bold text-white" href="localhost:5173/users/{activeChat}"
+		<a class="end pb-2 text-6xl font-bold text-white" href="/users/{activeChat}"
 			>{activeChat ?? ''}</a
 		>
 	</div>
 	<div class="flex h-[90%] space-x-2">
 		<!-- CUIDANGE CON EL OVERFLOW AUTO -->
 		<div class="w-1/6 space-y-2 overflow-auto">
-			{#each data.matchList as username}
+			{#each allMatches as username}
 				<!-- svelte-ignore attribute_quoted -->
 				<MiniProfile
 					onclick={() => {
