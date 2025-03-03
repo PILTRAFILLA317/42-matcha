@@ -28,7 +28,7 @@ export const actions: Actions = {
 			await db`SELECT * FROM public.users WHERE username = ${String(username)}`;
 		console.log('existingUser: ', existingUser);
 		if (!existingUser) {
-			return fail(401, { message: 'Incorrect username' });
+			return fail(401, { message: 'Username does not exist' });
 		}
 		const validPassword = await verify(existingUser.password, String(password), {
 			memoryCost: 19456,

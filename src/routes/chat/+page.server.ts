@@ -59,7 +59,7 @@ export const actions: Actions = {
 		const formData = await event.request.formData();
 		const message = formData.get('message');
 		const selectedUser = formData.get('selectedUser');
-		if (message === null || selectedUser === null) return;
+		if (message === null || selectedUser === null || (message as string).length == 0) return;
 		if (message.toString.length > 500 || selectedUser.toString.length > 50) return;
 		sendMessage(event.locals.user!.userId, selectedUser.toString(), message.toString());
 	},

@@ -1,30 +1,54 @@
 <script lang="ts">
-    import type { PageData } from './$types';
+	import { enhance } from '$app/forms';
+	import TrashCan from '$lib/components/common/TrashCan.svelte';
+	import type { ActionData, PageData } from './$types';
 
-    let { data }: { data: PageData } = $props();
+	let { data, form }: { data: PageData; form: ActionData } = $props();
+	const iconSize = 3;
+
+	function handleUpload(node: HTMLFormElement) {
+		console.log('Upload result:', node);
+	}
 </script>
 
-<div class="mx-auto w-xl rounded-lg bg-primary p-6 shadow-md">
-    <div class="flex w-full flex-col border-opacity-50">
-        <div class="artboard phone-1">
-            <img class="h-[10%]" alt="test" src="https://www.davidsongalleries.com/cdn/shop/products/TOLEDO27545CowboyFromCowboySeriesweb_1024x1024.jpg?v=1645389511">
-        </div>
-        <div class="divider">Upload a new Image</div>
-        <div class="flex items-center justify-center w-full">
-            <label for="dropzone-file" class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                    <svg class="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                    </svg>
-                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                </div>
-                <input id="dropzone-file" type="file" class="hidden" />
-            </label>
-        </div>
-    </div>
-    <div class="artboard phone-1"></div>
-    <div class="artboard phone-1"></div>
-    <div class="artboard phone-1"></div>
-    <div class="artboard phone-1"></div>
+<!-- svelte-ignore a11y_missing_attribute -->
+<div class="bg-primary mx-auto w-xl rounded-lg p-6 shadow-md">
+	<div class="border-opacity-50 flex w-full flex-col">
+		<div class="carousel w-full">
+			{#each data.images as image, index}
+				<div id="item{index}" class="carousel-item relative w-full">
+					<img src={image} class="w-full" />
+					<form use:enhance method="post">
+							<button
+								class="absolute top-2 right-2 rounded-full p-2 size-{iconSize}"
+								formAction="?/deletePicture&id={index}"
+							>
+								<TrashCan classData="w-15 h-15 hover:h-25" />
+							</button>
+					</form>
+				</div>
+			{/each}
+		</div>
+		<div class="flex w-full justify-center gap-2 py-2">
+			{#each data.images as image, index}
+				<a href="#item{index}" class="btn btn-xs">{index + 1}</a>
+			{/each}
+		</div>
+		<div class="divider">Upload a new Image</div>
+		<div class="flex w-full items-center justify-center">
+			<form
+				use:enhance={handleUpload}
+				action="?/uploadPicture"
+				method="post"
+				class="w-full"
+				enctype="multipart/form-data"
+			>
+				<input type="file" name="file" class="file-input w-full" />
+				<button type="submit" class="btn btn-grey mt-4 w-full">Upload</button>
+			</form>
+		</div>
+	</div>
+	<div class="align-center mb-4 flex justify-center">
+		<p class="text-white">{form?.message ?? ''}</p>
+	</div>
 </div>

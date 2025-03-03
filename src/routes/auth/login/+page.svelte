@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 
-	let { form }: { form: ActionData } = $props();
+	let { form, data }: { form: ActionData, data: FormData } = $props();
 </script>
 
 <div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
@@ -37,6 +37,9 @@
 			class="btn btn-secondary mb-4 w-full">Login</button
 		>
 	</form>
+	<div class="align-center mb-4 flex justify-center">
+		<p class="text-white">{form?.message ?? ''}</p>
+	</div>
 	<div class="text-center">
 		<a class="text-sm text-secondary hover:underline" href="/auth/register">
 			Don't have an account? Register
