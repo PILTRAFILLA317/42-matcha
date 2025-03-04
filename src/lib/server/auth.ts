@@ -54,7 +54,7 @@ export async function validateSessionToken(
 	
 	const [userResult] = await db`
 	SELECT * FROM public.users WHERE id = ${result.user_id}`;
-	// console.log('userResult->', userResult);
+	console.log('userResult->', userResult);
 	const user: User = {
 		userId: userResult.id,
 		email: userResult.email,
@@ -62,7 +62,7 @@ export async function validateSessionToken(
 		firstName: userResult.first_name,
 		lastName: userResult.last_name,
 		gender: userResult.gender,
-		sexualPreference: userResult.sexual_preferences,
+		sexualPreferences: userResult.sexual_preferences,
 		totalLikes: userResult.total_likes,
 		userPreferences: userResult.user_preferences,
 		bio: userResult.bio,

@@ -19,8 +19,8 @@ export async function usernameExists(username: string, userId: number): Promise<
 	return result? true : false;
 }
 
-export function validateSexualPreference(sp: string): boolean {
-	if (sp === 'Heterosexual' || sp === 'Homosexual' || sp === 'Bisexual') return true;
+export function validateSexualPreference(spString: string): boolean {
+	if (spString === 'Heterosexual' || spString === 'Homosexual' || spString === 'Bisexual') return true;
 	return false;
 }
 

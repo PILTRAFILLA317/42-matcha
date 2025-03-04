@@ -2,7 +2,7 @@
 	import { enhance } from '$app/forms';
 	import type { ActionData } from './$types';
 
-	let { form, data }: { form: ActionData, data: FormData } = $props();
+	let { form }: { form: ActionData, data: FormData } = $props();
 </script>
 
 <div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">

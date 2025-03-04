@@ -12,7 +12,7 @@
 </script>
 
 <!-- svelte-ignore a11y_missing_attribute -->
-<div class="bg-primary mx-auto w-xl rounded-lg p-6 shadow-md">
+<div class="bg-sky-900  mx-auto w-xl rounded-lg p-6 shadow-md">
 	<div class="border-opacity-50 flex w-full flex-col">
 		<div class="carousel w-full">
 			{#each data.images as image, index}

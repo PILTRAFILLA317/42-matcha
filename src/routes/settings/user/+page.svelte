@@ -4,13 +4,18 @@
 
 	let { data, form }: { data: PageData; form: ActionData } = $props();
 	export const load = () => {
-		console.log('onload??');
 	};
 </script>
 
-<div data-sveltekit-preload-data="hover" class="bg-secondary mx-auto w-xl rounded-lg p-6 shadow-md">
-    <h1 class="text-primary mb-4 text-center text-2xl font-semibold">Settings Page</h1>
-    <form method="post" use:enhance>
+<!-- svelte-ignore binding_property_non_reactive -->
+<div data-sveltekit-preload-data="hover" class="mx-auto w-xl rounded-lg bg-sky-900 p-6 shadow-md">
+	<div class="flex mb-4">
+        <a href="/settings" class="flex-none pt-1 relative text-white hover:text-gray-300" aria-label="Back to settings">
+            <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path fill="currentColor" d="M10 22L0 12L10 2l1.775 1.775L3.55 12l8.225 8.225z"/></svg>
+        </a>
+        <h1 class="flex-1 text-primary mb-4 text-center text-2xl font-semibold">User Settings</h1>
+    </div>
+	<form method="post" use:enhance>
 		<div class="mb-4">
 			<label for="email" class="text-primary block text-sm font-medium">Email</label>
 			<input
@@ -19,7 +24,7 @@
 				name="email"
 				class="input input-bordered mt-1 w-full"
 				placeholder="Your Email"
-				value={data.user.email}
+				bind:value={data.user.email}
 				required
 			/>
 		</div>
@@ -31,7 +36,7 @@
 				name="username"
 				class="input input-bordered mt-1 w-full"
 				placeholder="Your Username"
-				value={data.user.username}
+				bind:value={data.user.username}
 				required
 			/>
 		</div>
@@ -42,7 +47,7 @@
 				type="text"
 				name="firstname"
 				class="input input-bordered mt-1 w-full"
-				value={data.user.firstName}
+				bind:value={data.user.firstName}
 				placeholder="Your First Name"
 				required
 			/>
@@ -54,7 +59,7 @@
 				type="text"
 				name="lastname"
 				class="input input-bordered mt-1 w-full"
-				value={data.user.lastName}
+				bind:value={data.user.lastName}
 				placeholder="Your Last Name"
 				required
 			/>
@@ -71,17 +76,13 @@
 			<label for="sexualPreference" class="text-primary block text-sm font-medium">
 				Sexual Preference
 			</label>
-			<select name="sexual_preferences" class="select select-bordered w-full max-w-xs">
-				<option disabled selected={data.user.sexualPreferences == null}>
+			<select name="sexual_preferences" class="select select-bordered w-full max-w-xs" bind:value={data.user.sexualPreferences}>
+				<option disabled value={null}>
 					Select your sexual preference?
 				</option>
-				<option selected={data.user.sexualPreferences?.toString() == 'Homosexual'}
-					>Homosexual</option
-				>
-				<option selected={data.user.sexualPreferences?.toString() == 'Heterosexual'}
-					>Heterosexual</option
-				>
-				<option selected={data.user.sexualPreferences?.toString() == 'Bisexual'}>Bisexual</option>
+				<option value="Heterosexual">Heterosexual</option>
+				<option value="Homosexual">Homosexual</option>
+				<option value="Bisexual">Bisexual</option>
 			</select>
 		</div>
 		<div class="mb-4">
@@ -92,7 +93,7 @@
 				class="textarea textarea-bordered w-full"
 				placeholder="Write you biography here"
 				maxlength="500"
-				value={data.user.bio}
+				bind:value={data.user.bio}
 			></textarea>
 		</div>
 		<button formaction={'?/updateUser'} type="submit" class="btn btn-primary w-full">
@@ -100,6 +101,10 @@
 		</button>
 	</form>
 	<div class="h-4">
-		<div class="text-center text-red-500">{form?.message ?? ''}</div>
+		{#if form?.message == 'User updated successfully'}
+			<div class="text-center text-green-500">{form.message}</div>
+		{:else}
+			<div class="text-center text-red-500">{form?.message ?? ''}</div>
+		{/if}
 	</div>
 </div>

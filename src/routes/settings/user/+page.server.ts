@@ -26,9 +26,7 @@ export const actions: Actions = {
 		const firstName = formData.get('firstname');
 		const lastName = formData.get('lastname');
 		const gender: boolean = formData.get('gender') == 'Male' ? true : false;
-		// const sexualPreference: sexualPreference | null= initSexualPreference(formData.get('sexualpreference') as string);
-		const sexualPreference = formData.get('sexualpreference') as string;
-		console.log('sexualPreference: ', sexualPreference);
+		const sexualPreference = formData.get('sexual_preferences') as string;
 		const bio = formData.get('bio');
 		if (user === null) {
 			return redirect(302, '/');
@@ -49,16 +47,16 @@ export const actions: Actions = {
 			if (gender !== null && gender !== user.gender) {
 				await updateGender(gender, event);
 			}
-			if (sexualPreference !== null) {
+			if (sexualPreference !== null || sexualPreference !== user.sexualPreferences) {
 				await updateSexualPreference(sexualPreference, event);
 			}
 			if (bio !== null && bio !== user.bio!) {
 				await updateBio(bio as string, event);
 			}
-			return { success: true, status: 201, message: 'Password changed successfully' };
+			return { status: 201, message: 'User updated successfully' };
 		} catch (error) {
-			console.log('Error updatiing user:\n', error);
-			return fail(400, { message: error });
+			console.log('Error updatiing user');
+			return fail(400, { message: error instanceof Error ? error.message : String(error) });
 		}
 	}
 };
