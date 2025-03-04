@@ -21,7 +21,6 @@ export const actions: Actions = {
 	updateUser: async (event) => {
 		const formData = await event.request.formData();
 		const user = event.locals.user ? event.locals.user : null;
-		const email = formData.get('email');
 		const username = formData.get('username');
 		const firstName = formData.get('firstname');
 		const lastName = formData.get('lastname');
@@ -32,9 +31,6 @@ export const actions: Actions = {
 			return redirect(302, '/');
 		}
 		try {
-			if (email !== null && email !== user.email) {
-				await updateEmail(email!.toString(), event);
-			}
 			if (username !== null && username !== user.username) {
 				return await updateUsername(username.toString(), event);
 			}
