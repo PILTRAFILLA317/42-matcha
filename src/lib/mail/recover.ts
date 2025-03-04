@@ -61,6 +61,6 @@ export async function recoverPassword(email: string, recover_id: string) {
 		return ret;
 	} catch (error){
 		console.log(error);
-		return fail(401, { message: "unexpected error" });
+		return fail(401, { message: "Unexpected error" });
 	}
 }

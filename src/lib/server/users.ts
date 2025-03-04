@@ -203,7 +203,7 @@ export async function updateBio(
             `;
 		console.log('Email updated');
 	} catch (error) {
-		throw new Error('Error updating second_name');
+		throw new Error('Error updating bio');
 	}
 }
 
@@ -221,7 +221,7 @@ export async function updatePassword(
 		AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
 		`;
 	} catch (error) {
-		throw new Error('Error updating second_name');
+		throw new Error('Error updating password');
 	}
 }
 
