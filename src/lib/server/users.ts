@@ -72,12 +72,13 @@ export async function updateEmail(
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
 	if (!validateEmail(newEmail)) throw new Error('Invalid email');
+	console.log("new email is: ", newEmail);
 	const existingEmail = await db`
 		SELECT 1 FROM users WHERE email = ${newEmail} LIMIT 1
 	`;
 	if (existingEmail.length > 0) throw new Error('Email is already in use');
 	await db`UPDATE users
-		SET email = ${newEmail} WHERE username = ${user.username}
+		SET email = ${newEmail}, verified = ${false} WHERE username = ${user.username}
 		AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
 	`;
 	console.log('Email updated');

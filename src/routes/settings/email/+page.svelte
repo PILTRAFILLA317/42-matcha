@@ -6,7 +6,7 @@
 </script>
 
 <!-- svelte-ignore a11y_consider_explicit_label -->
-<div data-sveltekit-preload-data="hover" class="mx-auto w-xl rounded-lg bg-sky-900 p-6 shadow-md">
+<div data-sveltekit-preload-data="hover" class="mx-auto w-xl rounded-lg bg-sky-900 p-6 shadow-md space-y-4">
 	<div class="mb-4 flex">
 		<a href="/settings" class="relative flex-none pt-1 text-white hover:text-gray-300">
 			<svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"
@@ -28,18 +28,20 @@
 				required
 			/>
 		</div>
+		<div class="">
+			<div class="text-center">{form?.message ?? ''}</div>
+		</div>
 		<button formaction={'?/changeEmail'} type="submit" class="btn btn-primary w-full">
 			Change Email
 		</button>
-		<div class="h-4">
-			<div class="text-center">{form?.message ?? ''}</div>
-		</div>
 	</form>
 	{#if data.user.verified == false}
+	<div>
 		<form method="post" use:enhance>
 			<button formaction={'?/verifyEmail'} type="submit" class="btn btn-primary w-full">
 				Verify Email
 			</button>
 		</form>
+	</div>
 	{/if}
 </div>

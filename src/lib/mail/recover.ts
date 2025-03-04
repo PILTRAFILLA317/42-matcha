@@ -2,10 +2,11 @@ import { env } from '$env/dynamic/private';
 import { db } from '$lib/server/db';
 import { fail } from '@sveltejs/kit';
 import Mailjet from 'node-mailjet';
+import type { Row } from 'postgres';
 
-function sendEmail(email: string, recover_id: string, user: User) {
+function sendEmail(email: string, recover_id: string, user: Row) {
 	const email_body = `
-	<h3>Hello ${user.firstName} ${user.lastName},</br>
+	<h3>Hello ${user.first_name} ${user.last_name},</br>
         you requested a password recovery for your account on your account: ${user.username}
 		<a href="http://${env.URL}/auth/login/forgotpassword/${recover_id}">
 			Click aqui para cambiar la contraseña :)
@@ -24,7 +25,7 @@ function sendEmail(email: string, recover_id: string, user: User) {
 				To: [
 					{
 						Email: email,
-						Name: email
+						Name: user.first_name
 					}
 				],
 				Subject: 'Password Recovery [FollarHoySi]',
@@ -57,7 +58,8 @@ export async function recoverPassword(email: string, recover_id: string) {
 		if (!result) {
 			return fail(401, { message: 'Unexpected error, try again later' });
 		}
-		const ret = sendEmail(email, recover_id, user as User);
+		console.log("User is:", user);
+		const ret = sendEmail(email, recover_id, user);
 		return ret;
 	} catch (error){
 		console.log(error);

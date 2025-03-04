@@ -21,5 +21,4 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	return resolve(event);
 };
 
-console.log('HOLAAAAA');
 export const handle: Handle = handleAuth;

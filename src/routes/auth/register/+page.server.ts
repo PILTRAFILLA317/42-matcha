@@ -70,7 +70,7 @@ export const actions: Actions = {
 			`;
 			const verify_id = generateUserId();
 			if (email === null) return fail(401, { message: 'Email is required' });
-			sendVerificationEmail(email as string, verify_id);
+			sendVerificationEmail(verify_id, email as string, { userId: userId, email: email as string, username: username as string, firstName: firstname as string, lastName: lastname as string } as User);
 			await db`
 				INSERT INTO verification (verify_id, user_id)
 				VALUES (${verify_id}, ${userId})
