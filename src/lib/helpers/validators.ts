@@ -15,8 +15,7 @@ export function validateName(name: string): boolean {
 
 export async function usernameExists(username: string, userId: number): Promise<boolean> {
 	const result = await db`SELECT 1 FROM users WHERE username = ${username} AND id != ${userId}`;
-	console.log("username exist?", result? true : false);
-	return result? true : false;
+	return result.length == 0? false : true;
 }
 
 export function validateSexualPreference(spString: string): boolean {
@@ -62,5 +61,20 @@ export function validateEmail(email: unknown): email is string {
 
 export function validateBio(bio: string): boolean{
 	if (bio.length > 500) return false;
+	return true;
+}
+
+export function checkTags(newTags: string[], oldTags: number[]): boolean{
+	if (oldTags === null) return false;
+	let tagsNumber: number[] = [];
+	for (let i = 0; i < newTags.length; i++){
+		tagsNumber.push(parseInt(newTags[i]));
+	}
+	tagsNumber.sort();
+	oldTags.sort();
+	if (tagsNumber.length !== oldTags.length) return false;
+	for (let i = 0; i < tagsNumber.length; i++){
+		if (tagsNumber[i] !== oldTags[i]) return false;
+	}
 	return true;
 }

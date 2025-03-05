@@ -72,7 +72,7 @@ export async function updateEmail(
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
 	if (!validateEmail(newEmail)) throw new Error('Invalid email');
-	console.log("new email is: ", newEmail);
+	console.log('new email is: ', newEmail);
 	const existingEmail = await db`
 		SELECT 1 FROM users WHERE email = ${newEmail} LIMIT 1
 	`;
@@ -172,16 +172,12 @@ export async function updateSexualPreference(
 	const session: Session | null = event.locals.session;
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
-	console.log("breaks down here");
 	if (validateSexualPreference(preference) === false) throw new Error('Invalid sexual preference');
-	console.log("At least we are here");
 	try {
-		const res = await db`UPDATE users
+		await db`UPDATE users
             SET sexual_preferences = ${preference} WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
-		console.log("res: ", res);
-		console.log('Sexual preference updated');
 	} catch (error) {
 		console.log(error);
 		throw new Error('Error updating sexual preference');
@@ -269,5 +265,55 @@ export async function checkPassword(
 		}
 	} catch (error) {
 		throw new Error('Password is incorrect');
+	}
+}
+
+const namedTags = [
+	'BDSM',
+	'pegging',
+	'raw-dogging',
+	'PEC',
+	'foot-fetishism',
+	'gambling',
+	'drunk-driving',
+	'alcoholism',
+	'schizophrenia',
+	'ADHD',
+	'league-player',
+	'emo',
+	'goth',
+	'furry',
+	'punk',
+	'jordi-moderfukin-wild',
+	'tattoos',
+	'piercings',
+	'smoking',
+	'rave'
+];
+function numberToTags(tags: string[]): string[] {
+	return tags
+		.map((tag) => parseInt(tag, 10))
+		.filter((index) => !isNaN(index) && index >= 0 && index < namedTags.length)
+		.map((index) => namedTags[index]);
+}
+
+export async function updateTags(
+	tags: string[],
+	event: RequestEvent<Partial<Record<string, string>>, string | null>
+) {
+	const user: User | null = event.locals.user;
+	const session: Session | null = event.locals.session;
+	if (!user) throw new Error('User not found');
+	if (!session) throw new Error('Session not found');
+	const arrayTags = numberToTags(tags);
+	try {
+		await db`UPDATE users
+			SET user_preferences = ${db.array(arrayTags)}::"Tags"[]
+			WHERE id = ${user.userId}
+			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
+		`;
+	} catch (error) {
+		console.log(error);
+		throw new Error('Error updating tags');
 	}
 }

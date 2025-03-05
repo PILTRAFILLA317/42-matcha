@@ -24,12 +24,12 @@ declare global {
 		username: string;
 		firstName: string;
 		lastName: string;
-		gender: boolean?;
-		sexualPreferences: sexual_preferences;
-		totalLikes: number?;
-		userPreferences: Array<number>?;
+		gender: boolean;
+		sexualPreferences: sexual_preferences = sexualPreferences.Bisexual;
+		totalLikes: number = 0;
+		userPreferences: string[] = [];
 		location: Array<float>?;
-		bio: string?;
+		bio: string = '';
 		verified: boolean = false,
 	}
 

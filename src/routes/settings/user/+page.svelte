@@ -99,9 +99,9 @@
 					<label class="badge badge-secondary badge-outline h-8 w-auto text-white">
 						<input
 							type="checkbox"
-							name="tag{i}"
-							value={tag}
-							checked={data.user.userPreferences?.includes(i)}
+							name="tags"
+							value={i}
+							bind:checked={()=> data.user.userPreferences?.map(String).includes(tag), ()=>true}
 						/>
 						<span>{tag}</span>
 					</label>
