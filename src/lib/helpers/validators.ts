@@ -64,17 +64,13 @@ export function validateBio(bio: string): boolean{
 	return true;
 }
 
-export function checkTags(newTags: string[], oldTags: number[]): boolean{
+export function checkTags(newTags: string[], oldTags: string[]): boolean{
 	if (oldTags === null) return false;
-	let tagsNumber: number[] = [];
-	for (let i = 0; i < newTags.length; i++){
-		tagsNumber.push(parseInt(newTags[i]));
-	}
-	tagsNumber.sort();
+	newTags.sort();
 	oldTags.sort();
-	if (tagsNumber.length !== oldTags.length) return false;
-	for (let i = 0; i < tagsNumber.length; i++){
-		if (tagsNumber[i] !== oldTags[i]) return false;
+	if (newTags.length !== oldTags.length) return false;
+	for (let i = 0; i < newTags.length; i++){
+		if (newTags[i] !== oldTags[i]) return false;
 	}
 	return true;
 }
