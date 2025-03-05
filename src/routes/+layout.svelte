@@ -275,6 +275,7 @@
 								{/each}
 							{/if}
 						</div>
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
 							class="btn btn-primary w-xs"
 							role="button"
@@ -289,15 +290,10 @@
 					</div>
 				</button>
 			</div>
-			<!-- <div class="avatar avatar-offline">
-				<div class="w-24 rounded-full">
-					<img src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
-				</div>
-			</div> -->
 			<div class="avatar dropdown dropdown-hover dropdown-end relative ml-auto w-12 cursor-pointer">
 				<img
 					class="rounded-xl"
-					src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+					src="{data.user.images != null? data.user.images[0] : "/src/assets/GatoSexo.png"}"
 					alt="User avatar"
 				/>
 				<ul class="menu dropdown-content rounded-box bg-base-100 z-1 w-52 p-2 shadow-sm">

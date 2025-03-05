@@ -1,4 +1,3 @@
-import { getSexualPreferences, getSexualPreferenceString } from '$lib/helpers/enum';
 import {
 	usernameExists,
 	validateBio,
@@ -28,7 +27,8 @@ export async function getUser(username: string): Promise<User | null> {
 		userPreferences: user.user_preferences,
 		location: user.location,
 		bio: user.bio,
-		age: user.age
+		age: user.age,
+		images: user.profile_pictures
 	};
 	return selectedUser;
 }
@@ -53,15 +53,6 @@ export async function updateUserLocation(username: string, latitude: number, lon
 		throw new Error('Error updating location');
 	}
 }
-
-/*
-	The code here is really ugly Is really ugly
-	I use the a really similar function each time
-	I cannot be bothered though
-
-	TO-DO=>
-	- Add data validation for each input
-*/
 
 export async function updateEmail(
 	newEmail: string,

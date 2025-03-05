@@ -30,7 +30,8 @@ declare global {
 		userPreferences: string[] = [];
 		location: Array<float>?;
 		bio: string = '';
-		verified: boolean = false,
+		verified: boolean = false;
+		images: string[] = [];
 	}
 
 	interface Session{

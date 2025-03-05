@@ -10,9 +10,8 @@
 
 	let chatMessages: Array<Messages> = $state([]);
 	let activeChat: string | null = $state(null);
-	$effect(async () => {
+	$effect(async ()=> {
 		if (activeChat) {
-			console.log('activeChat', activeChat);
 			try{
 				const res = await fetch(`../api/messages?user=${activeChat}`, {				method: 'GET',
 					headers: {
@@ -21,7 +20,6 @@
 				});
 				const response = await res.json();
 				chatMessages = response.body;
-				console.log("response is: ", chatMessages[0]);
 			} catch (e) {
 				console.log(e);
 			}

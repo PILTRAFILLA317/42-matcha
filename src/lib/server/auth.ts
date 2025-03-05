@@ -66,7 +66,9 @@ export async function validateSessionToken(
 		totalLikes: userResult.total_likes,
 		userPreferences: userResult.user_preferences,
 		bio: userResult.bio,
-		verified: userResult.verified
+		verified: userResult.verified,
+		images: userResult.profile_pictures,
+		location: userResult.location
 	};
 
 	/*We compare the session's expiration date and if It has expired 
