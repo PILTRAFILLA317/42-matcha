@@ -37,13 +37,14 @@
 	<div class="flex h-[90%] space-x-2">
 		<!-- CUIDANGE CON EL OVERFLOW AUTO -->
 		<div class="w-1/6 space-y-2 overflow-auto">
-			{#each data.matchList as username}
+			{#each Object.entries(data.matchList) as [username, pictures]}
 				<!-- svelte-ignore attribute_quoted -->
 				<MiniProfile
 					onclick={() => {
 						activeChat = username;
 					}}
 					{username}
+					{pictures}
 				/>
 			{/each}
 		</div>

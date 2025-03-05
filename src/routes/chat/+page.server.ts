@@ -4,25 +4,28 @@ import { db } from '$lib/server/db';
 
 async function getChats(userId: string) {
 	try {
-		let usernameList: Array<string> = [];
 		const chats = await db`
-            SELECT 
-                CASE
-                    WHEN user_1 = ${userId} THEN user_2
-                    ELSE user_1
-                END AS user_id
-            FROM chats WHERE user_1 = ${userId} OR user_2 = ${userId}
-        `;
-		for (let i = 0; i < chats.length; i++) {
-			let username = await db`
-                SELECT (username) FROM users WHERE id = ${chats[i].user_id}
-            `;
-			usernameList.push(username[0].username);
+				SELECT 
+					u.username, 
+					u.profile_pictures
+				FROM chats c
+				JOIN users u 
+					ON u.id = CASE 
+						WHEN c.user_1 = ${userId} THEN c.user_2 
+						ELSE c.user_1 
+					END
+				WHERE c.user_1 = ${userId} OR c.user_2 = ${userId}
+			`;
+
+		const userMap: Record<string, string[]> = {};
+		for (const chat of chats) {
+			userMap[chat.username] = chat.profile_pictures || [];
 		}
-		return usernameList;
+		console.log('userMap: ', userMap);
+		return userMap;
 	} catch (error) {
 		console.log('error: ', error);
-		return [];
+		return {};
 	}
 }
 
@@ -40,7 +43,7 @@ async function sendMessage(senderId: string, reciverUser: string, message: strin
             VALUES ((SELECT id FROM chat), ${senderId}, ${message})
             RETURNING *;
         `;
-        console.log("Mensaje enviado: ", res);
+		console.log('Mensaje enviado: ', res);
 	} catch (error) {
 		console.log('error: ', error);
 	}
@@ -62,5 +65,5 @@ export const actions: Actions = {
 		if (message === null || selectedUser === null || (message as string).length == 0) return;
 		if (message.toString.length > 500 || selectedUser.toString.length > 50) return;
 		sendMessage(event.locals.user!.userId, selectedUser.toString(), message.toString());
-	},
+	}
 };
