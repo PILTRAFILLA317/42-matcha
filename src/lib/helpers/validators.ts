@@ -5,12 +5,15 @@ export function validateUsername(username: unknown): username is string {
 		typeof username === 'string' &&
 		username.length >= 3 &&
 		username.length <= 31 &&
-		/^[a-zA-Z0-9_-]+$/.test(username)
+		/^[a-zA-Z0-9._-]{3,31}$/.test(username)
 	);
 }
 
 export function validateName(name: string): boolean {
-	return /^[a-zA-Z]+$/.test(name) && name.length >= 1 && name.length <= 40;
+	return (
+		typeof name === 'string' &&
+		/^[a-zA-ZÀ-ÿ' -]{2,50}$/.test(name)
+	);
 }
 
 export async function usernameExists(username: string, userId: number): Promise<boolean> {
@@ -55,8 +58,10 @@ export function validateEmail(email: unknown): email is string {
 	//checks email type and lenght
 	if (typeof email !== 'string') return false;
 	if (email.length <= 3 || email.length >= 255) return false;
-
-	return true;
+	return (
+		typeof email === 'string' &&
+		/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email) // Validates email format
+	);
 }
 
 export function validateBio(bio: string): boolean{

@@ -1,11 +1,54 @@
 <script lang="ts">
-  import type { PageData } from "./$types";
+	import { enhance } from '$app/forms';
+	import type { ActionData } from './$types';
 
-  //   let { data }: { data: PageData } = $props();
-
-  let user = $props();
+	let { form }: { form: ActionData } = $props();
+	let isLoading = $state(false);
 </script>
 
+<div class="hero bg-base-200 min-h-[80vh]">
+	<div class="hero-content text-center">
+		<div class="max-w-md gap-y-10">
+			<form
+				autocomplete="off"
+				method="post"
+				use:enhance={({ formElement, formData, action, cancel }) => {
+					isLoading = true;
+					return async ({ result }) => {
+						console.log('aqui tamos');
+						if (result.type === 'redirect') {
+							isLoading = false;
+							console.log('if');
+						} else {
+							isLoading = false;
+							console.log('else');
+						}
+					};
+				}}
+			>
+				<h2 class="text-5xl font-bold">Create 500 users</h2>
+				<p class="py-6">This is gonna take some time, please be patient.</p>
+				<input
+					id="SecurePin"
+					type="text"
+					name="SecurePin"
+					class="input input-bordered mt-1 py-6"
+					placeholder="Secure Pin"
+					required
+				/>
+				<div class="h-6"></div>
+				{#if !isLoading}
+					<button formaction="?/createUsers" class="btn btn-secondary rounded-md">Let's Go!</button>
+				{:else}
+					<span class="loading loading-spinner loading-xl"></span>
+				{/if}
+				<p>{form?.message ?? ''}</p>
+			</form>
+		</div>
+	</div>
+</div>
+
+<!-- 
 <div
   class="max-w-72 max-h-72 mr-20 ml-20 p-3 bg-gray-800 rounded-xl shadow-md flex flex-col justify-center items-center gap-3"
 >
@@ -70,4 +113,4 @@
       <p class="text-lg mr-3">{user.location} (A Xkm)</p>
     </div>
   </div>
-</div>
+</div> -->

@@ -15,7 +15,7 @@ export const actions: Actions = {
 			if (!event.locals.user) {
 				return redirect(302, '/');
 			}
-			const res = await db`DELETE * FROM users WHERE id = ${event.locals.user.userId}`;
+			const res = await db`DELETE FROM users WHERE id = ${event.locals.user.userId}`;
 			console.log("User Deleted:", res);
 			return redirect(302, '/');
 		} catch (error) {
