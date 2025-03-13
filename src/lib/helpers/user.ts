@@ -1,6 +1,8 @@
 import { v4 as uuidv4 } from 'uuid';
 import Mailjet from 'node-mailjet';
 import { env } from '$env/dynamic/private';
+import { error, fail } from '@sveltejs/kit';
+import { Exception } from 'sass-embedded';
 
 export function generateUserId() {
 	// ID with 120 bits of entropy, or about the same as UUID v4.
@@ -10,7 +12,7 @@ export function generateUserId() {
 	return id;
 }
 
-export function sendVerificationEmail(verify_id: string, email: string) {
+export function sendVerificationEmail(verify_id: string, email: string, user: User) {
 	const email_body = `
 	<h3>Welcome to FollarHoySi, the increible pagina web to follar hoy
 		<a href="http://${env.URL}/auth/register/${verify_id}">
@@ -31,7 +33,7 @@ export function sendVerificationEmail(verify_id: string, email: string) {
 				To: [
 					{
 						Email: email,
-						Name: email
+						Name: user.firstName,
 					}
 				],
 				Subject: 'Register confirmation [FollarHoySi]',
@@ -45,6 +47,7 @@ export function sendVerificationEmail(verify_id: string, email: string) {
 			console.log(result.body);
 		})
 		.catch((err) => {
-			console.log(err.statusCode);
+			console.log(err);
+			return fail(401, { message: 'Error sending email' });
 		});
 }

@@ -224,32 +224,30 @@
 		class="shadow-neutral m-10 flex max-w-[1200px] flex-col gap-4 rounded-3xl p-3 text-white shadow-2xl md:m-5 md:flex-row"
 	>
 		<div class="carousel relative aspect-1/1 max-w-[600px] rounded-2xl">
-			<div id="slide1" class="carousel-item relative w-full">
-				<img
-					src="https://static.wikia.nocookie.net/5ae56c9b-d6cc-40aa-9920-9cdc76f973d5/scale-to-width/755"
-					class="w-full"
-					alt="Gato"
-				/>
-				<div
-					class="absolute top-1/2 right-5 left-5 flex -translate-y-1/2 transform justify-between"
-				>
-					<a href="#slide4" class="btn btn-circle">❮</a>
-					<a href="#slide2" class="btn btn-circle">❯</a>
+			{#each currentUser.images as image, i}
+					<div id="slide{i}" class="carousel-item relative w-full">
+						<img
+							src={image}
+							class="w-200"
+							alt="alt{i}"
+						/>
+						<div
+							class="absolute top-1/2 right-5 left-5 flex -translate-y-1/2 transform justify-between"
+						>
+						<a href="#slide{i - 1}" class="btn btn-circle">❮</a>
+						<a href="#slide{i + 1}" class="btn btn-circle">❯</a>
+						</div>
+					</div>
+			{/each}
+			{#if currentUser.images == null}
+				<div id="slide1" class="carousel-item relative w-full">
+					<img
+						src="/src/assets/GatoSexo.png"
+						class="w-full"
+						alt="Gato"
+					/>
 				</div>
-			</div>
-			<div id="slide2" class="carousel-item relative w-full">
-				<img
-					src="https://preview.redd.it/tengo-este-gato-de-foto-de-perfil-de-whatsapp-como-el-meme-v0-als6nit42hqb1.jpeg?width=876&format=pjpg&auto=webp&s=d95e77834f01d3c50e0864dd450f9dbc18abf45a"
-					class="w-full"
-					alt="Gato"
-				/>
-				<div
-					class="absolute top-1/2 right-5 left-5 flex -translate-y-1/2 transform justify-between"
-				>
-					<a href="#slide1" class="btn btn-circle">❮</a>
-					<a href="#slide3" class="btn btn-circle">❯</a>
-				</div>
-			</div>
+			{/if}
 		</div>
 		<div class="flex flex-col justify-between">
 			<div>

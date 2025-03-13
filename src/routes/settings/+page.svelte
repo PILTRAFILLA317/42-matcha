@@ -1,107 +1,53 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
-	import type { PageData, ActionData } from './$types';
+	import type { ActionData } from '../$types';
 
-
-	
-	let { data, form }: { data: PageData, form: ActionData } = $props();
+	let modal: HTMLDialogElement | null = $state(null);
+	let { form }: { form: ActionData } = $props();
 	export const load = () => {
 		console.log('onload??');
 	};
 </script>
 
-<div class="mx-auto w-xl rounded-lg bg-secondary p-6 shadow-md">
-	<h1 class="mb-4 text-center text-2xl font-semibold text-primary">Settings Page</h1>
-	<form method="post" use:enhance>
-		<div class="mb-4">
-			<label for="email" class="block text-sm font-medium text-primary">Email</label>
-			<input
-				id="email"
-				type="text"
-				name="email"
-				class="input input-bordered mt-1 w-full"
-				placeholder="Your Email"
-				value={data.user.email}
-				required
-			/>
+<div data-sveltekit-preload-data="hover" class="mx-auto w-xl rounded-lg bg-sky-900 p-6 shadow-md">
+	<h1 class="text-primary mb-4 text-center text-2xl font-semibold">Settings Page</h1>
+	<ul class="menu rounded-box w-full">
+		<li>
+			<a href="settings/user" class="breadcrumbs mb-4"> 👤&emsp;&emsp;User Settings </a>
+		</li>
+		<li>
+			<a href="settings/password" class="breadcrumbs mb-4">🔐&emsp;&emsp;Password Settings</a>
+		</li>
+		<li>
+			<a href="settings/pictures" class="breadcrumbs mb-4">🖼️&emsp;&emsp;Picture Settings</a>
+		</li>
+		<li>
+			<a href="settings/email" class="breadcrumbs mb-4">✉️&emsp;&emsp;Email Settings</a>
+		</li>
+	</ul>
+	<!-- svelte-ignore event_directive_deprecated -->
+	<button
+		class="btn btn-primary w-full bg-red-500 hover:bg-red-600"
+		on:click={() => modal?.showModal()}>Delete User</button
+	>
+	<dialog bind:this={modal} class="modal modal-bottom sm:modal-middle">
+		<div class="modal-box">
+			<h3 class="text-lg font-bold">Do you really want to delete the User?</h3>
+			<h1 class="text-red-400">{form?.message ?? ''}</h1>
+			<div class="modal-action">
+				<form method="post" use:enhance>
+					<button
+						formaction={'?/deleteUser'}
+						type="submit"
+						class="btn btn-primary w-full bg-red-500 hover:bg-red-600"
+					>
+						Delete User
+					</button>
+				</form>
+				<form method="dialog">
+					<button class="btn">Close</button>
+				</form>
+			</div>
 		</div>
-		<div class="mb-4">
-			<label for="username" class="block text-sm font-medium text-primary">Username</label>
-			<input
-				id="username"
-				type="text"
-				name="username"
-				class="input input-bordered mt-1 w-full"
-				placeholder="Your Username"
-				value={data.user.username}
-				required
-			/>
-		</div>
-		<div class="mb-4">
-			<label for="firstName" class="block text-sm font-medium text-primary">First Name</label>
-			<input
-				id="firstName"
-				type="text"
-				name="firstname"
-				class="input input-bordered mt-1 w-full"
-				value={data.user.firstName}
-				placeholder="Your First Name"
-				required
-			/>
-		</div>
-		<div class="mb-4">
-			<label for="lastName" class="block text-sm font-medium text-primary">Last Name</label>
-			<input
-				id="lastName"
-				type="text"
-				name="lastname"
-				class="input input-bordered mt-1 w-full"
-				value={data.user.lastName}
-				placeholder="Your Last Name"
-				required
-			/>
-		</div>
-		<div class="mb-4">
-			<label for="gender" class="block text-sm font-medium text-primary">Gender</label>
-			<select name="gender" class="select select-bordered w-full max-w-xs">
-				<option disabled selected={data.user.gender == null}>Select your gender?</option>
-				<option selected={data.user.gender && data.user.gender != null}>Male</option>
-				<option selected={!data.user.gender && data.user.gender != null}>Female</option>
-			</select>
-		</div>
-		<div class="mb-4">
-			<label for="sexualPreference" class="block text-sm font-medium text-primary">
-				Sexual Preference
-			</label>
-			<select name="sexual_preferences" class="select select-bordered w-full max-w-xs">
-				<option disabled selected={data.user.sexualPreferences == null}>
-					Select your sexual preference?
-				</option>
-				<option selected={data.user.sexualPreferences?.toString() == "Homosexual"}>Homosexual</option>
-				<option selected={data.user.sexualPreferences?.toString() == "Heterosexual"}>Heterosexual</option>
-				<option selected={data.user.sexualPreferences?.toString() == "Bisexual"}>Bisexual</option>
-			</select>
-		</div>
-		<div class="mb-4">
-			<label for="bio" class="block text-sm font-medium text-primary">Bio</label>
-			<textarea
-				id="bio"
-				name="bio"
-				class="textarea textarea-bordered w-full"
-				placeholder="Write you biography here"
-				maxlength="500"
-				value={data.user.bio}
-			></textarea>
-		</div>
-		<button formaction={'?/updateUser'} type="submit" class="btn btn-primary w-full">
-			Save Changes
-		</button>
-		<div class="h-4"></div>
-		<button formaction={'?/deleteUser'} type="submit" class="btn btn-primary w-full">
-			Delete User
-		</button>
-	</form>
-	<div class="h-4">
-		<div class="text-center text-red-500">{form?.message ?? ''}</div>
-	</div>
+	</dialog>
 </div>

@@ -13,9 +13,9 @@ declare global {
 	}
 
 	enum sexualPreferences{
-		Heterosexual,
-		Homosexual,
-		Bisexual,
+		Heterosexual = 1,
+		Homosexual = 2,
+		Bisexual = 3,
 	}
 
 	interface User{
@@ -24,15 +24,14 @@ declare global {
 		username: string;
 		firstName: string;
 		lastName: string;
-		gender: boolean?;
-		sexualPreferences: sexual_preferences?;
+		gender: boolean;
+		sexualPreferences: sexual_preferences = sexualPreferences.Bisexual;
+		totalLikes: number = 0;
+		userPreferences: string[] = [];
 		location: Array<float>?;
-		age: number?;
-		totalLikes: number?;
-		userPreferences: Array<number>?;
-		location: Array<float>?;
-		bio: string?;
-		verified: boolean = false,
+		bio: string = '';
+		verified: boolean = false;
+		images: string[] = [];
 	}
 
 	interface Session{

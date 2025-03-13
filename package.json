@@ -14,24 +14,25 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^4.0.0",
-		"@sveltejs/kit": "^2.17.1",
+		"@sveltejs/kit": "^2.17.3",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
 		"daisyui": "^5.0.0-beta.8",
-		"prettier": "^3.5.0",
+		"prettier": "^3.5.2",
 		"prettier-plugin-svelte": "^3.3.3",
 		"prettier-plugin-tailwindcss": "^0.6.11",
-		"sass-embedded": "^1.83.4",
-		"svelte": "^5.20.0",
+		"sass-embedded": "^1.85.1",
+		"svelte": "^5.20.4",
 		"svelte-check": "^4.1.4",
-		"tailwindcss": "^4.0.6",
+		"tailwindcss": "^4.0.9",
 		"typescript": "^5.7.3",
-		"vite": "^6.1.0"
+		"vite": "^6.2.0"
 	},
 	"dependencies": {
+		"@aws-sdk/client-s3": "^3.750.0",
 		"@node-rs/argon2": "^2.0.2",
 		"@oslojs/crypto": "^1.0.1",
 		"@oslojs/encoding": "^1.1.0",
-		"@tailwindcss/vite": "^4.0.6",
+		"@tailwindcss/vite": "^4.0.9",
 		"add": "^2.0.6",
 		"melt": "^0.7.0",
 		"node-mailjet": "^6.0.6",
@@ -39,7 +40,7 @@
 		"postgres": "^3.4.5",
 		"svelte-5-range-slider": "^0.0.6",
 		"svelte-loader": "^3.2.4",
-		"uuid": "^11.0.5",
+		"uuid": "^11.1.0",
 		"yootils": "^0.3.1"
 	}
 }

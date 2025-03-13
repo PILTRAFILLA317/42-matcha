@@ -5,9 +5,6 @@ import { updatePassword, updatePasswordRecover } from '$lib/server/users';
 import { hash } from '@node-rs/argon2';
 
 export const load: PageServerLoad = async (event) => {
-	if (event.locals.user) {
-		return redirect(302, '/');
-	}
 	return {};
 };
 

@@ -7,8 +7,8 @@ import {
 	validateUsername
 } from '$lib/helpers/validators';
 import { db } from '$lib/server/db'; // Assuming you have a db module for database connection
-import { hash, verify } from '@node-rs/argon2';
-import { fail, json, type RequestEvent } from '@sveltejs/kit';
+import { verify } from '@node-rs/argon2';
+import { fail, type RequestEvent } from '@sveltejs/kit';
 
 export async function getUser(username: string): Promise<User | null> {
     const [user] = await db`SELECT * FROM users WHERE username = ${username}`;
@@ -37,38 +37,12 @@ export async function updateUserLocation(username: string, latitude: number, lon
         await db`UPDATE users
             SET location = ARRAY[${latitude}, ${longitude}]::float[] WHERE username = ${username};
             `;
-        console.log('Location updated');
-    } catch (error) {
-        console.error('Error updating location', error);
-        throw new Error('Error updating location');
-    }
+		console.log('Location updated');
+	} catch (error) {
+		console.error('Error updating location', error);
+		throw new Error('Error updating location');
+	}
 }
-
-// export async function updateUsername(newUsername: string, user: User) {
-// 	if (!user) throw new Error('User not found');
-// 	const username: string = user.username;
-// 	console.log('updating user\nUserID is => ', username, '\nNew email is => ', newUsername);
-// 	if (!validateEmail(newUsername)) throw new Error('Invalid email');
-// 	try {
-// 		await db`UPDATE users
-//             SET username = ${newUsername} WHERE username = ${username};
-//             `;
-// 		console.log('Email updated');
-// 	} catch (error) {
-// 		console.error('Fuck my ass', error);
-// 		throw new Error('Error updating email');
-// 	}
-// }
-
-
-/*
-	The code here is really ugly Is really ugly
-	I use the a really similar function each time
-	I cannot be bothered though
-
-	TO-DO=>
-	- Add data validation for each input
-*/
 
 export async function updateEmail(
 	newEmail: string,
@@ -79,15 +53,16 @@ export async function updateEmail(
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
 	if (!validateEmail(newEmail)) throw new Error('Invalid email');
-	try {
-		await db`UPDATE users
-            SET email = ${newEmail} WHERE username = ${user.username}
-			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
-            `;
-		console.log('Email updated');
-	} catch (error) {
-		throw new Error('Error updating email');
-	}
+	console.log('new email is: ', newEmail);
+	const existingEmail = await db`
+		SELECT 1 FROM users WHERE email = ${newEmail} LIMIT 1
+	`;
+	if (existingEmail.length > 0) throw new Error('Email is already in use');
+	await db`UPDATE users
+		SET email = ${newEmail}, verified = ${false} WHERE username = ${user.username}
+		AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
+	`;
+	console.log('Email updated');
 }
 
 export async function updateUsername(
@@ -178,8 +153,7 @@ export async function updateSexualPreference(
 	const session: Session | null = event.locals.session;
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
-	if (!validateSexualPreference(preference)) throw new Error('Invalid sexual preference');
-	console.log('preference: ', preference);
+	if (validateSexualPreference(preference) === false) throw new Error('Invalid sexual preference');
 	try {
 		await db`UPDATE users
             SET sexual_preferences = ${preference} WHERE id = ${user.userId}
@@ -207,7 +181,7 @@ export async function updateBio(
             `;
 		console.log('Email updated');
 	} catch (error) {
-		throw new Error('Error updating second_name');
+		throw new Error('Error updating bio');
 	}
 }
 
@@ -225,7 +199,7 @@ export async function updatePassword(
 		AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
 		`;
 	} catch (error) {
-		throw new Error('Error updating second_name');
+		throw new Error('Error updating password');
 	}
 }
 
@@ -244,10 +218,10 @@ export async function updatePasswordRecover(password: string, recoverId: string)
 		}
 		const res = await db`DELETE FROM password_recovery WHERE id = ${recoverId}`;
 		console.log('res: ', res);
-		if (!res){
+		if (!res) {
 			return fail(401, { message: 'Error deleting verifyID' });
 		}
-		return {success: true, status: 201, message: "Password changed successfully"};
+		return { success: true, status: 201, message: 'Password changed successfully' };
 	} catch (error) {
 		console.log('error: ', error);
 		return fail(401, { message: 'Unexpected error' });
@@ -272,5 +246,55 @@ export async function checkPassword(
 		}
 	} catch (error) {
 		throw new Error('Password is incorrect');
+	}
+}
+
+const namedTags = [
+	'BDSM',
+	'pegging',
+	'raw-dogging',
+	'PEC',
+	'foot-fetishism',
+	'gambling',
+	'drunk-driving',
+	'alcoholism',
+	'schizophrenia',
+	'ADHD',
+	'league-player',
+	'emo',
+	'goth',
+	'furry',
+	'punk',
+	'jordi-moderfukin-wild',
+	'tattoos',
+	'piercings',
+	'smoking',
+	'rave'
+];
+function numberToTags(tags: string[]): string[] {
+	return tags
+		.map((tag) => parseInt(tag, 10))
+		.filter((index) => !isNaN(index) && index >= 0 && index < namedTags.length)
+		.map((index) => namedTags[index]);
+}
+
+export async function updateTags(
+	tags: string[],
+	event: RequestEvent<Partial<Record<string, string>>, string | null>
+) {
+	const user: User | null = event.locals.user;
+	const session: Session | null = event.locals.session;
+	if (!user) throw new Error('User not found');
+	if (!session) throw new Error('Session not found');
+	const arrayTags = numberToTags(tags);
+	try {
+		await db`UPDATE users
+			SET user_preferences = ${db.array(arrayTags)}::"Tags"[]
+			WHERE id = ${user.userId}
+			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
+		`;
+	} catch (error) {
+		console.log(error);
+		throw new Error('Error updating tags');
 	}
 }

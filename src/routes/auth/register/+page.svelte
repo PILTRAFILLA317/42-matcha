@@ -3,18 +3,17 @@
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
-
-	
+	console.log("Form is: ", form);
 </script>
 
-<div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
-	<h2 class="mb-4 text-center text-2xl font-semibold text-secondary">
+<div class="flex:column  bg-sky-900 items-center w-md mx-auto rounded-lg p-6 shadow-md ">
+	<h2 class="mb-4 text-center text-2xl font-semibold text-primary">
 		Register
 	</h2>
 
 	<form method="post" use:enhance>
 		<div class="mb-4">
-			<label for="email" class="block text-sm font-medium text-secondary">Email</label>
+			<label for="email" class="block text-sm font-medium text-primary">Email</label>
 			<input
 				id="email"
 				type="email"
@@ -25,7 +24,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="username" class="block text-sm font-medium text-secondary">Username</label>
+			<label for="username" class="block text-sm font-medium text-primary">Username</label>
 			<input
 				id="username"
 				type="text"
@@ -36,7 +35,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="FirstName" class="block text-sm font-medium text-secondary">First Name</label>
+			<label for="FirstName" class="block text-sm font-medium text-primary">First Name</label>
 			<input
 				id="firstname"
 				type="text"
@@ -47,7 +46,7 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="LastName" class="block text-sm font-medium text-secondary">Last Name</label>
+			<label for="LastName" class="block text-sm font-medium text-primary">Last Name</label>
 			<input
 				id="lastname"
 				type="text"
@@ -58,29 +57,39 @@
 			/>
 		</div>
 		<div class="mb-4">
-			<label for="Password" class="block text-sm font-medium text-secondary">Password</label>
-			<input
+			<label for="Password" class="block text-sm font-medium text-primary">Password</label>
+			<div class="flex items-center space-x-1">
+				<input
 				id="password"
 				type="password"
 				name="password"
 				class="input input-bordered mt-1 w-full"
 				placeholder="********"
 				required
-			/>
+				/>
+				<div class="tooltip" data-tip="Password must between 8 and 20 characters, contain at least one numeric digit, one uppercase and one lowercase letter">
+					<p>&#9432;</p>
+				</div>
+			</div>
 		</div>
 		<div class="mb-4">
-			<label for="repeatPassword" class="block text-sm font-medium text-secondary">Repeat Password</label>
+			<label for="repeatPassword" class="block text-sm font-medium text-primary">Repeat Password</label>
+			<div class="flex items-center space-x-1">
 			<input
-				id="repeatpassword"
-				type="password"
-				name="repeatpassword"
-				class="input input-bordered mt-1 w-full"
-				placeholder="********"
-				required
+			id="repeatpassword"
+			type="password"
+			name="repeatpassword"
+			class="input input-bordered mt-1 w-full"
+			placeholder="********"
+			required
 			/>
+			<div class="tooltip" data-tip="Password must between 8 and 20 characters, contain at least one numeric digit, one uppercase and one lowercase letter">
+				<p>&#9432;</p>
+			</div>
+			</div>
 		</div>
 		<div class="flex mb-4 align-center justify-center">
-			<p class="text-white">{form?.message ?? ''}</p>
+			<p class="text-red-200">{form?.message ?? ''}</p>
 		</div>
 		<button
 			formaction={'?/register'}
