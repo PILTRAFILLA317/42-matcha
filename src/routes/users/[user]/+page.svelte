@@ -127,7 +127,7 @@
 					<div id="slide{i}" class="carousel-item relative w-full">
 						<img
 							src={image}
-							class="w-full"
+							class="w-200"
 							alt="alt{i}"
 						/>
 						<div
