@@ -61,8 +61,22 @@
 				<div
 					class="notification bg-base-100 flex w-full flex-row items-center gap-2 rounded-2xl p-4 shadow-xl"
 				>
-					<a href="/users/{notification.message}" class="link link-secondary">{notification.message}</a>
-					<p>{notification.type === 'visit' ? 'ha visto tu perfil 👀' : ''}</p>
+					<a href="/users/{notification.message}" class="link link-secondary"
+						>{notification.message}</a
+					>
+					<p>
+						{notification.type === 'visit'
+							? 'ha visto tu perfil 👀'
+							: notification.type === 'like'
+								? 'te ha dado like 💖'
+								: notification.type === 'match'
+									? 'es un nuevo match 💘'
+									: notification.type === 'unlike'
+										? 'ha quitado el like 💔'
+										: notification.type === 'chat'
+											? 'te ha mandado un mensaje 💬'
+											: ''}
+					</p>
 				</div>
 			{/each}
 		</div>

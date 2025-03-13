@@ -3,6 +3,8 @@
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
+
+	
 </script>
 
 <div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">

@@ -33,7 +33,6 @@ export async function getUser(username: string): Promise<User | null> {
 
 export async function updateUserLocation(username: string, latitude: number, longitude: number) {
     if (!username) throw new Error('Username is required');
-    console.log('Updating location for user\nUsername is => ', username, '\nLatitude is => ', latitude, '\nLongitude is => ', longitude);
     try {
         await db`UPDATE users
             SET location = ARRAY[${latitude}, ${longitude}]::float[] WHERE username = ${username};

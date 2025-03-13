@@ -1,6 +1,7 @@
 import { redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
+import { notificator } from '$lib/server/utils';
 
 async function getChats(userId: string) {
 	try {
@@ -40,7 +41,17 @@ async function sendMessage(senderId: string, reciverUser: string, message: strin
             VALUES ((SELECT id FROM chat), ${senderId}, ${message})
             RETURNING *;
         `;
-        // console.log("Mensaje enviado: ", res);
+		const senderUsername = await db`
+            SELECT username FROM users WHERE id = ${senderId}
+			`;
+		const reciverUserID = await db`
+		SELECT id FROM users WHERE username = ${reciverUser}
+		`;
+		// console.log("senderUsername69: ", senderUsername[0].username);
+		// console.log("senderId69: ", senderId);
+		// console.log("reciverUser69: ", reciverUser);
+		notificator(reciverUserID[0].id, senderUsername[0].username, "chat", senderUsername[0].username);
+		// console.log("Mensaje enviado: ", res);
 	} catch (error) {
 		console.log('error: ', error);
 	}

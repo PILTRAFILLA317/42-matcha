@@ -122,7 +122,7 @@
 						<h1 class="mr-5 text-3xl font-bold">@{data.user?.username}</h1>
 						<!-- <p class="text-2xl font-bold text-primary">2</p> -->
 						<p class="text-primary text-2xl font-bold">
-							{data.user.totalLikes}
+							{data.user.total_likes}
 						</p>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"

@@ -45,11 +45,11 @@
 
 	// Obtener ubicación al cargar la página
 	async function getLocation() {
-		if (data.user?.location) {
-			return;
-		}
+		// if (data.user?.location) {
+		// 	return;
+		// }
 
-		console.log('Obteniendo ubicación...');
+		// console.log('Obteniendo ubicación...');
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
 				(pos) => {
@@ -61,7 +61,7 @@
 						error: null
 					};
 					if (data.user?.username) {
-						console.log('Actualizando ubicación en la base de datos...');
+						// console.log('Actualizando ubicación en la base de datos...');
 						updateLocation(location);
 					}
 					// locationStore.set(location);
@@ -131,7 +131,7 @@
 				latitude: location.latitude,
 				longitude: location.longitude
 			});
-			console.log('Body:', body);
+			// console.log('Body:', body);
 			const res = await fetch('../api/location-update', {
 				method: 'POST',
 				headers: {
@@ -140,7 +140,6 @@
 				body
 			});
 			const data = await res.json();
-
 			if (res.ok) {
 				// const location = {
 				//   latitude: data.latitude,
@@ -151,7 +150,7 @@
 				// };
 				// locationStore.set(location);
 				// localStorage.setItem('user-location', JSON.stringify(location)); // Guarda en localStorage
-				console.log('Ubicación actualizada en la base de datos.');
+				// console.log('Ubicación actualizada en la base de datos.');
 			}
 		} catch (err) {
 			console.log('RES:', data);
@@ -230,7 +229,10 @@
 	// Ejecutar la lógica al cargar la página
 	onMount(() => {
 		getUnreadNotifications();
-		getLocation();
+		if (data.user?.userId) {
+			// console.log('Obteniendo ubicación...');
+			getLocation();
+		}
 		startSSERequest();
 		return () => {
 			eventSource?.close();
@@ -273,8 +275,12 @@
 													: notification.type === 'like'
 														? 'te ha dado like 💖'
 														: notification.type === 'match'
-														? 'es un nuevo match 💘'
-														: 'ha quitado el like 💔'}
+															? 'es un nuevo match 💘'
+															: notification.type === 'unlike'
+																? 'ha quitado el like 💔'
+																: notification.type === 'chat'
+																	? 'te ha mandado un mensaje 💬'
+																	: ''}
 											</p>
 											<text />
 										</text>
