@@ -57,6 +57,22 @@
 			/>
 		</div>
 		<div class="mb-4">
+			<label for="Age" class="block text-sm font-medium text-primary">Age</label>
+			<div class="flex items-center space-x-1">
+			<input
+				id="age"
+				type="number"
+				name="age"
+				class="input input-bordered mt-1 w-full"
+				placeholder="Your Age"
+				required
+			/>
+			<div class="tooltip" data-tip="Age must be between 18 and 120. If you are somehow 120 and using this website you have bigger things to worry about">
+				<p>&#9432;</p>
+			</div>
+			</div>
+		</div>
+		<div class="mb-4">
 			<label for="Password" class="block text-sm font-medium text-primary">Password</label>
 			<div class="flex items-center space-x-1">
 				<input

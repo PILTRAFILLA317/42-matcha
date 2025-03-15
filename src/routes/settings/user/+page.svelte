@@ -61,6 +61,18 @@
 				/>
 			</div>
 			<div class="mb-4">
+				<label for="Age" class="text-primary block text-sm font-medium">Age</label>
+				<input
+					id="age"
+					type="number"
+					name="age"
+					class="input input-bordered mt-1 w-full"
+					bind:value={data.user.age}
+					placeholder="Age"
+					required
+				/>
+			</div>
+			<div class="mb-4">
 				<label for="gender" class="text-primary block text-sm font-medium">Gender</label>
 				<select name="gender" class="select select-bordered w-full max-w-xs">
 					<option disabled selected={data.user.gender == null}>Select your gender?</option>

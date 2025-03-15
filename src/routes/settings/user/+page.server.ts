@@ -1,5 +1,6 @@
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import {
+	updateAge,
 	updateBio,
 	updateEmail,
 	updateFirstName,
@@ -27,6 +28,7 @@ export const actions: Actions = {
 		const username = formData.get('username');
 		const firstName = formData.get('firstname');
 		const lastName = formData.get('lastname');
+		const age = formData.get('age');
 		const gender: boolean = formData.get('gender') == 'Male' ? true : false;
 		const sexualPreference = formData.get('sexual_preferences') as string;
 		const bio = formData.get('bio');
@@ -44,6 +46,9 @@ export const actions: Actions = {
 			}
 			if (lastName !== null && lastName !== user.lastName) {
 				await updateLastName(lastName.toString(), event);
+			}
+			if (age !== null && Number(age) !== user.age) {
+				await updateAge(age.toString(), event);
 			}
 			if (gender !== null && gender !== user.gender) {
 				await updateGender(gender, event);

@@ -1,5 +1,6 @@
 import {
 	usernameExists,
+	validateAge,
 	validateBio,
 	validateEmail,
 	validateName,
@@ -118,6 +119,26 @@ export async function updateLastName(
 	try {
 		await db`UPDATE users
             SET last_name = ${newLastName} WHERE id = ${user.userId}
+			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
+            `;
+		console.log('Email updated');
+	} catch (error) {
+		throw new Error('Error updating second_name');
+	}
+}
+
+export async function updateAge(
+	age: string,
+	event: RequestEvent<Partial<Record<string, string>>, string | null>
+) {
+	const user: User | null = event.locals.user;
+	const session: Session | null = event.locals.session;
+	if (!user) throw new Error('User not found');
+	if (!session) throw new Error('Session not found');
+	if (!validateAge(age)) throw new Error('Invalid Age');
+	try {
+		await db`UPDATE users
+            SET age = ${age} WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
 		console.log('Email updated');
