@@ -1,7 +1,7 @@
 import { fail, json, redirect } from '@sveltejs/kit';
 import type { Actions, PageServerLoad } from './$types';
 import { env } from '$env/dynamic/private';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import { S3Client, PutObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
 import { db } from '$lib/server/db';
 
 export const load: PageServerLoad = (async (event) => {
@@ -48,7 +48,8 @@ export const actions: Actions = {
 					Bucket: env.SUPABASE_S3_BUCKET_NAME,
 					Key: filename,
 					Body: buffer,
-					ContentType: file.type
+					ContentType: file.type,
+					// SSEKMSKeyId: event.locals.user?.userId
 				})
 			);
 			const response = await db`
@@ -76,12 +77,23 @@ export const actions: Actions = {
 			if (!id) return fail(401, { message: 'No id found' });
 			const idNum = parseInt(id) + 1;
 			const response = await db`
-                UPDATE users
-                SET profile_pictures = array_remove(profile_pictures, profile_pictures[${idNum}])
-                WHERE id = ${event.locals.user.userId}
-                `;
-                console.log('response is: ', response);
-                console.log('picture deleted');
+					UPDATE users
+					SET profile_pictures = array_remove(profile_pictures, profile_pictures[${idNum}])
+					WHERE id = ${event.locals.user.userId}
+			`;
+			console.log('response is: ', response);
+			console.log("noseque parsed: ", event.locals.user.images[idNum - 1].split('/').pop());
+			console.log('picture deleted');
+			const client = new S3Client({
+				region: env.SUPABASE_S3_REGION,
+				endpoint: env.SUPABASE_S3_ENDPOINT,
+				credentials: {
+					accessKeyId: env.SUPABASE_S3_ACCESS_KEY,
+					secretAccessKey: env.SUPABASE_S3_SECRET_KEY
+				},
+				forcePathStyle: true
+			});
+			client.send(new DeleteObjectCommand({Bucket: env.SUPABASE_S3_BUCKET_NAME, Key: event.locals.user.images[idNum - 1].split('/').pop()}));
 			return { status: 200, message: 'Picture Deleted' };
 		} catch (error) {
 			console.log('Unexpected error: ', error);
