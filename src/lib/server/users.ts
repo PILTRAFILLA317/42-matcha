@@ -10,31 +10,31 @@ import { db } from '$lib/server/db'; // Assuming you have a db module for databa
 import { verify } from '@node-rs/argon2';
 import { fail, type RequestEvent } from '@sveltejs/kit';
 
-export async function getUser(username: string): Promise<User | null> {
-    const [user] = await db`SELECT * FROM users WHERE username = ${username}`;
-    if (!user) { return null; }
-    const selectedUser = {
-        userId: user.id,
-        email: user.email,
-        username: user.username,
-        firstName: user.first_name,
-        lastName: user.last_name,
-        gender: user.gender,
-        sexualPreferences: user.sexual_preferences,
-        totalLikes: user.total_likes,
-        userPreferences: user.user_preferences,
-        location: user.location,
-        bio: user.bio,
+export async function getUser(username: string): Promise<UserFront | null> {
+	const [user] = await db`SELECT * FROM users WHERE username = ${username}`;
+	if (!user) { return null; }
+	const selectedUser: UserFront = {
+		username: user.username,
+		firstName: user.first_name,
+		lastName: user.last_name,
+		gender: user.gender,
+		sexualPreferences: user.sexual_preferences,
+		totalLikes: user.total_likes,
+		userPreferences: user.user_preferences,
+		location: user.location,
+		bio: user.bio,
 		age: user.age,
-		verified: user.verified,
-    };
-    return selectedUser;
+		images: user.profile_pictures,
+		isOnline: user.is_online,
+		lastConnection: user.last_seen,
+	};
+	return selectedUser;
 }
 
 export async function updateUserLocation(username: string, latitude: number, longitude: number) {
-    if (!username) throw new Error('Username is required');
-    try {
-        await db`UPDATE users
+	if (!username) throw new Error('Username is required');
+	try {
+		await db`UPDATE users
             SET location = ARRAY[${latitude}, ${longitude}]::float[] WHERE username = ${username};
             `;
 		console.log('Location updated');
@@ -296,5 +296,39 @@ export async function updateTags(
 	} catch (error) {
 		console.log(error);
 		throw new Error('Error updating tags');
+	}
+}
+
+export async function updateConnected(
+	userId: string,
+) {
+	const connected = true;
+	if (!userId) throw new Error('User not found');
+	try {
+		await db`UPDATE users
+			SET is_online = ${connected} WHERE id = ${userId};
+			`;
+		console.log('connected updated');
+	} catch (error) {
+		throw new Error('Error updating connected');
+	}
+}
+
+export async function updateLastConnection(
+	userId: string,
+) {
+	const connected = false;
+	let lastConnection = new Date().toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
+	console.log('lastConnection: ', lastConnection);
+	if (!userId) throw new Error('User not found');
+	try {
+		await db`UPDATE users
+			SET is_online = ${connected},
+			last_seen = ${lastConnection} WHERE id = ${userId};
+			`;
+		console.log('last_connection updated');
+	} catch (error) {
+		console.log(error);
+		throw new Error('Error updating last_connection');
 	}
 }

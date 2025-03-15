@@ -1,6 +1,8 @@
 // src/routes/api/sse/+server.ts
 import { db } from '$lib/server/db';
 import type { RequestHandler } from './$types';
+import { updateConnected } from '$lib/server/users';
+import { updateLastConnection } from '$lib/server/users';
 
 // Track active listeners per user
 const activeListeners = new Map<
@@ -52,16 +54,22 @@ export const GET: RequestHandler = async ({ locals }) => {
         controller.enqueue(encoder.encode('data: connected\n\n'));
 
         // Store controller reference
+        console.log('CONNECTED USER:', userId);
+        updateConnected(userId);
         activeListeners.set(userId, { controller, unsubscribe: () => Promise.resolve() });
 
         // Cleanup on HMR
         if (import.meta.hot) {
           import.meta.hot.dispose(() => {
+            console.log('SA IDO:', userId);
+            updateLastConnection(userId);
             activeListeners.delete(userId);
           });
         }
       },
       cancel() {
+        console.log('SA IDO3', userId);
+        updateLastConnection(userId);
         activeListeners.delete(userId);
       }
     }),

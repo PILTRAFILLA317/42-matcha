@@ -12,13 +12,13 @@ declare global {
 		}
 	}
 
-	enum sexualPreferences{
+	enum sexualPreferences {
 		Heterosexual = 1,
 		Homosexual = 2,
 		Bisexual = 3,
 	}
 
-	interface User{
+	interface User {
 		userId: string;
 		email: string;
 		username: string;
@@ -32,18 +32,34 @@ declare global {
 		bio: string = '';
 		verified: boolean = false;
 		images: string[] = [];
+		age: number = 0;
+	}
+	interface UserFront{
+		username: string;
+		firstName: string;
+		lastName: string;
+		gender: boolean;
+		sexualPreferences: sexual_preferences = sexualPreferences.Bisexual;
+		totalLikes: number = 0;
+		userPreferences: string[] = [];
+		location: Array<float>?;
+		bio: string = '';
+		images: string[] = [];
+		age: number;
+		isOnline: boolean;
+		lastConnection: Date;
 	}
 
-	interface Session{
+	interface Session {
 		id: string;
 		userId: string;
 		expiresAt: Date;
 	}
 
-	interface Messages{
+	interface Messages {
 		sender: string;
 		content: string;
 	}
 }
 
-export {};
+export { };
