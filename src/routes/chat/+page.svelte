@@ -143,8 +143,7 @@
 		>
 	</div>
 	<div class="flex h-[90%] space-x-2">
-		<!-- CUIDANGE CON EL OVERFLOW AUTO -->
-		<div class="w-1/6 space-y-2 overflow-auto">
+		<div class="w-1/6 space-y-2 overflow-y-auto overflow-x-hidden">
 			{#each Object.entries(data.matchList) as [username, pictures]}
 				<!-- svelte-ignore attribute_quoted -->
 				<MiniProfile
@@ -190,5 +189,4 @@
 			{/if}
 		</div>
 	</div>
-	<!-- <MiniProfile user={data.user} /> -->
 </div>
