@@ -16,6 +16,13 @@ export function validateName(name: string): boolean {
 	);
 }
 
+export function validateAge(age: string): boolean {
+	if (Number.isNaN(age) === true) return false;
+	if (Number(age) < 18) return false;
+	if (Number(age) > 120) return false;
+	return true;
+}
+
 export async function usernameExists(username: string, userId: number): Promise<boolean> {
 	const result = await db`SELECT 1 FROM users WHERE username = ${username} AND id != ${userId}`;
 	return result.length == 0? false : true;

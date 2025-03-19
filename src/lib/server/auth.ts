@@ -94,7 +94,7 @@ export async function validateSessionToken(
 
 export type SessionValidationResult = Awaited<ReturnType<typeof validateSessionToken>>;
 
-export async function invalidateSession(sessionId: number): Promise<void>{
+export async function invalidateSession(sessionId: number | string): Promise<void>{
 	await db`DELETE FROM sessions WHERE id = ${sessionId}`;
 }
 

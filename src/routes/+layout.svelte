@@ -241,7 +241,7 @@
 	});
 </script>
 
-<nav class="flex items-center bg-transparent p-5 text-white">
+<nav class="flex items-center bg-white-100 p-5 text-white">
 	<!-- <a href="/" class="justify-end text-xl">MatchPoint</a> -->
 	<a href="/">
 		<img src="/src/assets/logo.png" alt="MatchPoint" class="h-16 w-auto" />
@@ -329,7 +329,7 @@
 	{@render children()}
 </main> -->
 
-<main class="mb-16 flex flex-1 items-center justify-center">
+<main class="mb-16 flex flex-1 items-center justify-center h-screen">
 	{@render children()}
 </main>
 

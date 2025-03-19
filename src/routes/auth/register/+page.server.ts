@@ -8,7 +8,8 @@ import {
 	validateUsername,
 	validateName,
 	validatePassword,
-	validateEmail
+	validateEmail,
+	validateAge
 } from '$lib/helpers/validators';
 
 export const load: PageServerLoad = async (event) => {
@@ -25,6 +26,7 @@ export const actions: Actions = {
 		const username = formData.get('username');
 		const firstname = formData.get('firstname');
 		const lastname = formData.get('lastname');
+		const age = formData.get('age')? Number(formData.get('age')) : null;
 		const password = formData.get('password');
 		const repeatpassword = formData.get('repeatpassword');
 		console.log('Registering user', {
@@ -32,6 +34,7 @@ export const actions: Actions = {
 			username,
 			firstname,
 			lastname,
+			age,
 			password,
 			repeatpassword
 		});
@@ -40,6 +43,7 @@ export const actions: Actions = {
 		if (!username) return fail(400, { message: 'Username missing' });
 		if (!firstname) return fail(400, { message: 'First name missing' });
 		if (!lastname) return fail(400, { message: 'Last name missing' });
+		if (!age) return fail(400, { message: 'Age missing' });
 		if (!password) return fail(400, { message: 'Password missing' });
 		if (!repeatpassword) return fail(400, { message: 'Repeat password missing' });
 		if (password !== repeatpassword) return fail(400, { message: 'Passwords do not match' });
@@ -47,7 +51,8 @@ export const actions: Actions = {
 		if (!validateEmail(email)) return fail(400, { message: 'Invalid email' });
 		if (!validateUsername(username)) return fail(400, { message: 'Invalid username' });
 		if (!validateName(firstname as string)) return fail(400, { message: 'Invalid first name' });
-		if (!validateName(lastname as string)) return fail(400, { message: 'Invalid first name' });
+		if (!validateName(lastname as string)) return fail(400, { message: 'Invalid last name' });
+		if (!validateAge(age.toString())) return fail(400, { message: 'Invalid age' });
 		if (!validatePassword(password as string)) return fail(400, { message: 'Invalid password' });
 
 		const userId = generateUserId();
@@ -63,8 +68,8 @@ export const actions: Actions = {
 
 		try {
 			await db`
-				INSERT INTO users (id, email, username, password, first_name, last_name)
-				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firstname)}, ${String(lastname)})
+				INSERT INTO users (id, email, username, password, first_name, last_name, age)
+				VALUES (${userId}, ${String(email)}, ${String(username)}, ${String(passwordHash)}, ${String(firstname)}, ${String(lastname)}, ${String(age)})
 				ON CONFLICT (id) DO NOTHING
 			`;
 			const sessionToken = auth.generateSessionToken();
@@ -97,6 +102,7 @@ export const actions: Actions = {
 				return fail(400, { message: 'Email already in use' });
 			if (error.constraint_name === 'users_username_key')
 				return fail(400, { message: 'Username already in use' });
+			console.log('error is', error);
 			return fail(400, { message: 'Unexpected error' });
 		}
 		return redirect(302, '/');

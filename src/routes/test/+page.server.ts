@@ -6,10 +6,10 @@ import { hash } from '@node-rs/argon2';
 const anuelLetra: string =
 	"La definición de \"ser real\" en el diccionario e' mi foto\nYo le dije a Ozuna: \"El dinero no nos hace, lo hacemo' nosotro'\"\nY yo le dije a Balvin que la depresión e' un demonio sin un rostro\nY que estamo' donde estamo', bendeci'os porque Dios nos escogió a nosotro'";
 const defaultImageOptions = [
-	'https://cxcmnehhkrrtgcgsyrob.supabase.co/storage/v1/object/public/user_images//gatong.jpeg',
-	'https://cxcmnehhkrrtgcgsyrob.supabase.co/storage/v1/object/public/user_images//cigarrong.jpeg',
-	'https://cxcmnehhkrrtgcgsyrob.supabase.co/storage/v1/object/public/user_images//kratong.jpeg',
-	'https://cxcmnehhkrrtgcgsyrob.supabase.co/storage/v1/object/public/user_images//alieng.jpeg'
+	'https://cxcmnehhkrrtgcgsyrob.supabase.co/storage/v1/object/public/user_images//gatong.png',
+	'https://cxcmnehhkrrtgcgsyrob.supabase.co/storage/v1/object/public/user_images//cigarrong.png',
+	'https://cxcmnehhkrrtgcgsyrob.supabase.co/storage/v1/object/public/user_images//kratong.png',
+	'https://cxcmnehhkrrtgcgsyrob.supabase.co/storage/v1/object/public/user_images//alieng.png'
 ];
 
 export const load: PageServerLoad = async (event) => {
