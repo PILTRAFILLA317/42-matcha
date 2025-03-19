@@ -196,7 +196,7 @@
 			<div>
 				<div class="flex flex-col items-center m-2 gap-2 md:flex-row">
 					{#if sortOption === ''}{:else}
-						<input class="btn btn-square" type="reset" value="x" />
+						<input class="btn btn-square" type="reset" onclick={() => (sortOption = '')} value="x" />
 					{/if}
 					<input
 						class="btn"

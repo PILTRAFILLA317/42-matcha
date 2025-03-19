@@ -85,7 +85,7 @@
 </script>
 
 <div class="flex flex-col items-center justify-center gap-7">
-	<h1 class="text-4xl font-bold">Welcome {data.user.username}!</h1>
+	<h1 class="text-3xl md:text-4xl font-bold">Welcome {data.user.username}!</h1>
 	<p class="mt-4 text-lg">This is the main page.</p>
 
 	<div class="flex flex-row items-center gap-8">
