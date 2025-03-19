@@ -42,7 +42,7 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					userAmount: userAmount,
+					userAmount: userAmount
 				})
 			});
 			const usersData = await res.json();
@@ -74,7 +74,7 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					userAmount: userAmount,
+					userAmount: userAmount
 				})
 			});
 			const usersData = await res.json();
@@ -106,7 +106,7 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({
-					userAmount: userAmount,
+					userAmount: userAmount
 				})
 			});
 			const usersData = await res.json();
@@ -188,12 +188,16 @@
 		<img src={SearchIcon} alt="Search Icon" class="h-10 w-10" />
 		<h1 class="text-4xl font-bold">Search</h1>
 	</div>
-	<div class="flex w-full flex-row items-center gap-5 rounded-2xl bg-white px-5 text-black">
-		<label for="sort" class="m-5 w-auto text-black">Sort by:</label>
+	<div
+		class="flex w-full flex-col items-center gap-1 rounded-2xl bg-white px-5 text-black md:flex-row"
+	>
+		<label for="sort" class="m-2 md:m-5 w-auto text-black">Sort by:</label>
 		<form class="filter">
 			<div>
-				<div class="flex flex-row items-center gap-2">
-					<input class="btn btn-square" type="reset" value="x" />
+				<div class="flex flex-col items-center m-2 gap-2 md:flex-row">
+					{#if sortOption === ''}{:else}
+						<input class="btn btn-square" type="reset" value="x" />
+					{/if}
 					<input
 						class="btn"
 						type="radio"
@@ -226,16 +230,15 @@
 		</form>
 	</div>
 	<div class="flex flex-col items-center justify-center gap-10">
-		<div id="searchedUsers" class="grid grid-cols-4 items-start justify-between gap-10">
+		<div id="searchedUsers" class="grid md:grid-cols-4 grid-cols-1 items-start justify-between gap-10">
 			{#each searchedUsersData as user}
 				<SearchedUserCard {user} {registeredUser} />
 			{/each}
 		</div>
 	</div>
-		{#if sortOption === ''}
-		{:else if isLoading}
-			<span class="loading loading-spinner loading-lg"></span>
-		{:else}
-			<button class="btn btn-primary" onclick={handleLoadMore}>Load More</button>
-		{/if}
+	{#if sortOption === ''}{:else if isLoading}
+		<span class="loading loading-spinner loading-lg"></span>
+	{:else}
+		<button class="btn btn-primary" onclick={handleLoadMore}>Load More</button>
+	{/if}
 </div>

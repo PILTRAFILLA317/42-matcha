@@ -1,13 +1,45 @@
 import { validateEmail } from '$lib/helpers/validators';
 import { db } from '$lib/server/db';
 
+async function usersIdtoUsername(users) {
+  const usersWithUsername = [];
+  for (let i = 0; i < users.length; i++) {
+    const userId = users[i];
+    const user = await db`
+          SELECT username
+          FROM users
+          WHERE id = ${userId}
+      `;
+    users[i] = user[0].username;
+    usersWithUsername.push(user[0].username);
+  }
+  return usersWithUsername;
+}
+
+async function removeBlockedUsers(users, currentUser) {
+  const blockedUsers = await db`
+  SELECT blocked_users
+  FROM users
+  WHERE id = ${currentUser.userId}
+`;
+  const blockedUsersIds = blockedUsers[0].blocked_users;
+  if (blockedUsersIds !== null) {
+    const usersWithUsername = await usersIdtoUsername(blockedUsersIds);
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i];
+      if (usersWithUsername.includes(user.username)) {
+        users.splice(i, 1);
+        i--;
+      }
+    }
+  }
+  return users;
+}
+
+
 export async function addLikedUser(userId: string, likedUser: string) {
-  console.log("userId:789", userId);
   const likedUserId = await getIdByUsername(likedUser);
   const likerUsername = await getUsernameById(userId);
-  console.log("likedUser:789", likedUser);
-  console.log("likedUserId:789", likedUserId);
-  console.log("likerUsername:789", likerUsername);
   if (!likedUserId) return false;
   await db`
   UPDATE users
@@ -19,7 +51,16 @@ export async function addLikedUser(userId: string, likedUser: string) {
   SET total_likes = total_likes + 1
   WHERE id = ${likedUserId[0].id};
   `;
-  notificator(likedUserId[0].id, likedUser, "like", likerUsername[0].username);
+  // const blockedUsers = await db`
+  //   SELECT blocked_users
+  //   FROM users
+  //   WHERE id = ${userId}
+  //   `;
+  // const blockedUsersIds = blockedUsers[0].blocked_users;
+  // if (blockedUsersIds && blockedUsersIds.includes(likedUserId[0].id)) {
+  //   return;
+  // }
+  notificator(likedUserId[0].id, likerUsername[0].username, "like", likerUsername[0].username);
   checkMatch(userId, likedUserId[0].id);
   return true;
 }
@@ -40,22 +81,33 @@ UPDATE users
 SET total_likes = total_likes - 1
 WHERE id = ${likedUserId[0].id};
 `;
-  console.log("GARENHIJOPUTA2");
   deleteChat(userId, likedUserId[0].id);
-  notificator(likedUserId[0].id, likedUser, "unlike", likerUsername[0].username);
+  console.log("likedUserId[0].id", likedUserId[0].id);
+  console.log("likerUsername[0].username", userId);
+  notificator(likedUserId[0].id, likerUsername[0].username, "unlike", likerUsername[0].username);
   return;
 }
 
 export async function notificator(userId: string, notifiedUser: string, type: string, message: string) {
-  const notifiedUserId = await getIdByUsername(notifiedUser);
-  if (!notifiedUserId) return false;
-  // console.log("userId99", userId);
-  // console.log("notifiedUser99", notifiedUserId)
-  // console.log("type99", type);
-  // console.log("message99", message);
+  const notifierUserId = await getIdByUsername(notifiedUser);
+  if (!notifierUserId) return false;
+  console.log("userId", userId);
+  console.log("notifiedUser", notifierUserId)
+  console.log("type", type);
+  console.log("message99", message);
+  const blockedUsers = await db`
+  SELECT blocked_users
+  FROM users
+  WHERE id = ${userId}
+  `;
+  const blockedUsersIds = blockedUsers[0].blocked_users;
+  if (blockedUsersIds && blockedUsersIds.includes(notifierUserId[0].id)) {
+    console.log("BLOCKED USER");
+    return;
+  }
   await db`
   INSERT INTO notifications (user_id, sender_id, type, message)
-  VALUES (${userId}, ${notifiedUserId[0].id}, ${type}, ${message});
+  VALUES (${userId}, ${notifierUserId[0].id}, ${type}, ${message});
   `;
 }
 
@@ -170,5 +222,10 @@ export async function userResearch(minAge: number, maxAge: number, minFR: number
     userDistanceCalc(user.location, currentUser.location) <= distance &&
     tags.every(tag => user.user_preferences.includes(tag))
   );
-  return filteredUsers;
+  const usersWithoutId = filteredUsers.map(user => {
+    const { id, ...userWithoutId } = user;
+    return userWithoutId;
+  });
+  const usersWithoutBlock = await removeBlockedUsers(usersWithoutId, currentUser);
+  return usersWithoutBlock;
 }

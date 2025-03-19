@@ -2,6 +2,41 @@ import type { RequestHandler } from './$types';
 import { json } from '@sveltejs/kit';
 import { db } from '$lib/server/db';
 
+async function usersIdtoUsername(users) {
+    const usersWithUsername = [];
+    for (let i = 0; i < users.length; i++) {
+        const userId = users[i];
+        const user = await db`
+            SELECT username
+            FROM users
+            WHERE id = ${userId}
+        `;
+        users[i] = user[0].username;
+        usersWithUsername.push(user[0].username);
+    }
+    return usersWithUsername;
+}
+
+async function removeBlockedUsers(users, locals) {
+    const blockedUsers = await db`
+    SELECT blocked_users
+    FROM users
+    WHERE id = ${locals.user.userId}
+`;
+    const blockedUsersIds = blockedUsers[0].blocked_users;
+    if (blockedUsersIds !== null) {
+        const usersWithUsername = await usersIdtoUsername(blockedUsersIds);
+        for (let i = 0; i < users.length; i++) {
+            const user = users[i];
+            if (usersWithUsername.includes(user.username)) {
+                users.splice(i, 1);
+                i--;
+            }
+        }
+    }
+    return users;
+}
+
 function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
     const R = 6371; // Radio de la Tierra en km
     const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -48,14 +83,22 @@ export const POST = async ({ request, locals }) => {
 
         const users = allUsers
             .map(user => {
-            const [userLat, userLng] = user.location;
-            const distance = getDistance(latitude, longitude, userLat, userLng);
-            return { ...user, distance };
+                const [userLat, userLng] = user.location;
+                const distance = getDistance(latitude, longitude, userLat, userLng);
+                return { ...user, distance };
             })
             .sort((a, b) => a.distance - b.distance)
             .slice(0, userAmount);
 
-        return new Response(JSON.stringify(users), {
+        console.log("users", users);
+        const usersWithoutId = users.map(user => {
+            const { id, ...userWithoutId } = user;
+            return userWithoutId;
+        });
+        console.log("usersWithoutId", usersWithoutId);
+        const filteredUsers = await removeBlockedUsers(usersWithoutId, locals);
+
+        return new Response(JSON.stringify(filteredUsers), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json'

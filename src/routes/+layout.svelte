@@ -306,14 +306,17 @@
 			<div class="avatar dropdown dropdown-hover dropdown-end relative ml-auto w-12 cursor-pointer">
 				<img
 					class="rounded-xl"
-					src="{data.user.images != null? data.user.images[0] : "/src/assets/GatoSexo.png"}"
+					src={data.user.images != null ? data.user.images[0] : '/src/assets/GatoSexo.png'}
 					alt="User avatar"
 				/>
 				<ul class="menu dropdown-content rounded-box bg-base-100 z-1 w-52 p-2 shadow-sm">
 					<li><a href={`/users/${data.user.username}`} class="block h-full w-full">Profile</a></li>
 					<li><a href="/settings" class="block h-full w-full">Settings</a></li>
 					<li>
-						<a href="/logout" class="block h-full w-full" onclick={() => invalidateAll()}>Log Out</a
+						<a href="/blocked-users" class="block h-full w-full">Blocked Users</a>
+					</li>
+					<li>
+						<a href="/logout" class="block h-full w-full bg-primary" onclick={() => invalidateAll()}>Log Out</a
 						>
 					</li>
 				</ul>

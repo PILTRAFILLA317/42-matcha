@@ -1,6 +1,6 @@
 import postgres from 'postgres';
 import { json } from '@sveltejs/kit';
-import { getUsernameById } from '$lib/server/utils';
+import { getIdByUsername, getUsernameById } from '$lib/server/utils';
 import { db } from '$lib/server/db';
 // import { env } from '$env/dynamic/private';
 // if (!env.DATABASE_URL) throw new Error('DATABASE_URL is not set');
@@ -11,37 +11,26 @@ import { db } from '$lib/server/db';
 // });
 
 export async function POST({ request }) {
-    const { visitedUserId, userId } = await request.json();
+  const { visitedUserId, username } = await request.json();
 
-    const type = 'visit';
+  const type = 'visit';
 
-    // Inserta la notificación en la base de datos
-    const visitedUsername = await getUsernameById(visitedUserId);
-    const message = `${visitedUsername[0].username}`;
-
-    // console.log('visitedUsername:', visitedUsername[0].username);
-    // console.log('message:', message);
-    // console.log('userId:', userId);
-    // console.log('visitedUserId:', visitedUserId);
-    // console.log('type:', type);
-    await db`
-    INSERT INTO notifications (user_id, sender_id, type, message)
-    VALUES (${userId}, ${visitedUserId}, ${type}, ${message});
+  const visitedUsername = await getUsernameById(visitedUserId);
+  const realUserID = await getIdByUsername(username);
+  const message = `${visitedUsername[0].username}`;
+  const blockedUsers = await db`
+  SELECT blocked_users
+  FROM users
+  WHERE id = ${realUserID[0].id}
   `;
-    console.log('Notificación insertada en la base de datos');
-
-    // Notificación en el canal específico del usuario
-//     console.log('userId:', userId);
-//     console.log('message:', message);
-//     await sql`
-//     SELECT pg_notify(
-//       'user_notifications_' || ${userId}, 
-//       json_build_object(
-//         'message', ${message}::text,
-//         'type', ${type}::text
-//       )::text
-//     );
-//   `;
-
-    return json({ success: true });
+  const blockedUsersIds = blockedUsers[0].blocked_users;
+  if (blockedUsersIds && blockedUsersIds.includes(visitedUserId)) {
+    return json({ error: 'User is blocked' }, { status: 403 });
+  }
+  await db`
+    INSERT INTO notifications (user_id, sender_id, type, message)
+    VALUES (${realUserID[0].id}, ${visitedUserId}, ${type}, ${message});
+  `;
+  console.log('Notificación insertada en la base de datos');
+  return json({ success: true });
 }

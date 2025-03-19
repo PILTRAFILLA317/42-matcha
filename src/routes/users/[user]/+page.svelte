@@ -16,6 +16,7 @@
 
 	let isLiked = $state(false);
 	let isMatched = $state(false);
+	let isBlocked = $state(false);
 
 	let notifications = $derived(notificationState.AllNotifications);
 	$effect(() => {
@@ -50,6 +51,21 @@
 		isLiked = result;
 	}
 
+	async function checkIfUserBlocked() {
+		const response = await fetch('/api/check-block', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				blockedUserUsername: currentUser?.username
+			})
+		});
+		const result = await response.json();
+		isBlocked = result.message;
+		console.log('Blocked:', isBlocked);
+	}
+
 	async function areMatched() {
 		const response = await fetch('/api/match', {
 			method: 'POST',
@@ -81,23 +97,29 @@
 		if (isLiked) {
 			isLiked = false;
 			isMatched = false;
-		}
-		else
-			isLiked = true;
+		} else isLiked = true;
 	}
 
 	async function blockUser() {
-		const response = await fetch('/api/block', {
+		const response = await fetch('/api/block-user', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				userId: currentUser?.userId,
-				blockedUserId: registeredUser.userId
+				blockedUserUsername: currentUser?.username,
+				userId: registeredUser.userId
 			})
 		});
 		const result = await response.json();
+		if (isBlocked) {
+			isBlocked = false;
+			isMatched = false;
+		} else isBlocked = true;
+		if (isLiked) {
+			isLiked = false;
+			isMatched = false;
+		}
 	}
 
 	async function reportUser() {
@@ -106,10 +128,7 @@
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({
-				userId: currentUser?.userId,
-				reportedUserId: registeredUser.userId
-			})
+			body: JSON.stringify({})
 		});
 		const result = await response.json();
 	}
@@ -177,7 +196,7 @@
 				'Content-Type': 'application/json'
 			},
 			body: JSON.stringify({
-				userId: currentUser?.userId,
+				username: currentUser?.username,
 				visitedUserId: registeredUser.userId
 			})
 		});
@@ -205,6 +224,7 @@
 		await areMatched();
 		await fetchLocation();
 		await checkIfUserLiked();
+		await checkIfUserBlocked();
 	});
 </script>
 
@@ -225,34 +245,66 @@
 	>
 		<div class="carousel relative aspect-1/1 max-w-[600px] rounded-2xl">
 			{#each currentUser.images as image, i}
-					<div id="slide{i}" class="carousel-item relative w-full">
-						<img
-							src={image}
-							class="w-200"
-							alt="alt{i}"
-						/>
-						<div
-							class="absolute top-1/2 right-5 left-5 flex -translate-y-1/2 transform justify-between"
-						>
+				<div id="slide{i}" class="carousel-item relative w-full">
+					<img src={image} class="w-200" alt="alt{i}" />
+					<div
+						class="absolute top-1/2 right-5 left-5 flex -translate-y-1/2 transform justify-between"
+					>
 						<a href="#slide{i - 1}" class="btn btn-circle">❮</a>
 						<a href="#slide{i + 1}" class="btn btn-circle">❯</a>
-						</div>
 					</div>
+				</div>
 			{/each}
 			{#if currentUser.images == null}
 				<div id="slide1" class="carousel-item relative w-full">
-					<img
-						src="/src/assets/GatoSexo.png"
-						class="w-full"
-						alt="Gato"
-					/>
+					<img src="/src/assets/GatoSexo.png" class="w-full" alt="Gato" />
 				</div>
 			{/if}
 		</div>
 		<div class="flex flex-col justify-between">
 			<div>
-				<div class="flex flex-row items-center justify-between">
+				<div class="flex flex-row items-start justify-between">
 					<h1 class="mb-5 text-5xl font-bold">{currentUser?.firstName} {currentUser?.lastName}</h1>
+					{#if currentUser.username != registeredUser.username}
+						<div class="dropdown dropdown-top dropdown-left">
+							<div tabindex="0" role="button" class="btn btn-ghost btn-circle">
+								<svg
+									width="20px"
+									height="20px"
+									viewBox="0 0 16 16"
+									xmlns="http://www.w3.org/2000/svg"
+									fill="#ffffff"
+									class="bi bi-three-dots-vertical"
+									><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g
+										id="SVGRepo_tracerCarrier"
+										stroke-linecap="round"
+										stroke-linejoin="round"
+									></g><g id="SVGRepo_iconCarrier">
+										<path
+											d="M9.5 13a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm0-5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0z"
+										></path>
+									</g></svg
+								>
+							</div>
+							<ul
+								tabindex="0"
+								class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
+							>
+								<!-- <li><a>Item 1</a></li>
+								<li><a>Item 2</a></li> -->
+								<li>
+									<button class="text-md flex items-center gap-2" onclick={blockUser}>
+										{isBlocked ? 'Unblock user 🔓' : 'Block user 🚫'}
+									</button>
+								</li>
+								<li>
+									<button class="text-md flex items-center gap-2" onclick={reportUser}
+										>Report user 🚨</button
+									>
+								</li>
+							</ul>
+						</div>
+					{/if}
 				</div>
 				<div class="flex items-center justify-between gap-1">
 					<div class="flex items-center gap-1">
@@ -286,9 +338,10 @@
 					{#if currentUser?.isOnline}
 						<p class="text-xl text-green-500">En línea</p>
 					{:else}
-						<p class="text-xl text-gray-600">Última conexión: {new Date(currentUser.lastConnection).toLocaleString()}</p>
+						<p class="text-xl text-gray-600">
+							Última conexión: {new Date(currentUser.lastConnection).toLocaleString()}
+						</p>
 					{/if}
-					
 				</div>
 				<div class="mt-4 flex">
 					<div class="flex-row">
@@ -421,12 +474,19 @@
 			<div>
 				{#if currentUser.userId != registeredUser.userId}
 					<div class="mt-4 flex items-end justify-end">
-						<button onclick={likeUser} class="btn btn-accent mr-2 grow rounded-3xl text-white">
+						<button
+							onclick={likeUser}
+							class="btn btn-accent mr-2 grow rounded-3xl text-white"
+							disabled={isBlocked}
+						>
 							<img src={isLiked ? HeartFillIcon : HeartEmptyIcon} alt="Like Icon" class="w-10" />
 							{isLiked ? 'Liked!' : 'Like!'}
 						</button>
 						{#if isMatched}
-							<button onclick={chatUser} class="btn btn-secondary flex items-center justify-center rounded-3xl">
+							<button
+								onclick={chatUser}
+								class="btn btn-secondary flex items-center justify-center rounded-3xl"
+							>
 								<img src={ChatIcon} alt="Chat Icon" class="w-8" />
 							</button>
 						{/if}
