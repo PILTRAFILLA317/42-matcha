@@ -9,9 +9,9 @@
 </script>
 
 <!-- svelte-ignore binding_property_non_reactive -->
-<div class="flex h-screen w-screen items-center">
-	<div data-sveltekit-preload-data="hover" class="mx-auto w-xl rounded-lg bg-sky-900 p-6 shadow-md">
-		<div class="mb-4 flex">
+<div class="flex items-center p-8">
+	<div data-sveltekit-preload-data="hover" class="shadow-neutral max-w-xl flex flex-col mx-auto rounded-lg bg-sky-900 p-6 shadow-md">
+		<div class="mb-4 flex flex-row items-center justify-between">
 			<a
 				href="/settings"
 				class="relative flex-none pt-1 text-white hover:text-gray-300"

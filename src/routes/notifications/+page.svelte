@@ -59,7 +59,7 @@
 		<div class="mr-20 ml-20 flex w-full flex-col items-center gap-2 p-4">
 			{#each pagedNotifications[clickedPage - 1] as notification}
 				<div
-					class="notification bg-base-100 flex w-full flex-row items-center gap-2 rounded-2xl p-4 shadow-xl"
+					class="notification bg-base-100 flex w-full flex-col md:flex-row items-center gap-2 rounded-2xl p-4 shadow-xl"
 				>
 					<a href="/users/{notification.message}" class="link link-secondary"
 						>{notification.message}</a
@@ -81,7 +81,7 @@
 			{/each}
 		</div>
 		<div class="join">
-			{#each Array(pagedNotifications.length) as _, i}
+			{#each Array(Math.min(pagedNotifications.length, 8)) as _, i}
 				<button onclick={() => pageManager(i + 1)} class="join-item btn">{i + 1}</button>
 			{/each}
 		</div>

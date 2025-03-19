@@ -472,7 +472,7 @@
 				</div>
 			</div>
 			<div>
-				{#if currentUser.userId != registeredUser.userId}
+				{#if currentUser.username != registeredUser.username}
 					<div class="mt-4 flex items-end justify-end">
 						<button
 							onclick={likeUser}
