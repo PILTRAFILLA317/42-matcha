@@ -5,6 +5,7 @@ import { hash } from '@node-rs/argon2';
 import { recoverPassword } from '$lib/mail/recover';
 import { generateUserId } from '$lib/helpers/user';
 import { readonly } from 'svelte/store';
+import { validatePassword } from '$lib/helpers/validators';
 
 export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
@@ -33,6 +34,11 @@ export const actions: Actions = {
 			if (newPassword !== confirmPassword) {
 				throw new Error('Passwords do not match');
 			}
+			if (validatePassword(newPassword.toString()) === false) {
+				throw new Error(
+					'Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one number and one special character'
+				);
+			}
 			await checkPassword(currentPassword!.toString(), event);
 			const passwordHash: string = await hash(String(newPassword), {
 				memoryCost: 19456,
@@ -46,12 +52,12 @@ export const actions: Actions = {
 			return fail(401, { message: error instanceof Error ? error.message : String(error) });
 		}
 	},
-    recoverPassword: async (event) => {
-        const recover_id = generateUserId();
-        if (!event.locals.user) {
-            return redirect(302, '/');
-        }
-        const ret = recoverPassword(event.locals.user.email, recover_id);
-        console.log(ret);
-    },
+	recoverPassword: async (event) => {
+		const recover_id = generateUserId();
+		if (!event.locals.user) {
+			return redirect(302, '/');
+		}
+		const ret = recoverPassword(event.locals.user.email, recover_id);
+		console.log(ret);
+	}
 };

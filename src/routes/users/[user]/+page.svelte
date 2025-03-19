@@ -81,9 +81,7 @@
 		if (isLiked) {
 			isLiked = false;
 			isMatched = false;
-		}
-		else
-			isLiked = true;
+		} else isLiked = true;
 	}
 
 	async function blockUser() {
@@ -225,27 +223,19 @@
 	>
 		<div class="carousel relative aspect-1/1 max-w-[600px] rounded-2xl">
 			{#each currentUser.images as image, i}
-					<div id="slide{i}" class="carousel-item relative w-full">
-						<img
-							src={image}
-							class="w-200"
-							alt="alt{i}"
-						/>
-						<div
-							class="absolute top-1/2 right-5 left-5 flex -translate-y-1/2 transform justify-between"
-						>
+				<div id="slide{i}" class="carousel-item relative w-full">
+					<img src={image} class="w-200" alt="alt{i}" />
+					<div
+						class="absolute top-1/2 right-5 left-5 flex -translate-y-1/2 transform justify-between"
+					>
 						<a href="#slide{i - 1}" class="btn btn-circle">❮</a>
 						<a href="#slide{i + 1}" class="btn btn-circle">❯</a>
-						</div>
 					</div>
+				</div>
 			{/each}
 			{#if currentUser.images == null}
 				<div id="slide1" class="carousel-item relative w-full">
-					<img
-						src="/src/assets/GatoSexo.png"
-						class="w-full"
-						alt="Gato"
-					/>
+					<img src="/src/assets/GatoSexo.png" class="w-full" alt="Gato" />
 				</div>
 			{/if}
 		</div>
@@ -286,9 +276,10 @@
 					{#if currentUser?.isOnline}
 						<p class="text-xl text-green-500">En línea</p>
 					{:else}
-						<p class="text-xl text-gray-600">Última conexión: {new Date(currentUser.lastConnection).toLocaleString()}</p>
+						<p class="text-xl text-gray-600">
+							Última conexión: {new Date(currentUser.lastConnection).toLocaleString()}
+						</p>
 					{/if}
-					
 				</div>
 				<div class="mt-4 flex">
 					<div class="flex-row">
@@ -426,7 +417,10 @@
 							{isLiked ? 'Liked!' : 'Like!'}
 						</button>
 						{#if isMatched}
-							<button onclick={chatUser} class="btn btn-secondary flex items-center justify-center rounded-3xl">
+							<button
+								onclick={chatUser}
+								class="btn btn-secondary flex items-center justify-center rounded-3xl"
+							>
 								<img src={ChatIcon} alt="Chat Icon" class="w-8" />
 							</button>
 						{/if}

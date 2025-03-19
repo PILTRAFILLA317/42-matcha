@@ -137,13 +137,13 @@
 
 <div class="x-auto bg-primary m-5 h-[80vh] w-full rounded-lg p-2 shadow-md">
 	<div class="flex items-start justify-between">
-		<h1 class="start pb-2 text-6xl font-bold text-white">Chats</h1>
-		<a class="end pb-2 text-6xl font-bold text-white" href="/users/{activeChat}"
+		<h1 class="start pb-2 md:text-6xl text-xl font-bold text-white">Chats</h1>
+		<a class="end pb-2 md:text-6xl text-3xl font-bold text-white" href="/users/{activeChat}"
 			>{activeChat ?? ''}</a
 		>
 	</div>
 	<div class="flex h-[90%] space-x-2">
-		<div class="w-1/6 space-y-2 overflow-y-auto overflow-x-hidden">
+		<div class="w-2/6 md:w-1/6 space-y-2 overflow-y-auto overflow-x-hidden">
 			{#each Object.entries(data.matchList) as [username, pictures]}
 				<!-- svelte-ignore attribute_quoted -->
 				<MiniProfile
@@ -156,7 +156,7 @@
 			{/each}
 		</div>
 		<div
-			class="relative h-full w-5/6 flex-col justify-between rounded-lg bg-[url(https://i.kym-cdn.com/entries/icons/original/000/038/667/tco_-_2021-10-25T163043.660.jpg)] bg-cover"
+			class="relative h-full w-4/6 md:w-5/6 flex-col justify-between rounded-lg bg-[url(https://i.kym-cdn.com/entries/icons/original/000/038/667/tco_-_2021-10-25T163043.660.jpg)] bg-cover"
 		>
 			{#if activeChat}
 				<div class="relative flex h-[93%] flex-col-reverse overflow-auto">
