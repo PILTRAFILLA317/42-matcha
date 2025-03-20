@@ -58,7 +58,6 @@
 					currentUserLocation = data.city;
 				}
 			} catch (error) {
-				console.log('error', error);
 				return 'No location';
 			}
 		}

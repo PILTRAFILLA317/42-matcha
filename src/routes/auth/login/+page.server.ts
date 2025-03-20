@@ -19,14 +19,11 @@ export const actions: Actions = {
 		const username = formData.get('username');
 		const password = formData.get('password');
 
-		console.log('Login: ', { username, password });
-
 		if (!username || !password) {
 			return fail(400, { message: 'Username or password missing' });
 		}
 		const [existingUser] =
 			await db`SELECT * FROM public.users WHERE username = ${String(username)}`;
-		console.log('existingUser: ', existingUser);
 		if (!existingUser) {
 			return fail(401, { message: 'Username does not exist' });
 		}
@@ -39,7 +36,6 @@ export const actions: Actions = {
 		if (!validPassword) {
 			return fail(401, { message: 'Incorrect password' });
 		}
-		console.log('semen');
 
 		const sessionToken = auth.generateSessionToken();
 		const session = await auth.createSession(sessionToken, existingUser.id);

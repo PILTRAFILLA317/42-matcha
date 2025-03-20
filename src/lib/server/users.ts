@@ -38,9 +38,7 @@ export async function updateUserLocation(username: string, latitude: number, lon
 		await db`UPDATE users
             SET location = ARRAY[${latitude}, ${longitude}]::float[] WHERE username = ${username};
             `;
-		console.log('Location updated');
 	} catch (error) {
-		console.error('Error updating location', error);
 		throw new Error('Error updating location');
 	}
 }
@@ -54,7 +52,6 @@ export async function updateEmail(
 	if (!user) throw new Error('User not found');
 	if (!session) throw new Error('Session not found');
 	if (!validateEmail(newEmail)) throw new Error('Invalid email');
-	console.log('new email is: ', newEmail);
 	const existingEmail = await db`
 		SELECT 1 FROM users WHERE email = ${newEmail} LIMIT 1
 	`;
@@ -63,7 +60,6 @@ export async function updateEmail(
 		SET email = ${newEmail}, verified = ${false} WHERE username = ${user.username}
 		AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
 	`;
-	console.log('Email updated');
 }
 
 export async function updateUsername(
@@ -81,7 +77,6 @@ export async function updateUsername(
             SET username = ${newUsername} WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
-		console.log('Username updated');
 	} catch (error) {
 		throw new Error('Error updating username');
 	}
@@ -101,7 +96,6 @@ export async function updateFirstName(
 		SET first_name = ${newFirstName} WHERE id = ${user.userId}
 		AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
 		`;
-		console.log('Email updated');
 	} catch (error) {
 		throw new Error('Error updating first_name');
 	}
@@ -121,7 +115,6 @@ export async function updateLastName(
             SET last_name = ${newLastName} WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
-		console.log('Email updated');
 	} catch (error) {
 		throw new Error('Error updating second_name');
 	}
@@ -141,7 +134,6 @@ export async function updateAge(
             SET age = ${age} WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
-		console.log('Email updated');
 	} catch (error) {
 		throw new Error('Error updating second_name');
 	}
@@ -160,7 +152,6 @@ export async function updateGender(
             SET gender = ${gender} WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
-		console.log('gender updated. Response ->\n', res);
 	} catch (error) {
 		throw new Error('Error updating gender');
 	}
@@ -181,7 +172,6 @@ export async function updateSexualPreference(
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
 	} catch (error) {
-		console.log(error);
 		throw new Error('Error updating sexual preference');
 	}
 }
@@ -200,7 +190,6 @@ export async function updateBio(
             SET bio = ${bio} WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
             `;
-		console.log('Email updated');
 	} catch (error) {
 		throw new Error('Error updating bio');
 	}
@@ -233,18 +222,15 @@ export async function updatePasswordRecover(password: string, recoverId: string)
 		const result = await db`UPDATE users
 		SET password = ${password} WHERE id = ${whatever[0].user_id}
 		`;
-		console.log('result: ', result);
 		if (!result) {
 			return fail(401, { message: 'Error sending email' });
 		}
 		const res = await db`DELETE FROM password_recovery WHERE id = ${recoverId}`;
-		console.log('res: ', res);
 		if (!res) {
 			return fail(401, { message: 'Error deleting verifyID' });
 		}
 		return { success: true, status: 201, message: 'Password changed successfully' };
 	} catch (error) {
-		console.log('error: ', error);
 		return fail(401, { message: 'Unexpected error' });
 	}
 }
@@ -315,7 +301,6 @@ export async function updateTags(
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
 		`;
 	} catch (error) {
-		console.log(error);
 		throw new Error('Error updating tags');
 	}
 }
@@ -346,7 +331,6 @@ export async function updateLastConnection(
 			last_seen = ${lastConnection} WHERE id = ${userId};
 			`;
 	} catch (error) {
-		console.log(error);
 		throw new Error('Error updating last_connection');
 	}
 }

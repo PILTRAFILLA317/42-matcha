@@ -8,7 +8,6 @@ export const POST = async ({ request, locals }) => {
         if (locals.user?.username) {
             updateUserLocation(locals.user.username, body.latitude, body.longitude);
         } else {
-            console.log('locals.user', locals.user);
             throw new Error('Username is required');
         }
     } catch (error) {

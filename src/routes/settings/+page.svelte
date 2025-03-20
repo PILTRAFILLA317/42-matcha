@@ -4,9 +4,9 @@
 
 	let modal: HTMLDialogElement | null = $state(null);
 	let { form }: { form: ActionData } = $props();
-	export const load = () => {
-		console.log('onload??');
-	};
+	// export const load = () => {
+	// 	console.log('onload??');
+	// };
 </script>
 
 <div data-sveltekit-preload-data="hover" class="mx-auto w-xl rounded-lg bg-sky-900 p-6 shadow-md">

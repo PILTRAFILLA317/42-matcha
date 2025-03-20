@@ -34,7 +34,6 @@ export const actions: Actions = {
 			const ret = updatePasswordRecover(passwordHash, event.params.passwordRecovery);
 			return ret;
 		} catch (error) {
-			console.log('error: ', error);
 			return fail(401, { body: { message: 'Unexpected error' } });
 		}
 	}

@@ -21,19 +21,14 @@ async function getReciverID(chatID: string, userID: string) {
     throw new Error('Chat not found');
     // return;
   }
-  console.log('Chat:', chat);
   const receiverID = chat[0].user_1 === userID ? chat[0].user_2 : chat[0].user_1;
-  console.log('Receiver ID:', receiverID);
   return receiverID;
 }
 
 async function setupGlobalListener() {
-  console.log('Setting up global chat listener');
   if (globalListener) return globalListener;
-  console.log('Global chat listener not set up, setting up now');
 
   globalListener = db.listen(`user_messages`, async (payload) => {
-    console.log('New chat message received:', payload);
     const userId = JSON.parse(payload).sender;
     const chatID = JSON.parse(payload).chat_id;
     const reciver = await getReciverID(chatID, userId);

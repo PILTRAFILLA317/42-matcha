@@ -82,8 +82,6 @@ SET total_likes = total_likes - 1
 WHERE id = ${likedUserId[0].id};
 `;
   deleteChat(userId, likedUserId[0].id);
-  console.log("likedUserId[0].id", likedUserId[0].id);
-  console.log("likerUsername[0].username", userId);
   notificator(likedUserId[0].id, likerUsername[0].username, "unlike", likerUsername[0].username);
   return;
 }
@@ -91,10 +89,6 @@ WHERE id = ${likedUserId[0].id};
 export async function notificator(userId: string, notifiedUser: string, type: string, message: string) {
   const notifierUserId = await getIdByUsername(notifiedUser);
   if (!notifierUserId) return false;
-  console.log("userId", userId);
-  console.log("notifiedUser", notifierUserId)
-  console.log("type", type);
-  console.log("message99", message);
   const blockedUsers = await db`
   SELECT blocked_users
   FROM users
@@ -102,7 +96,6 @@ export async function notificator(userId: string, notifiedUser: string, type: st
   `;
   const blockedUsersIds = blockedUsers[0].blocked_users;
   if (blockedUsersIds && blockedUsersIds.includes(notifierUserId[0].id)) {
-    console.log("BLOCKED USER");
     return;
   }
   await db`
@@ -114,8 +107,6 @@ export async function notificator(userId: string, notifiedUser: string, type: st
 export async function checkMatchNoNotification(userId: string, secondUserId: string) {
   const userLikes = await db`SELECT liked_users FROM users WHERE id = ${userId}`;
   const secondUserLikes = await db`SELECT liked_users FROM users WHERE id = ${secondUserId}`;
-  // const secondUser = await getUsernameById(secondUserId);
-  // const user = await getUsernameById(userId);
   if (!userLikes[0].liked_users || !secondUserLikes[0].liked_users) return false;
   if (userLikes[0].liked_users.includes(secondUserId) && secondUserLikes[0].liked_users.includes(userId)) {
     return true;
@@ -146,7 +137,6 @@ export async function getIdByUsername(username: string) {
 export async function checkUserLikes(userId: string, likedUser: string) {
   const likedUserId = await getIdByUsername(likedUser);
   if (!likedUserId) return false;
-  // const likes = await db`SELECT liked_users FROM users WHERE id = ${userId}`;
   const likes = await db`SELECT unnest(liked_users) AS liked_user FROM users WHERE id = ${userId}`;
   if (likes.length === 0 || likes[0].liked_users === null) {
     return false;
@@ -172,7 +162,6 @@ export async function getUsernameById(userId: string) {
 export async function deleteChat(userId: string, secondUserId: string) {
   const chat = await db`SELECT * FROM chats WHERE user_1 = ${userId} AND user_2 = ${secondUserId} OR user_1 = ${secondUserId} AND user_2 = ${userId}`;
   if (chat.length === 0) return;
-  console.log(chat[0].id);
   await db`DELETE FROM chats WHERE id = ${chat[0].id}`;
 
 }

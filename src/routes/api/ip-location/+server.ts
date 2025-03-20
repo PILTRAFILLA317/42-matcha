@@ -8,8 +8,6 @@ export const GET = async ({ request }) => {
   try {
     // Si no puedes obtener la IP del cliente desde los encabezados, puedes usar la IP del servidor
     const clientIp = await fetch('https://api.ipgeolocation.io/getip').then((res) => res.json()).then((data) => data.ip);
-    console.log('clientIp', clientIp);
-    console.log('API_KEY', API_KEY);
 
     const response = await fetch(
       `https://api.ipgeolocation.io/ipgeo?apiKey=${API_KEY}${clientIp ? `&ip=${clientIp}` : ''}`

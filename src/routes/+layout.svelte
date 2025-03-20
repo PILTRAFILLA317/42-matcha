@@ -3,6 +3,7 @@
 	import '../app.css';
 	import type { LayoutServerData } from './$types';
 	import { invalidateAll } from '$app/navigation';
+	import { redirect } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
 	import { locationStore } from '$lib/stores/location';
@@ -36,10 +37,8 @@
 				}
 				return resData;
 			} else {
-				console.error('Error al obtener las notificaciones no leídas.');
 			}
 		} catch (err) {
-			console.error('Error al obtener las notificaciones no leídas.');
 		}
 	}
 
@@ -72,13 +71,11 @@
 				}
 			);
 		} else {
-			console.log('Geolocation is not supported by this browser.');
 			await getLocationByIP(); // Respaldo con IP
 		}
 	}
 
 	async function setReadNotifications() {
-		console.log('Obteniendo todas las notificaciones...');
 		try {
 			const res = await fetch(`/api/notifications/set-read?userId=${data.user?.userId}`);
 			// const resData = await res.json();
@@ -87,10 +84,8 @@
 				// notifications = resData;
 				return;
 			} else {
-				console.error('Error al obtener las notificaciones.');
 			}
 		} catch (err) {
-			console.error('Error al obtener las notificaciones.');
 		}
 	}
 
@@ -99,7 +94,6 @@
 		notificationState.removeAll();
 		await setReadNotifications();
 		window.location.href = '/notifications';
-		console.log('Redirigiendo a notificaciones...');
 	}
 
 	// Respaldo: Ubicación por IP
@@ -118,10 +112,8 @@
 				};
 				updateLocation(location);
 			} else {
-				console.log('Error al obtener la ubicación por IP.');
 			}
 		} catch (err) {
-			console.log('Error al obtener la ubicación por IP.');
 		}
 	}
 
@@ -153,8 +145,6 @@
 				// console.log('Ubicación actualizada en la base de datos.');
 			}
 		} catch (err) {
-			console.log('RES:', data);
-			console.log('Error al actualizar la ubicación en la base de datos.');
 		}
 	}
 
@@ -171,7 +161,6 @@
 				type: data.type
 			};
 		} catch (error) {
-			console.error('Error al parsear la notificación:', error);
 			return null;
 		}
 	}
@@ -186,7 +175,6 @@
 			eventSource = new EventSource(`/api/notifications/stream`);
 
 			if (!eventSource) {
-				console.error('❌ No se pudo establecer la conexión con el servidor de eventos.');
 				return;
 			}
 
@@ -210,29 +198,29 @@
 					notifications = notificationState.getNotifications();
 					notificationsOn = true;
 				} catch (err) {
-					console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
+					// console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
 				}
 			};
 
 			eventSource.onerror = (error) => {
-				console.error('❌ ERROR1 en SSE:', error);
+				// console.error('❌ ERROR1 en SSE:', error);
 				eventSource.close();
 				const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
 				reconnectAttempts++;
 				setTimeout(startSSERequest, delay);
 			};
 		} catch (error) {
-			console.error('❌ ERROR2 en SSE:', error);
+			// console.error('❌ ERROR2 en SSE:', error);
 		}
 	}
 
 	// Ejecutar la lógica al cargar la página
 	onMount(() => {
-		getUnreadNotifications();
-		if (data.user?.userId) {
-			// console.log('Obteniendo ubicación...');
-			getLocation();
+		if (!data.user?.userId) {
+			redirect(302, '/login');
 		}
+		getUnreadNotifications();
+		getLocation();
 		startSSERequest();
 		return () => {
 			eventSource?.close();
@@ -319,6 +307,9 @@
 						<li><a href="/settings" class="block h-full w-full">Settings</a></li>
 						<li>
 							<a href="/blocked-users" class="block h-full w-full">Blocked Users</a>
+						</li>
+						<li>
+							<a href="/last-visits" class="block h-full w-full">Last Visits</a>
 						</li>
 						<li>
 							<a

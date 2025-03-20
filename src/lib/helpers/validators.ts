@@ -37,8 +37,6 @@ export function validatePassword(password: string) {
 	if (typeof password === 'string' && password.length >= 6 && password.length <= 255) {
 		return true;
 	}
-	console.log('password validation failed');
-	console.log('result', typeof password === 'string', password.length >= 6, password.length <= 255);
 	// To-do: implementar mas comprobaciones,
 	// como que por lo menos haya una mayuscula y que por lo menos haya un numero
 	return false;

@@ -22,10 +22,8 @@ async function getChats(userId: string) {
 		for (const chat of chats) {
 			userMap[chat.username] = chat.profile_pictures || [];
 		}
-		console.log('userMap: ', userMap);
 		return userMap;
 	} catch (error) {
-		console.log('error: ', error);
 		return {};
 	}
 }
@@ -50,13 +48,9 @@ async function sendMessage(senderId: string, reciverUser: string, message: strin
 		const reciverUserID = await db`
 		SELECT id FROM users WHERE username = ${reciverUser}
 		`;
-		// console.log("senderUsername69: ", senderUsername[0].username);
-		// console.log("senderId69: ", senderId);
-		// console.log("reciverUser69: ", reciverUser);
 		notificator(reciverUserID[0].id, senderUsername[0].username, "chat", senderUsername[0].username);
-		// console.log("Mensaje enviado: ", res);
 	} catch (error) {
-		console.log('error: ', error);
+		// console.log('error: ', error);
 	}
 }
 

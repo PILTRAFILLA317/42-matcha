@@ -23,6 +23,11 @@ export async function POST({ request }) {
   FROM users
   WHERE id = ${realUserID[0].id}
   `;
+  await db`
+    UPDATE users
+    SET last_visits = array_append(last_visits, ${realUserID[0].id})
+    WHERE id = ${visitedUserId};
+  `;
   const blockedUsersIds = blockedUsers[0].blocked_users;
   if (blockedUsersIds && blockedUsersIds.includes(visitedUserId)) {
     return json({ error: 'User is blocked' }, { status: 403 });
@@ -31,6 +36,5 @@ export async function POST({ request }) {
     INSERT INTO notifications (user_id, sender_id, type, message)
     VALUES (${realUserID[0].id}, ${visitedUserId}, ${type}, ${message});
   `;
-  console.log('Notificación insertada en la base de datos');
   return json({ success: true });
 }

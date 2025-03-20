@@ -30,17 +30,8 @@ export const POST = async ({ request }) => {
   
         return json({ city });
     }
-    // if (response.ok && data.features && data.features.length > 0) {
-    //   const address = data.features[0].properties.formatted;
-    //   console.log('Dirección:', address);
-
-    //   return json({ address });
-    // } else {
-    //   return json({ error: 'No se pudo obtener la dirección.' }, { status: 500 });
-    // }
 
   } catch (err) {
-    console.error('Error al procesar la solicitud:', err);
     return json({ error: 'Error interno del servidor.' }, { status: 500 });
   }
 };

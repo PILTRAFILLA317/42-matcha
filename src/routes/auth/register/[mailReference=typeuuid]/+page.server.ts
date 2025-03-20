@@ -22,6 +22,6 @@ export const load: PageServerLoad = async ({ params, locals }) => {
             locals.user.verified = true;
 		return;
 	} catch (e) {
-		console.log('mailReference: Error is\n', e);
+		// console.log('mailReference: Error is\n', e);
 	}
 };

@@ -4,7 +4,6 @@ import { db } from '$lib/server/db';
 
 async function usersIdtoUsername(users) {
     const usersWithUsername = [];
-    console.log('usersIdtoUsername USERS', users);
     for (let i = 0; i < users.length; i++) {
         const userId = users[i];
         const user = await db`
@@ -44,7 +43,6 @@ export const POST = async ({ request, locals }) => {
     try {
         const body = await request.json();
         const userAmount = body.userAmount;
-        console.log('body', body);
         if (!userId) {
             return new Response('User ID is missing', { status: 400 });
         }
@@ -63,8 +61,6 @@ export const POST = async ({ request, locals }) => {
             return rest;
         });
         const filteredUsers = await removeBlockedUsers(usersWithoutId, locals);
-        console.log('filteredUsers', filteredUsers);
-        // console.log('usersWithoutId', usersWithoutId);
         return new Response(JSON.stringify(usersWithoutId), {
             status: 200,
             headers: {
@@ -72,7 +68,6 @@ export const POST = async ({ request, locals }) => {
             }
         });
     } catch (error) {
-        console.error('Error getting users:', error);
         return new Response('Internal Server Error', { status: 500 });
     }
 };

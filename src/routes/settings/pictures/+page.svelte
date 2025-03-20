@@ -7,7 +7,7 @@
 	const iconSize = 3;
 
 	function handleUpload(node: HTMLFormElement) {
-		console.log('Upload result:', node);
+		// console.log('Upload result:', node);
 	}
 </script>
 

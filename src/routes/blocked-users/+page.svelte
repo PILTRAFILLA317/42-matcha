@@ -21,10 +21,8 @@
 		});
 		const result = await response.json();
 		if (response.ok) {
-			console.log('User unblocked successfully:', result);
 			blockedUsers = blockedUsers.filter(user => user.username !== currentUser);
 		} else {
-			console.error('Error unblocking user:', result);
 		}
 	}
 
@@ -34,14 +32,13 @@
 			const data = await res.json();
 
 			if (res.ok) {
-				console.log('Blocked users fetched successfully:', data);
 				blockedUsers = data.blockedUsers;
 				return;
 			} else {
-				console.error('Error fetching blocked users.');
+				// console.error('Error fetching blocked users.');
 			}
 		} catch (err) {
-			console.error('Error fetching blocked users.');
+			// console.error('Error fetching blocked users.');
 		}
 	}
 

@@ -3,7 +3,6 @@
 	import type { ActionData } from './$types';
 
 	let { form }: { form: ActionData } = $props();
-	console.log('Form is: ', form);
 </script>
 
 <div class="flex:column mx-3 w-md items-center rounded-lg bg-sky-900 p-6 shadow-md">

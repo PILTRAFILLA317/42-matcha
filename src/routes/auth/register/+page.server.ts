@@ -29,16 +29,6 @@ export const actions: Actions = {
 		const age = formData.get('age')? Number(formData.get('age')) : null;
 		const password = formData.get('password');
 		const repeatpassword = formData.get('repeatpassword');
-		console.log('Registering user', {
-			email,
-			username,
-			firstname,
-			lastname,
-			age,
-			password,
-			repeatpassword
-		});
-
 		if (!email) return fail(400, { message: 'Email missing' });
 		if (!username) return fail(400, { message: 'Username missing' });
 		if (!firstname) return fail(400, { message: 'First name missing' });
@@ -102,7 +92,6 @@ export const actions: Actions = {
 				return fail(400, { message: 'Email already in use' });
 			if (error.constraint_name === 'users_username_key')
 				return fail(400, { message: 'Username already in use' });
-			console.log('error is', error);
 			return fail(400, { message: 'Unexpected error' });
 		}
 		return redirect(302, '/');

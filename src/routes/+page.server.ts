@@ -23,7 +23,6 @@ export const actions: Actions = {
 		return redirect(302, '/auth/login');
 	},
 	email: async (event) => {
-		console.log('Trying to send verification email');
 		if (!event.locals.user) {
 			return fail(401);
 		}
@@ -35,7 +34,6 @@ export const actions: Actions = {
 			`;
 			sendVerificationEmail(verify_id, event.locals.user.email, event.locals.user);
 		} catch (e) {
-			console.error('Error sending verification email: ', e);
 			return fail(500);
 		}
 	}

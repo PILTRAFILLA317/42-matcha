@@ -15,13 +15,10 @@
 				use:enhance={({ formElement, formData, action, cancel }) => {
 					isLoading = true;
 					return async ({ result }) => {
-						console.log('aqui tamos');
 						if (result.type === 'redirect') {
 							isLoading = false;
-							console.log('if');
 						} else {
 							isLoading = false;
-							console.log('else');
 						}
 					};
 				}}

@@ -26,7 +26,6 @@ export const GET = async ({ locals }) => {
         }));
         return new Response(JSON.stringify({ blockedUsers: blockedUsernames }), { status: 200 });
     } catch (error) {
-        console.error('Error fetching blocked users:', error);
         return new Response(JSON.stringify({ error: 'Error fetching blocked users' }), { status: 500 });
     }
 };

@@ -25,7 +25,6 @@
 				}
 			);
 		} else {
-			console.log('Geolocation is not supported by this browser.');
 			await getLocationByIP(); // Respaldo con IP
 		}
 	}
@@ -45,10 +44,8 @@
 				};
 				updateLocation(location);
 			} else {
-				console.log('Error al obtener la ubicación por IP.');
 			}
 		} catch (err) {
-			console.log('Error al obtener la ubicación por IP.');
 		}
 	}
 
@@ -68,11 +65,8 @@
 			});
 			const data = await res.json();
 			if (res.ok) {
-				// console.log('Ubicación actualizada en la base de datos.');
 			}
 		} catch (err) {
-			console.log('RES:', data);
-			console.log('Error al actualizar la ubicación en la base de datos.');
 		}
 	}
 

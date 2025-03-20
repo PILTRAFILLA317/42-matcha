@@ -58,13 +58,9 @@
 				await scrollToSearchedUsers();
 			} else {
 				isLoading = false;
-
-				console.log('Error al obtener los usuarios.');
 			}
 		} catch (err) {
 			isLoading = false;
-
-			console.log('Error al obtener los usuarios.');
 		}
 		isLoading = false;
 	}
@@ -94,11 +90,8 @@
 			if (res.ok) {
 				tags = data;
 			} else {
-				console.log('Error al obtener los tags.');
 			}
-		} catch (err) {
-			console.log('Error al obtener los tags.');
-		}
+		} catch (err) {}
 	}
 
 	onMount(() => {
@@ -109,7 +102,7 @@
 <div class="flex flex-col items-center justify-center gap-10">
 	<h1 class="text-3xl font-bold">¡Encuentra el amor de tu vida!</h1>
 	<div class="flex w-full flex-col justify-between rounded-xl bg-gray-800 p-10 shadow-md">
-		<div class="flex w-full flex-col lg:items-center justify-between lg:flex-row">
+		<div class="flex w-full flex-col justify-between lg:flex-row lg:items-center">
 			<div>
 				<div class="flex flex-col">
 					<label for="range" class="mb-5 text-lg font-bold text-white">Distancia</label>
@@ -136,12 +129,12 @@
 						bind:maxValue={maxAge}
 						min={18}
 						max={99}
-						class="mx-auto lg:w-96 w-full"
+						class="mx-auto w-full lg:w-96"
 					/>
 				</div>
 			</div>
-			<div class="divider divider-neutral lg:divider-horizontal" ></div>
-			<div class="flex lg:w-1/2 flex-col items-start justify-baseline">
+			<div class="divider divider-neutral lg:divider-horizontal"></div>
+			<div class="flex flex-col items-start justify-baseline lg:w-1/2">
 				<label for="range" class="flex gap-3 text-lg font-bold text-white"
 					>Fame Rating
 					<svg
@@ -168,7 +161,13 @@
 					<text class="text-lg text-white">Fame Rating mínimo: {minFR}</text>
 					<text class="text-lg text-white">Fame Rating máximo: {maxFR}</text>
 				</div>
-				<DoubleSlider bind:minValue={minFR} bind:maxValue={maxFR} min={0} max={1000} class="lg:w-96 w-full" />
+				<DoubleSlider
+					bind:minValue={minFR}
+					bind:maxValue={maxFR}
+					min={0}
+					max={1000}
+					class="w-full lg:w-96"
+				/>
 				<div class="divider divider-neutral divider-vertical" />
 				<div class="flex flex-col gap-3">
 					<text class="text-lg font-bold text-white">Gustos</text>
@@ -203,7 +202,10 @@
 	</div>
 	<div class="flex w-full flex-col items-center justify-center">
 		<span class={['loading loading-spinner text-accent h-36 w-36', !isLoading && 'hidden']}></span>
-		<div id="searchedUsers" class="grid lg:grid-cols-4 grid-cols-1 items-start justify-between gap-10">
+		<div
+			id="searchedUsers"
+			class="grid grid-cols-1 items-start justify-between gap-10 lg:grid-cols-4"
+		>
 			{#each searchedUsersData as user}
 				<SearchedUserCard {user} {registeredUser} />
 			{/each}

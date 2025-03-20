@@ -44,10 +44,10 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 	});
 	request
 		.then((result) => {
-			console.log(result.body);
+			// console.log(result.body);
 		})
 		.catch((err) => {
-			console.log(err);
+			// console.log(err);
 			return fail(401, { message: 'Error sending email' });
 		});
 }

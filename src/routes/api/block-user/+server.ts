@@ -26,13 +26,11 @@ export const POST = async ({ request, locals }) => {
         `;
         if (blockedUsers[0].blocked_users !== null) {
             if (blockedUsers[0].blocked_users.includes(blockedUserId[0].id)) {
-                console.log('User already blocked');
                 await db`
                 UPDATE users
                 SET blocked_users = array_remove(blocked_users, ${blockedUserId[0].id})
                 WHERE id = ${locals.user.userId}
                 `;
-                console.log('User unblocked');
                 return json({ message: 'User unblocked successfully' }, { status: 200 });
             }
         }
@@ -46,7 +44,6 @@ export const POST = async ({ request, locals }) => {
         }
 
     } catch (error) {
-        console.error('Error blocking user:', error);
         return json({ error: 'Error blocking user' }, { status: 500 });
     }
     return json({ message: 'User blocked successfully' }, { status: 200 });

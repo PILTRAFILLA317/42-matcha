@@ -18,7 +18,6 @@ let globalListener: Promise<void> | null = null;
 
 async function setupGlobalListener() {
   if (globalListener) return globalListener;
-  console.log('Global listener not set up, setting up now');
 
   globalListener = db.listen(`user_notifications`, (payload) => {
     const userId = JSON.parse(payload).userID;
@@ -59,7 +58,6 @@ export const GET: RequestHandler = async ({ locals }) => {
         // Cleanup on HMR
         if (import.meta.hot) {
           import.meta.hot.dispose(() => {
-            console.log('SA IDO:', userId);
             updateLastConnection(userId);
             activeListeners.delete(userId);
           });

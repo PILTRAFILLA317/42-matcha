@@ -21,8 +21,6 @@ async function parseMessages(messages: postgres.RowList<postgres.Row[]>, myUserI
 	if (res.length == 0) {
 		return;
 	}
-    console.log("myuserId: ", myUserId);
-    console.log("Res: ", res);
 	const user_1 = res[0].user_1;
 	const user_2 = res[0].user_2;
 	for (let i = 0; i < messages.length; i++) {
@@ -48,11 +46,9 @@ export const GET: RequestHandler = async ({ locals, url }) => {
             ) 
             SELECT * FROM messages WHERE chat_id = (SELECT id FROM chat)
         `;
-		// console.log('Mensajes: ', res);
 		const messages = await parseMessages(res, locals.user!.userId);
 		return json({ body: messages }, { status: 200 });
 	} catch (error) {
-		console.log('Error: ', error);
 		return json({ error: 'Error getting messages' }, { status: 500 });
 	}
 };

@@ -17,7 +17,6 @@ export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
 		return redirect(302, '/');
 	}
-	console.log('user is=>\n\n', event.locals.user);
 	return { user: event.locals.user };
 };
 
@@ -33,7 +32,6 @@ export const actions: Actions = {
 		const sexualPreference = formData.get('sexual_preferences') as string;
 		const bio = formData.get('bio');
 		const tags: string[] = formData.getAll('tags') as string[];
-		console.log("tags", tags);
 		if (user === null) {
 			return redirect(302, '/');
 		}
@@ -64,7 +62,6 @@ export const actions: Actions = {
 			}
 			return { status: 201, message: 'User updated successfully' };
 		} catch (error) {
-			console.log('Error updatiing user');
 			return fail(400, { message: error instanceof Error ? error.message : String(error) });
 		}
 	}

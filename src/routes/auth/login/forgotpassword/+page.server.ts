@@ -16,7 +16,6 @@ export const actions: Actions = {
 			const formData = await event.request.formData();
 			const email = formData.get('email');
 			const recover_id = generateUserId();
-			console.log('recover_id: ', recover_id);
 			if (email === null) return fail(401, {message: 'Email is required'});
 			const ret = recoverPassword(email.toString(), recover_id);
 			return ret;

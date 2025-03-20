@@ -9,7 +9,6 @@ export const POST = async ({ request, locals }) => {
         const result = await checkUserLikes(registeredUser?.userId, userId);
         return new Response(JSON.stringify(result), { status: 200 });
     } catch (error) {
-        console.error(error);
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
     }
 };

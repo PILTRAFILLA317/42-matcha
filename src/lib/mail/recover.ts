@@ -36,11 +36,9 @@ function sendEmail(email: string, recover_id: string, user: Row) {
 	});
 	request
 		.then((result) => {
-			console.log(result.body);
 			return {status: 201, message: `Recovery email sent to ${email}`};
 		})
 		.catch((err) => {
-			console.log(err.statusCode);
 			return fail(401, {message: "Error sending email"});
 		});
 }
@@ -58,11 +56,9 @@ export async function recoverPassword(email: string, recover_id: string) {
 		if (!result) {
 			return fail(401, { message: 'Unexpected error, try again later' });
 		}
-		console.log("User is:", user);
 		const ret = sendEmail(email, recover_id, user);
 		return ret;
 	} catch (error){
-		console.log(error);
 		return fail(401, { message: "Unexpected error" });
 	}
 }

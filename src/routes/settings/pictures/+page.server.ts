@@ -15,7 +15,6 @@ export const load: PageServerLoad = (async (event) => {
             `;
 		return { user: event.locals.user, images: res[0].profile_pictures };
 	} catch (error) {
-		console.log('Error: ', error);
 	}
 	return { user: event.locals.user };
 }) satisfies PageServerLoad;
@@ -57,13 +56,11 @@ export const actions: Actions = {
             SET profile_pictures = array_append(profile_pictures, ${env.SUPABASE_BUCKET_LOCATION + filename})
             WHERE id = ${event.locals.user.userId}
             `;
-			console.log(response);
 			if (res.$metadata.httpStatusCode != 200) {
 				return fail(401, { message: 'Error uploading file\n' + res.Code });
 			}
 			return { status: 200, message: 'File uploaded successfully uploaded' + filename };
 		} catch (error) {
-			console.log('Unexpected error: ', error);
 			if (error.code == '23514') return fail(401, { message: 'Max size of 5 images reached' });
 			return fail(401, { message: 'Unexpected error' });
 		}
@@ -81,9 +78,6 @@ export const actions: Actions = {
 					SET profile_pictures = array_remove(profile_pictures, profile_pictures[${idNum}])
 					WHERE id = ${event.locals.user.userId}
 			`;
-			console.log('response is: ', response);
-			console.log("noseque parsed: ", event.locals.user.images[idNum - 1].split('/').pop());
-			console.log('picture deleted');
 			const client = new S3Client({
 				region: env.SUPABASE_S3_REGION,
 				endpoint: env.SUPABASE_S3_ENDPOINT,
@@ -96,7 +90,6 @@ export const actions: Actions = {
 			client.send(new DeleteObjectCommand({Bucket: env.SUPABASE_S3_BUCKET_NAME, Key: event.locals.user.images[idNum - 1].split('/').pop()}));
 			return { status: 200, message: 'Picture Deleted' };
 		} catch (error) {
-			console.log('Unexpected error: ', error);
 			return fail(401, { message: 'Unexpected error: try again later' });
 		}
 	}

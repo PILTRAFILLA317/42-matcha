@@ -28,7 +28,6 @@
 	}
 
 	async function setReadNotifications() {
-		console.log('Obteniendo todas las notificaciones...');
 		try {
 			const res = await fetch(`/api/notifications/set-read?userId=${data.user?.userId}`);
 			const resData = await res.json();
@@ -37,10 +36,8 @@
 				notifications = resData;
 				return resData;
 			} else {
-				console.error('Error al obtener las notificaciones.');
 			}
 		} catch (err) {
-			console.error('Error al obtener las notificaciones.');
 		}
 	}
 

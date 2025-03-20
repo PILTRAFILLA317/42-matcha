@@ -54,13 +54,9 @@
 				await scrollToSearchedUsers();
 			} else {
 				isLoading = false;
-
-				console.log('Error al obtener los usuarios.');
 			}
 		} catch (err) {
 			isLoading = false;
-
-			console.log('Error al obtener los usuarios.');
 		}
 		isLoading = false;
 	}
@@ -86,13 +82,9 @@
 				await scrollToSearchedUsers();
 			} else {
 				isLoading = false;
-
-				console.log('Error al obtener los usuarios.');
 			}
 		} catch (err) {
 			isLoading = false;
-
-			console.log('Error al obtener los usuarios.');
 		}
 		isLoading = false;
 	}
@@ -118,13 +110,9 @@
 				await scrollToSearchedUsers();
 			} else {
 				isLoading = false;
-
-				console.log('Error al obtener los usuarios.');
 			}
 		} catch (err) {
 			isLoading = false;
-
-			console.log('Error al obtener los usuarios.');
 		}
 		isLoading = false;
 	}
@@ -145,10 +133,8 @@
 			if (res.ok) {
 				tags = data;
 			} else {
-				console.log('Error al obtener los tags.');
 			}
 		} catch (err) {
-			console.log('Error al obtener los tags.');
 		}
 	}
 
@@ -156,7 +142,6 @@
 
 	async function sortUsers() {
 		userAmount = 10;
-		console.log(sortOption);
 		if (sortOption === 'distance') {
 			getUsersByDistance();
 		} else if (sortOption === 'rating') {
@@ -168,7 +153,6 @@
 
 	async function handleLoadMore() {
 		userAmount += 10;
-		console.log(userAmount);
 		if (sortOption === 'distance') {
 			getUsersByDistance();
 		} else if (sortOption === 'rating') {

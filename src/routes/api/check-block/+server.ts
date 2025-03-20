@@ -25,14 +25,12 @@ export const POST = async ({ request, locals }) => {
                 `;
         if (blockedUsers[0].blocked_users !== null) {
             if (blockedUsers[0].blocked_users.includes(blockedUserId[0].id)) {
-                console.log('SEXOSEXO3', blockedUserId[0].id);
                 return json({ message: true }, { status: 200 });
             }
             return json({ message: false }, { status: 200 });
         }
 
     } catch (error) {
-        console.error(error);
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
     }
 };

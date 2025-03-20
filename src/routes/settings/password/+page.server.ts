@@ -21,9 +21,6 @@ export const actions: Actions = {
 		const currentPassword = formData.get('currentPassword');
 		const newPassword = formData.get('newPassword');
 		const confirmPassword = formData.get('confirmPassword');
-		console.log('Current password is => ', currentPassword);
-		console.log('New password is => ', newPassword);
-		console.log('Confirm password is => ', confirmPassword);
 		if (user === null) {
 			return redirect(302, '/');
 		}
@@ -58,6 +55,5 @@ export const actions: Actions = {
 			return redirect(302, '/');
 		}
 		const ret = recoverPassword(event.locals.user.email, recover_id);
-		console.log(ret);
 	}
 };

@@ -45,7 +45,6 @@ export const actions: Actions = {
 			}
 			return { status: 200, body: { message: 'Piola' } };
 		} catch (error) {
-			console.log('error', error);
 			return fail(500, { message: 'Error' });
 		}
 		return { status: 200, body: { message: 'Piola' } };

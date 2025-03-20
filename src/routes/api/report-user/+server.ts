@@ -6,9 +6,7 @@ export const POST = async ({ request, locals }) => {
         const body = await request.json();
         const userId = locals.user?.userId;
         const username = locals.user?.username;
-        console.log("body", body);
         const reportedUsername = body.reportedUserUsername;
-        console.log("reportedUsername", reportedUsername);
 
         if (!userId) {
             return new Response(JSON.stringify({ error: 'Unauthorized' }), { status: 401 });
@@ -30,7 +28,6 @@ export const POST = async ({ request, locals }) => {
         return new Response(JSON.stringify({ message: 'Report submitted successfully' }), { status: 200 });
     }
     catch (error) {
-        console.error('Error in POST request:', error);
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
     }
 };

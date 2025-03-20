@@ -54,20 +54,14 @@ export const POST = async ({ request, locals }) => {
     const userId = locals.user?.userId;
     const body = await request.json();
     const userAmount = body.userAmount;
-    console.log("userId", userId);
-    console.log("locals.user", locals.user);
 
     const location = locals.user?.location;
     if (!location) {
-        console.log("location", location);
         return new Response('Location not available', { status: 400 });
     }
 
     const latitude = location[0];
     const longitude = location[1];
-
-    console.log("latitude", latitude);
-    console.log("longitude", longitude);
 
     if (!userId) {
         return new Response('Unauthorized', { status: 401 });
@@ -90,12 +84,10 @@ export const POST = async ({ request, locals }) => {
             .sort((a, b) => a.distance - b.distance)
             .slice(0, userAmount);
 
-        console.log("users", users);
         const usersWithoutId = users.map(user => {
             const { id, ...userWithoutId } = user;
             return userWithoutId;
         });
-        console.log("usersWithoutId", usersWithoutId);
         const filteredUsers = await removeBlockedUsers(usersWithoutId, locals);
 
         return new Response(JSON.stringify(filteredUsers), {
@@ -105,7 +97,6 @@ export const POST = async ({ request, locals }) => {
             }
         });
     } catch (error) {
-        console.error('Error fetching users by distance:', error);
         return new Response('Internal Server Error', { status: 500 });
     }
 };

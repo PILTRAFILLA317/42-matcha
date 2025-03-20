@@ -18,6 +18,7 @@
 	let reconnectAttempts = 0;
 
 	import { notificationState } from '$lib/stores/notifications.svelte';
+	import { redirect } from '@sveltejs/kit';
 
 	let notifications = $derived(notificationState.AllNotifications);
 	$effect(() => {
@@ -53,7 +54,7 @@
 				const response = await res.json();
 				chatMessages = response.body;
 			} catch (e) {
-				console.log(e);
+				// console.log(e);
 			}
 		}
 	});
@@ -79,14 +80,13 @@
 			}
 			eventSource = new EventSource(`/api/chat/stream`);
 			if (!eventSource) {
-				console.error('❌ No se pudo establecer la conexión con el servidor de eventos.');
 				return;
 			}
 			eventSource.onmessage = (event) => {
 				reconnectAttempts = 0;
 				try {
 					if (event.data == 'connected') {
-						console.log('✅ Conectado al servidor de eventos SSE');
+						// console.log('✅ Conectado al servidor de eventos SSE');
 						return;
 					}
 					const parsedData = JSON.parse(event.data);
@@ -105,30 +105,33 @@
 						}
 					}
 				} catch (err) {
-					console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
+					// console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
 				}
 			};
 
 			eventSource.onerror = (error) => {
-				console.error('❌ ERROR1 en SSE:', error);
+				// console.error('❌ ERROR1 en SSE:', error);
 				eventSource.close();
 				const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
 				reconnectAttempts++;
 				setTimeout(startSSERequest, delay);
 			};
 		} catch (error) {
-			console.error('❌ ERROR2 en SSE:', error);
+			// console.error('❌ ERROR2 en SSE:', error);
 		}
 	}
 
 	onMount(() => {
+		if (!data.user?.userId) {
+			redirect(302, '/login');
+		}
 		allMatches = data.matchList;
 		let link;
 		page.subscribe(async ($page) => {
 			link = $page.url.searchParams.get('user');
 			if (link) {
 				if (await areMatched(link)) activeChat = link;
-				else console.log('❌ No estás conectado con este usuario');
+				// else console.log('❌ No estás conectado con este usuario');
 			}
 		});
 		startSSERequest();
