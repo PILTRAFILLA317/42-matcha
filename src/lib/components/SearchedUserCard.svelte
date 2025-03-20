@@ -13,10 +13,6 @@
 
 	let userDistance = userDistanceCalc(data.user, data.registeredUser);
 
-	function viewProfile() {
-		console.log('view profile');
-	}
-
 	function userDistanceCalc(currentUser, registeredUser) {
 		if (currentUser && currentUser.location && registeredUser && registeredUser.location) {
 			const [lat1, lon1] = currentUser.location; // Lat/Lon del usuario actual
@@ -70,7 +66,6 @@
 	}
 
 	onMount(async () => {
-		console.log('data123', data.user);
 		getLocationAddress(data.user);
 	});
 

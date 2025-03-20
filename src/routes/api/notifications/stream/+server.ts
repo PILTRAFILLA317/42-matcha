@@ -17,7 +17,6 @@ const activeListeners = new Map<
 let globalListener: Promise<void> | null = null;
 
 async function setupGlobalListener() {
-  console.log('Setting up global listener');
   if (globalListener) return globalListener;
   console.log('Global listener not set up, setting up now');
 
@@ -54,7 +53,6 @@ export const GET: RequestHandler = async ({ locals }) => {
         controller.enqueue(encoder.encode('data: connected\n\n'));
 
         // Store controller reference
-        console.log('CONNECTED USER:', userId);
         updateConnected(userId);
         activeListeners.set(userId, { controller, unsubscribe: () => Promise.resolve() });
 
@@ -68,7 +66,6 @@ export const GET: RequestHandler = async ({ locals }) => {
         }
       },
       cancel() {
-        console.log('SA IDO3', userId);
         updateLastConnection(userId);
         activeListeners.delete(userId);
       }

@@ -329,7 +329,6 @@ export async function updateConnected(
 		await db`UPDATE users
 			SET is_online = ${connected} WHERE id = ${userId};
 			`;
-		console.log('connected updated');
 	} catch (error) {
 		throw new Error('Error updating connected');
 	}
@@ -340,14 +339,12 @@ export async function updateLastConnection(
 ) {
 	const connected = false;
 	let lastConnection = new Date().toLocaleString('en-US', { timeZone: 'Europe/Madrid' });
-	console.log('lastConnection: ', lastConnection);
 	if (!userId) throw new Error('User not found');
 	try {
 		await db`UPDATE users
 			SET is_online = ${connected},
 			last_seen = ${lastConnection} WHERE id = ${userId};
 			`;
-		console.log('last_connection updated');
 	} catch (error) {
 		console.log(error);
 		throw new Error('Error updating last_connection');

@@ -5,12 +5,15 @@
 	import { onMount } from 'svelte';
 	import { notificationState } from '$lib/stores/notifications.svelte';
 	import { goto } from '$app/navigation';
+	import { fly } from 'svelte/transition';
 
 	const { data } = $props();
 
 	let currentUser = data.currentUser;
 
 	let registeredUser = data.user;
+
+	let userReportAnim = $state(false);
 
 	let userDistance = userDistanceCalc();
 
@@ -63,7 +66,6 @@
 		});
 		const result = await response.json();
 		isBlocked = result.message;
-		console.log('Blocked:', isBlocked);
 	}
 
 	async function areMatched() {
@@ -123,14 +125,21 @@
 	}
 
 	async function reportUser() {
-		const response = await fetch('/api/report', {
+		const response = await fetch('/api/report-user', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({})
+			body: JSON.stringify({
+				reportedUserUsername: currentUser?.username
+			})
 		});
 		const result = await response.json();
+		if (result) {
+			userReportAnim = true;
+			await new Promise((resolve) => setTimeout(resolve, 2000));
+			userReportAnim = false;
+		}
 	}
 
 	function userDistanceCalc() {
@@ -218,20 +227,52 @@
 	}
 
 	onMount(async () => {
-		if (currentUser?.username != registeredUser?.username) {
-			await profileVisit();
+		if (!currentUser) {
+			
+		} else {
+			if (currentUser?.username != registeredUser?.username) {
+				await profileVisit();
+			}
+			await areMatched();
+			await fetchLocation();
+			await checkIfUserLiked();
+			await checkIfUserBlocked();
 		}
-		await areMatched();
-		await fetchLocation();
-		await checkIfUserLiked();
-		await checkIfUserBlocked();
 	});
 </script>
 
 {#if !currentUser}
+<div>
+	<h1 class="text-primary mb-4 flex-1 text-center text-5xl font-semibold">
+		No user found
+	</h1>
 	<img src="https://pbs.twimg.com/media/F8mH-keWMAANehe.jpg" class="" alt="ese pibe no esiste" />
+</div>
 {/if}
 {#if currentUser}
+	{#if userReportAnim}
+		<div
+			role="alert"
+			class="alert alert-error absolute top-15"
+			in:fly={{ x: 300, duration: 300 }}
+			out:fly={{ x: 300, duration: 300 }}
+		>
+			<svg
+				xmlns="http://www.w3.org/2000/svg"
+				class="h-6 w-6 shrink-0 stroke-current"
+				fill="none"
+				viewBox="0 0 24 24"
+			>
+				<path
+					stroke-linecap="round"
+					stroke-linejoin="round"
+					stroke-width="2"
+					d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+				/>
+			</svg>
+			<span>User reported</span>
+		</div>
+	{/if}
 	<dialog bind:this={modal} class="modal p-40 backdrop-blur-sm">
 		<text class="text-9xl">Bocata lomo hoy!</text>
 		<img
@@ -290,8 +331,6 @@
 								tabindex="0"
 								class="dropdown-content menu bg-base-100 rounded-box z-1 w-52 p-2 shadow-sm"
 							>
-								<!-- <li><a>Item 1</a></li>
-								<li><a>Item 2</a></li> -->
 								<li>
 									<button class="text-md flex items-center gap-2" onclick={blockUser}>
 										{isBlocked ? 'Unblock user 🔓' : 'Block user 🚫'}
@@ -299,7 +338,7 @@
 								</li>
 								<li>
 									<button class="text-md flex items-center gap-2" onclick={reportUser}
-										>Report user 🚨</button
+										>Report user as fake 🚩</button
 									>
 								</li>
 							</ul>
