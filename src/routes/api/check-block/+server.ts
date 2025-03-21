@@ -29,7 +29,7 @@ export const POST = async ({ request, locals }) => {
             }
             return new Response(JSON.stringify({ message: false }), { status: 200 });
         }
-
+        return new Response(JSON.stringify({ message: false }), { status: 200 });
     } catch (error) {
         return new Response(JSON.stringify({ error: 'Internal Server Error' }), { status: 500 });
     }

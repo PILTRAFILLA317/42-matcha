@@ -10,13 +10,14 @@ export async function POST({ request }) {
         if (!userId) {
             return new Response('User ID is required', { status: 400 });
         }
-
         const lastVisits = await db`
             SELECT last_visits
             FROM users
             WHERE id = ${userId}
         `;
-
+        if (!lastVisits[0].last_visits || lastVisits.length === 0) {
+            return new Response(JSON.stringify([]), { status: 200 });
+        }
         for (let i = 0; i < lastVisits[0].last_visits.length; i++) {
             const userId = lastVisits[0].last_visits[i];
             const user = await db`
@@ -46,7 +47,7 @@ export async function POST({ request }) {
             'content-type': 'application/json'
             }
         });
-
+        return new Response(JSON.stringify(limitedUsers), { status: 200 });
     } catch (error) {
         return new Response('Internal server error', { status: 500 });
     }

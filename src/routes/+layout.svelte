@@ -210,18 +210,18 @@
 			if (!data.user.completed){
 				goto('/complete-profile');
 			}
+			getUnreadNotifications();
+			getUnreadNotifications();
+			getLocation();
+			startSSERequest();
+			return () => {
+				eventSource?.close();
+				reconnectAttempts = 0;
+			};
 		}
 		else {
 			goto('/auth/login');
 		}
-		getUnreadNotifications();
-		getUnreadNotifications();
-		getLocation();
-		startSSERequest();
-		return () => {
-			eventSource?.close();
-			reconnectAttempts = 0;
-		};
 	});
 </script>
 

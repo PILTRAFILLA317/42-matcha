@@ -19,9 +19,9 @@ export const actions: Actions = {
 				return redirect(302, '/');
 			}
 			const res = await db`DELETE FROM users WHERE id = ${event.locals.user.userId}`;
-			return redirect(302, '/');
 		} catch (error) {
 			return (fail(400, {message: "Error Deleting User, try again later"}));
 		}
+		return redirect(302, '/');
 	}
 };
