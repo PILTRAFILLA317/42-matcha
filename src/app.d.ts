@@ -33,6 +33,7 @@ declare global {
 		verified: boolean = false;
 		images: string[] = [];
 		age: number = 0;
+		completed: boolean;
 	}
 	interface UserFront{
 		username: string;
