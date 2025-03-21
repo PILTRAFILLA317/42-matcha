@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
 	import { onMount } from 'svelte';
@@ -77,6 +78,13 @@
 	}
 
 	onMount(() => {
+		if (data.user) {
+			console.log('Usuario completado?? tencuidao', data.user.completed);
+			if (!data.user.completed){
+				console.log('Redirigiendo a completar perfil...');
+				goto('/complete-profile');
+			}
+		}
 		if (data.user?.userId) {
 			// console.log('Obteniendo ubicación...');
 			getLocation();

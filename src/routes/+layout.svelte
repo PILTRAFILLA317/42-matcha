@@ -2,13 +2,13 @@
 	/// <reference types="node" />
 	import '../app.css';
 	import type { LayoutServerData } from './$types';
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { onMount } from 'svelte';
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
 	import { locationStore } from '$lib/stores/location';
 	import NotificationIcon from '/src/assets/notifications.svg';
 	import { notificationState } from '$lib/stores/notifications.svelte';
-
+	
 	let eventSource: EventSource;
 	let reconnectAttempts = 0;
 
@@ -228,6 +228,13 @@
 
 	// Ejecutar la lógica al cargar la página
 	onMount(() => {
+		if (data.user) {
+			console.log('Usuario completado?? tencuidao', data.user.completed);
+			if (!data.user.completed){
+				console.log('Redirigiendo a completar perfil...');
+				goto('/complete-profile');
+			}
+		}
 		getUnreadNotifications();
 		if (data.user?.userId) {
 			// console.log('Obteniendo ubicación...');

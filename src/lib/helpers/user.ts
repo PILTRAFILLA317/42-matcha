@@ -3,6 +3,7 @@ import Mailjet from 'node-mailjet';
 import { env } from '$env/dynamic/private';
 import { error, fail } from '@sveltejs/kit';
 import { Exception } from 'sass-embedded';
+import { db } from '$lib/server/db';
 
 export function generateUserId() {
 	// ID with 120 bits of entropy, or about the same as UUID v4.
@@ -50,4 +51,16 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 			console.log(err);
 			return fail(401, { message: 'Error sending email' });
 		});
+}
+
+export function isCompleted(user: User): boolean{
+	if (!user) return false;
+	if (!user.firstName || !user.lastName || !user.email || !user.username || !user.sexualPreferences || !user.age || !user.gender || !user.bio || !user.userPreferences || !user.images || (user.images && user.images.length > 0)) return false;
+	db`
+		UPDATE users 
+		SET completed = true 
+		WHERE id = ${user.userId}`;
+	console.log("HOLA!");
+	user.completed = true;
+	return true;
 }
