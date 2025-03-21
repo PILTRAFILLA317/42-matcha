@@ -54,7 +54,6 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 }
 
 export async function isCompleted(user: User, session: Session): Promise<boolean> {
-	console.log('User is => ', user);
 	if (!user) return false;
 	if (
 		!user.firstName ||
@@ -72,16 +71,13 @@ export async function isCompleted(user: User, session: Session): Promise<boolean
 	)
 		return false;
 	if (!session) return false;
-	console.log('Updating completed to true');
 	try {
 		const res = await db`UPDATE users
 			SET completed = ${true}
 			WHERE id = ${user.userId}
 			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
 		`;
-		console.log("Res is: ", res);
 	} catch (error) {
-		console.log(error);
 		return false;
 	}
 	return true;

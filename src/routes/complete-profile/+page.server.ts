@@ -18,7 +18,6 @@ export const load: PageServerLoad = async (event) => {
             `;
 		return { user: event.locals.user, images: res[0].profile_pictures };
 	} catch (error) {
-		console.log('Error: ', error);
 	}
 	return { user: event.locals.user };
 };
@@ -60,7 +59,6 @@ export const actions: Actions = {
             SET profile_pictures = array_append(profile_pictures, ${env.SUPABASE_BUCKET_LOCATION + filename})
             WHERE id = ${event.locals.user.userId}
             `;
-			console.log(response);
 			if (res.$metadata.httpStatusCode != 200) {
 				return fail(401, { message: 'Error uploading file\n' + res.Code });
 			}
@@ -73,7 +71,7 @@ export const actions: Actions = {
 			}
 			return { status: 200, message: 'File uploaded successfully uploaded' + filename };
 		} catch (error) {
-			console.log('Unexpected error: ', error);
+			// console.log('Unexpected error: ', error);
 			if (error.code == '23514') return fail(401, { message: 'Max size of 5 images reached' });
 			return fail(401, { message: 'Unexpected error' });
 		}
@@ -91,9 +89,9 @@ export const actions: Actions = {
                     SET profile_pictures = array_remove(profile_pictures, profile_pictures[${idNum}])
                     WHERE id = ${event.locals.user.userId}
             `;
-			console.log('response is: ', response);
-			console.log('noseque parsed: ', event.locals.user.images[idNum - 1].split('/').pop());
-			console.log('picture deleted');
+			// console.log('response is: ', response);
+			// console.log('noseque parsed: ', event.locals.user.images[idNum - 1].split('/').pop());
+			// console.log('picture deleted');
 			const client = new S3Client({
 				region: env.SUPABASE_S3_REGION,
 				endpoint: env.SUPABASE_S3_ENDPOINT,
@@ -111,7 +109,7 @@ export const actions: Actions = {
 			);
 			return { status: 200, message: 'Picture Deleted' };
 		} catch (error) {
-			console.log('Unexpected error: ', error);
+			// console.log('Unexpected error: ', error);
 			return fail(401, { message: 'Unexpected error: try again later' });
 		}
 	},
@@ -122,7 +120,7 @@ export const actions: Actions = {
 		const sexualPreference = formData.get('sexual_preferences') as string;
 		const bio = formData.get('bio');
 		const tags: string[] = formData.getAll('tags') as string[];
-		console.log('tags', tags);
+		// console.log('tags', tags);
 		if (user === null) {
 			return redirect(302, '/');
 		}
@@ -140,12 +138,12 @@ export const actions: Actions = {
 				await users.updateTags(tags, event);
 			}
             if (await isCompleted(user, event.locals.session)) {
-                console.log("this user in completed");
+                // console.log("this user in completed");
                 return redirect(302, '/');
 			}
 			return { status: 201, message: 'User updated successfully' };
 		} catch (error) {
-			console.log('Error updating user');
+			// console.log('Error updating user');
             if (error.status == 302) redirect(302, '/');
 			return fail(400, { message: error instanceof Error ? error.message : String(error) });
 		}

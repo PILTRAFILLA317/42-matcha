@@ -29,7 +29,7 @@
 	];
 
     function handleUpload(node: HTMLFormElement) {
-		console.log('Upload result:', node);
+		// console.log('Upload result:', node);
 	}
 	export const load = () => {};
 </script>
