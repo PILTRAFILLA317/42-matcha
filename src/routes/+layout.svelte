@@ -2,7 +2,7 @@
 	/// <reference types="node" />
 	import '../app.css';
 	import type { LayoutServerData } from './$types';
-	import { invalidateAll } from '$app/navigation';
+	import { goto, invalidateAll } from '$app/navigation';
 	import { redirect } from '@sveltejs/kit';
 	import { onMount } from 'svelte';
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
@@ -217,7 +217,7 @@
 	// Ejecutar la lógica al cargar la página
 	onMount(() => {
 		if (!data.user?.userId) {
-			redirect(302, '/login');
+			goto('/login');
 		}
 		getUnreadNotifications();
 		getLocation();

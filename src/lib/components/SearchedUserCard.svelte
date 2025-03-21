@@ -298,7 +298,7 @@
 	</div>
 </dialog>
 
-<div
+<button
 	onclick={() => modal?.showModal()}
 	class="flex max-h-72 max-w-72 flex-col items-center justify-center gap-3 rounded-xl bg-gray-800 p-3 shadow-md"
 >
@@ -307,7 +307,7 @@
 		alt="profile"
 		class="h-40 w-auto rounded-lg"
 	/> -->
-	{#if data.user?.profile_pictures == null}
+	{#if data.user?.profile_pictures == null || data.user?.profile_pictures.length == 0}
 		<div id="slide1" class="carousel-item relative w-full">
 			<img src="/src/assets/GatoSexo.png" class="h-40 w-full rounded-lg" alt="Gato" />
 		</div>
@@ -365,4 +365,4 @@
 			<p class="mr-3 text-lg">{currentUserLocation} (A {userDistance}km)</p>
 		</div>
 	</div>
-</div>
+</button>

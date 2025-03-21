@@ -115,7 +115,7 @@
 					/>
 					<text class="text-lg text-white">{Distance}{Distance === 99 ? '+' : ''} km</text>
 				</div>
-				<div class="divider divider-neutral divider-vertical" />
+				<div class="divider divider-neutral divider-vertical"></div>
 
 				<div class="flex flex-col">
 					<label for="ageRange" class="mb-5 text-lg font-bold text-white">Rango de Edad</label>
@@ -190,14 +190,11 @@
 		</div>
 		<div class="flex w-full flex-row items-center justify-end gap-4">
 			<text class="text-lg font-bold text-white">¡Buscar!</text>
-			<button class="btn justify-end"
-				><img
-					src={SearchIcon}
-					alt="Chat Icon"
-					class="w-8"
-					onclick={async () => await getSearchedUsers()}
-				/>
-			</button>
+			<div class="">
+				<button onclick={async () => await getSearchedUsers()} class="btn">
+					<img src={SearchIcon} alt="Chat Icon" class="w-8" />
+				</button>
+			</div>
 		</div>
 	</div>
 	<div class="flex w-full flex-col items-center justify-center">
