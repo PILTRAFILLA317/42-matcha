@@ -139,16 +139,14 @@ export const actions: Actions = {
 			if (!checkTags(tags, user.userPreferences)) {
 				await users.updateTags(tags, event);
 			}
-            if (isCompleted(user)) {
-				return {
-					status: 200,
-					message: 'User updated successfully',
-					redirect: '/'
-				};
+            if (await isCompleted(user, event.locals.session)) {
+                console.log("this user in completed");
+                return redirect(302, '/');
 			}
 			return { status: 201, message: 'User updated successfully' };
 		} catch (error) {
-			console.log('Error updatiing user');
+			console.log('Error updating user');
+            if (error.status == 302) redirect(302, '/');
 			return fail(400, { message: error instanceof Error ? error.message : String(error) });
 		}
 	}

@@ -181,19 +181,11 @@
 			if (eventSource) {
 				eventSource.close();
 			}
-
-			// console.log('🚀 Iniciando conexión SSE...');
 			eventSource = new EventSource(`/api/notifications/stream`);
-
 			if (!eventSource) {
 				console.error('❌ No se pudo establecer la conexión con el servidor de eventos.');
 				return;
 			}
-
-			// eventSource.onopen = () => {
-			// 	console.log('✅ Conexión establecida con SSE.');
-			// };
-
 			eventSource.onmessage = (event) => {
 				reconnectAttempts = 0;
 				try {
@@ -226,18 +218,14 @@
 		}
 	}
 
-	// Ejecutar la lógica al cargar la página
 	onMount(() => {
 		if (data.user) {
-			console.log('Usuario completado?? tencuidao', data.user.completed);
 			if (!data.user.completed){
-				console.log('Redirigiendo a completar perfil...');
 				goto('/complete-profile');
 			}
 		}
 		getUnreadNotifications();
 		if (data.user?.userId) {
-			// console.log('Obteniendo ubicación...');
 			getLocation();
 		}
 		startSSERequest();

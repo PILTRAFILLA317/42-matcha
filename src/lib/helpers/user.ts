@@ -34,7 +34,7 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 				To: [
 					{
 						Email: email,
-						Name: user.firstName,
+						Name: user.firstName
 					}
 				],
 				Subject: 'Register confirmation [FollarHoySi]',
@@ -53,14 +53,36 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 		});
 }
 
-export function isCompleted(user: User): boolean{
+export async function isCompleted(user: User, session: Session): Promise<boolean> {
+	console.log('User is => ', user);
 	if (!user) return false;
-	if (!user.firstName || !user.lastName || !user.email || !user.username || !user.sexualPreferences || !user.age || !user.gender || !user.bio || !user.userPreferences || !user.images || (user.images && user.images.length > 0)) return false;
-	db`
-		UPDATE users 
-		SET completed = true 
-		WHERE id = ${user.userId}`;
-	console.log("HOLA!");
-	user.completed = true;
+	if (
+		!user.firstName ||
+		!user.lastName ||
+		!user.email ||
+		!user.username ||
+		!user.sexualPreferences ||
+		!user.age ||
+		user.gender == null ||
+		!user.bio ||
+		!user.userPreferences ||
+		(user.userPreferences && user.userPreferences.length == 0) ||
+		!user.images ||
+		(user.images && user.images.length == 0)
+	)
+		return false;
+	if (!session) return false;
+	console.log('Updating completed to true');
+	try {
+		const res = await db`UPDATE users
+			SET completed = ${true}
+			WHERE id = ${user.userId}
+			AND EXISTS (SELECT 1 FROM sessions WHERE id = ${session.id} AND user_id = ${user.userId});
+		`;
+		console.log("Res is: ", res);
+	} catch (error) {
+		console.log(error);
+		return false;
+	}
 	return true;
 }

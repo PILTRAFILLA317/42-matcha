@@ -8,6 +8,9 @@ export const load: PageServerLoad = async (event) => {
     if (!event.locals.user) {
         return redirect(302, '/auth/login');
     }
+    if (!event.locals.user.completed) {
+		return redirect(302, '/complete-profile');
+	}
     const currentUser = await users.getUser(String(event.params.user));
     if (!currentUser)
         return {user: event.locals.user};

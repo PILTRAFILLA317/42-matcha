@@ -17,17 +17,16 @@
 						error: null
 					};
 					if (data.user?.username) {
-						// console.log('Actualizando ubicación en la base de datos...');
 						updateLocation(location);
 					}
 				},
 				async () => {
-					await getLocationByIP(); // Respaldo con IP
+					await getLocationByIP();
 				}
 			);
 		} else {
 			console.log('Geolocation is not supported by this browser.');
-			await getLocationByIP(); // Respaldo con IP
+			await getLocationByIP();
 		}
 	}
 

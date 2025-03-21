@@ -64,6 +64,9 @@ export const load = (async (event) => {
 	if (!event.locals.user) {
 		return redirect(302, '/');
 	}
+	if (!event.locals.user.completed) {
+		return redirect(302, '/complete-profile');
+	}
 	const matchedUsersList = await getChats(event.locals.user!.userId);
 	return { user: event.locals.user, matchList: matchedUsersList };
 }) satisfies PageServerLoad;
