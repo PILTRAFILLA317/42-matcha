@@ -26,9 +26,6 @@ class NotificationState {
     getLastNotification(): NotificationType {
         return this.notifications[this.notifications.length - 1];
     }
-    printAll(): void {
-        console.log(this.notifications);
-    }
     get AllNotifications() {
         return this.notifications;
     }

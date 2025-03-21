@@ -72,9 +72,7 @@
 
 	onMount(() => {
 		if (data.user) {
-			console.log('Usuario completado?? tencuidao', data.user.completed);
 			if (!data.user.completed){
-				console.log('Redirigiendo a completar perfil...');
 				goto('/complete-profile');
 			}
 		}
