@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import type { PageData } from './$types';
 	let { data }: { data: PageData } = $props();
 	import { onMount } from 'svelte';
@@ -16,16 +17,15 @@
 						error: null
 					};
 					if (data.user?.username) {
-						// console.log('Actualizando ubicación en la base de datos...');
 						updateLocation(location);
 					}
 				},
 				async () => {
-					await getLocationByIP(); // Respaldo con IP
+					await getLocationByIP();
 				}
 			);
 		} else {
-			await getLocationByIP(); // Respaldo con IP
+			await getLocationByIP();
 		}
 	}
 
@@ -71,6 +71,13 @@
 	}
 
 	onMount(() => {
+		if (data.user) {
+			console.log('Usuario completado?? tencuidao', data.user.completed);
+			if (!data.user.completed){
+				console.log('Redirigiendo a completar perfil...');
+				goto('/complete-profile');
+			}
+		}
 		if (data.user?.userId) {
 			// console.log('Obteniendo ubicación...');
 			getLocation();
