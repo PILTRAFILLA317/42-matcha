@@ -11,6 +11,9 @@ export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
 		return redirect(302, '/');
 	}
+	// if (event.locals.user.completed) {
+	// 	return redirect(302, '/');
+	// }
 	try {
 		const res = await db`
             SELECT profile_pictures FROM users
@@ -137,15 +140,24 @@ export const actions: Actions = {
 			if (!checkTags(tags, user.userPreferences)) {
 				await users.updateTags(tags, event);
 			}
-            if (await isCompleted(user, event.locals.session)) {
-                // console.log("this user in completed");
-                return redirect(302, '/');
-			}
-			return { status: 201, message: 'User updated successfully' };
+			// return { status: 201, message: 'User updated successfully' };
+			// return {
+			// 	status: 201,
+			// 	message: 'User updated successfully',
+			// 	redirect: '/'
+			// };
 		} catch (error) {
 			// console.log('Error updating user');
-            if (error.status == 302) redirect(302, '/');
+			if (error.status == 302) redirect(302, '/');
 			return fail(400, { message: error instanceof Error ? error.message : String(error) });
 		}
+		if (await isCompleted(user, event.locals.session)) {
+			return redirect(302, '/');
+		}
+		return {
+			status: 201,
+			message: 'User updated successfully',
+			redirect: '/'
+		};
 	}
 };

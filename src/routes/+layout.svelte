@@ -1,5 +1,4 @@
 <script lang="ts">
-	/// <reference types="node" />
 	import '../app.css';
 	import type { LayoutServerData } from './$types';
 	import { goto, invalidateAll } from '$app/navigation';
@@ -203,9 +202,10 @@
 		} catch (error) {
 			// console.error('❌ ERROR2 en SSE:', error);
 		}
+		return undefined;
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		if (data.user) {
 			if (!data.user.completed){
 				goto('/complete-profile');
@@ -213,7 +213,7 @@
 			getUnreadNotifications();
 			getUnreadNotifications();
 			getLocation();
-			startSSERequest();
+			await startSSERequest();
 			return () => {
 				eventSource?.close();
 				reconnectAttempts = 0;
