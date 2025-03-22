@@ -49,6 +49,7 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 		const messages = await parseMessages(res, locals.user!.userId);
 		return json({ body: messages }, { status: 200 });
 	} catch (error) {
+		console.log('Error: ', error);
 		return json({ error: 'Error getting messages' }, { status: 500 });
 	}
 };

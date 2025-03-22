@@ -64,13 +64,16 @@
 		if (activeChat) {
 			(async () => {
 				try {
-					const response = await fetchWithRetry(`../api/messages?user=${activeChat}`, {
+					const res = await fetch(`../api/messages?user=${activeChat}`, {
 						method: 'GET',
 						headers: {
 							'Content-Type': 'application/json'
 						}
 					});
+					const response = await res.json();
+					// Asegúrate de que response.body sea un array antes de asignarlo
 					chatMessages = Array.isArray(response.body) ? response.body : [];
+					console.log('Mensajes obtenidos:', chatMessages);
 				} catch (e) {
 					console.error('Error al obtener mensajes:', e);
 				}
@@ -111,6 +114,7 @@
 				reconnectAttempts = 0;
 				try {
 					if (event.data == 'connected') {
+						// console.log('✅ Conectado al servidor de eventos SSE');
 						return;
 					}
 					const parsedData = JSON.parse(event.data);
@@ -118,25 +122,30 @@
 						parsedData.sender[0].username === activeChat ||
 						parsedData.receiver[0].username === activeChat
 					) {
+						// chatMessages.push({ sender: parsedData.sender[0].username, content: parsedData.content });
+						if (!chatMessages) {
+							chatMessages = [{ sender: parsedData.sender[0].username, content: parsedData.content }];
+						} else {
 						chatMessages = [
 							{ sender: parsedData.sender[0].username, content: parsedData.content },
-							...(chatMessages || [])
+							...chatMessages
 						];
+						}
 					}
 				} catch (err) {
-					console.error('Error al procesar el mensaje SSE:', err, event.data);
+					// console.error('❌ Error al procesar el mensaje SSE:', err, event.data);
 				}
 			};
 
 			eventSource.onerror = (error) => {
-				console.error('Error en SSE:', error);
+				// console.error('❌ ERROR1 en SSE:', error);
 				eventSource.close();
 				const delay = Math.min(1000 * 2 ** reconnectAttempts, 30000);
 				reconnectAttempts++;
 				setTimeout(startSSERequest, delay);
 			};
 		} catch (error) {
-			console.error('Error al iniciar SSE:', error);
+			// console.error('❌ ERROR2 en SSE:', error);
 		}
 	}
 
