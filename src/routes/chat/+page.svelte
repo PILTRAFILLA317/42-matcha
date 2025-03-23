@@ -73,9 +73,9 @@
 					const response = await res.json();
 					// Asegúrate de que response.body sea un array antes de asignarlo
 					chatMessages = Array.isArray(response.body) ? response.body : [];
-					console.log('Mensajes obtenidos:', chatMessages);
+					// console.log('Mensajes obtenidos:', chatMessages);
 				} catch (e) {
-					console.error('Error al obtener mensajes:', e);
+					// console.error('Error al obtener mensajes:', e);
 				}
 			})();
 		}
@@ -96,7 +96,7 @@
 			// Asegúrate de que el resultado sea un booleano
 			return result?.matched === true;
 		} catch (error) {
-			console.error('Error en areMatched:', error);
+			// console.error('Error en areMatched:', error);
 			return false;
 		}
 	}

@@ -16,7 +16,7 @@
 	<div class="border-opacity-50 flex w-full flex-col">
 		<div class="carousel w-full">
 			{#each data.images as image, index}
-				<div id="item{index}" class="carousel-item relative w-full">
+				<div id="item{index}" class="carousel-item relative w-full h-[600px]">
 					<img src={image} class="w-full" />
 					<form use:enhance method="post">
 							<button
