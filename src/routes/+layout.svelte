@@ -289,13 +289,15 @@
 					</button>
 				</div>
 				<div
-					class="avatar dropdown dropdown-hover dropdown-end relative ml-auto w-12 cursor-pointer"
+					class="avatar dropdown dropdown-hover dropdown-end relative ml-auto cursor-pointer"
 				>
+				<div class="w-12 rounded">
 					<img
-						class="rounded-xl"
-						src={data.user.images != null ? data.user.images[0] : '/src/assets/GatoSexo.png'}
-						alt="User avatar"
+					class="rounded-xl"
+					src={data.user.images != null ? data.user.images[0] : '/src/assets/GatoSexo.png'}
+					alt="User avatar"
 					/>
+				</div>
 					<ul class="menu dropdown-content rounded-box bg-base-100 z-1 w-52 p-2 shadow-sm">
 						<li>
 							<a href={`/users/${data.user.username}`} class="block h-full w-full">Profile</a>

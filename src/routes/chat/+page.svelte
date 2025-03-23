@@ -192,7 +192,7 @@
 			{#if activeChat}
 				<div class="relative flex h-[93%] flex-col-reverse overflow-auto">
 					{#each chatMessages as message}
-						<ChatMessage user={data.user} username={message.sender} message={message.content} />
+						<ChatMessage user={data.user} sender={message.sender} message={message.content} />
 					{/each}
 				</div>
 				<div class="h-[7%]">
