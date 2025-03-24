@@ -38,14 +38,14 @@
 				{#if seePassword == false}
 					<img
 						class="w-13 self-center pl-5"
-						src="/src/assets/visible.png"
+						src="/assets/visible.png"
 						alt="made by https://www.flaticon.com/free-icons/close"
 						onclick={() => (seePassword = !seePassword)}
 					/>
 				{:else}
 					<img
 						class="w-13 self-center pl-5"
-						src="/src/assets/eye.png"
+						src="/assets/eye.png"
 						alt="made my https://www.flaticon.com/authors/th-studio"
 						onclick={() => (seePassword = !seePassword)}
 					/>
@@ -66,14 +66,14 @@
 				{#if seePassword == false}
 					<img
 						class="w-13 self-center pl-5"
-						src="/src/assets/visible.png"
+						src="/assets/visible.png"
 						alt="made by https://www.flaticon.com/free-icons/close"
 						onclick={() => (seePassword = !seePassword)}
 					/>
 				{:else}
 					<img
 						class="w-13 self-center pl-5"
-						src="/src/assets/eye.png"
+						src="/assets/eye.png"
 						alt="made my https://www.flaticon.com/authors/th-studio"
 						onclick={() => (seePassword = !seePassword)}
 					/>
@@ -96,14 +96,14 @@
 				{#if seePassword == false}
 					<img
 						class="w-13 self-center pl-5"
-						src="/src/assets/visible.png"
+						src="/assets/visible.png"
 						alt="made by https://www.flaticon.com/free-icons/close"
 						onclick={() => (seePassword = !seePassword)}
 					/>
 				{:else}
 					<img
 						class="w-13 self-center pl-5"
-						src="/src/assets/eye.png"
+						src="/assets/eye.png"
 						alt="made my https://www.flaticon.com/authors/th-studio"
 						onclick={() => (seePassword = !seePassword)}
 					/>

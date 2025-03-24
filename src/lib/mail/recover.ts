@@ -57,7 +57,7 @@ export async function recoverPassword(email: string, recover_id: string) {
 			return fail(401, { message: 'Unexpected error, try again later' });
 		}
 		const ret = await sendEmail(email, recover_id, user);
-		console.log('first return value is: ', ret);
+		// console.log('first return value is: ', ret);
 		return ret;
 	} catch (error) {
 		return fail(401, { message: 'Unexpected error' });

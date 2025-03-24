@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageServerData } from '../$types';
-	import SearchIcon from '/src/assets/search.svg';
+	import SearchIcon from '/assets/search.svg';
 	import DoubleSlider from '../../lib/components/DoubleSlider.svelte';
 	import SearchedUserCard from '../../lib/components/SearchedUserCard.svelte';
 	import { onMount } from 'svelte';

@@ -49,12 +49,12 @@ export const GET: RequestHandler = async ({ locals, url }) => {
             ) 
             SELECT * FROM messages WHERE chat_id = (SELECT id FROM chat)
         `;
-		console.log("res is: ", res);
-		console.log("id is: ", locals.user!.userId);
+		// console.log("res is: ", res);
+		// console.log("id is: ", locals.user!.userId);
 		const messages = await parseMessages(res, locals.user);
 		return json({ body: messages }, { status: 200 });
 	} catch (error) {
-		console.log('Error: ', error);
+		// console.log('Error: ', error);
 		return json({ error: 'Error getting messages' }, { status: 500 });
 	}
 };

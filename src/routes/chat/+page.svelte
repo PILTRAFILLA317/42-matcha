@@ -26,6 +26,7 @@
 		notifications.length;
 		if (
 			notificationState.getLastNotification()?.type === 'match' &&
+			Array.isArray(allMatches) &&
 			!allMatches.includes(notificationState.getLastNotification()?.message)
 		) {
 			// console.log("LENGHT:", notifications.length);
@@ -34,6 +35,7 @@
 		}
 		if (
 			notificationState.getLastNotification()?.type === 'unlike' &&
+			Array.isArray(allMatches) &&
 			allMatches.includes(notificationState.getLastNotification()?.message)
 		) {
 			allMatches = allMatches.filter((user) => user !== activeChat);

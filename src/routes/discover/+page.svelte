@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageServerData } from '../$types';
-	import SearchIcon from '/src/assets/search.svg';
+	import SearchIcon from '/assets/search.svg';
 	import DoubleSlider from '../../lib/components/DoubleSlider.svelte';
 	import SearchedUserCard from '../../lib/components/SearchedUserCard.svelte';
 	import { onMount } from 'svelte';
@@ -173,9 +173,9 @@
 		<h1 class="text-4xl font-bold">Search</h1>
 	</div>
 	<div
-		class="flex w-full flex-col items-center gap-1 rounded-2xl bg-white px-5 text-black md:flex-row"
+		class="flex w-full flex-col items-center gap-1 rounded-2xl bg-sky-900 px-5 text-black md:flex-row"
 	>
-		<label for="sort" class="m-2 md:m-5 w-auto text-black">Sort by:</label>
+		<label for="sort" class="m-2 md:m-5 w-auto text-white">Sort by:</label>
 		<form class="filter">
 			<div>
 				<div class="flex flex-col items-center m-2 gap-2 md:flex-row">

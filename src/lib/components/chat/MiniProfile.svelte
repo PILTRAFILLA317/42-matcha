@@ -12,7 +12,7 @@
 			<div class="w-24 rounded-full">
 				<img
 					alt={username ??  'User'}
-					src="{pictures.length != 0? pictures[0] : "/src/assets/GatoSexo.png"}"
+					src="{pictures.length != 0? pictures[0] : "/assets/GatoSexo.png"}"
 					class="rounded-full shadow-2xl object-scale-down"
 				/>
 			</div>

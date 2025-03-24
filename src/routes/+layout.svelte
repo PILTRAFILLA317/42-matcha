@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 	let { children, data }: { children: any; data: LayoutServerData } = $props();
 	import { locationStore } from '$lib/stores/location';
-	import NotificationIcon from '/src/assets/notifications.svg';
+	import NotificationIcon from '/assets/notifications.svg';
 	import { notificationState } from '$lib/stores/notifications.svelte';
 	
 	let eventSource: EventSource;
@@ -229,7 +229,7 @@
 	<nav class="bg-white-100 flex items-center p-5 text-white">
 		<!-- <a href="/" class="justify-end text-xl">MatchPoint</a> -->
 		<a href="/">
-			<img src="/src/assets/logo.png" alt="MatchPoint" class="h-16 w-auto" />
+			<img src="/assets/logo.png" alt="MatchPoint" class="h-16 w-auto" />
 			<text class="text-xl font-bold">{$locationStore.latitude}</text>
 			<text class="text-xl font-bold">{$locationStore.longitude}</text>
 		</a>
@@ -245,14 +245,14 @@
 						class:before:bg-pink-500={notificationsOn}
 						class:before:bg-black={!notificationsOn}
 					>
-						<div class="dropdown-content card card-sm bg-base-100 z-10 max-h-48 w-96 shadow-md">
+						<div class="dropdown-content card card-sm bg-base-100 md:w-96 z-10 max-h-48 w-60 shadow-md">
 							<div class="card-body max-h-36 overflow-y-auto">
 								{#if notifications.length == 0}
 									<p class="text-center text-xl text-gray-500">No tienes nuevas notificaciones.</p>
 								{:else}
 									{#each notifications as notification}
-										<div class="flex flex-row items-center justify-start gap-2">
-											<text class="flex flex-row gap-1 text-start text-base">
+										<div class="flex flex-row items-start justify-start gap-2">
+											<text class="flex flex-row gap-1 justify-start text-start md:text-base text-sm">
 												<p>{notification.message}</p>
 												<p>
 													{notification.type === 'visit'
@@ -275,7 +275,7 @@
 							</div>
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<div
-								class="btn btn-primary w-xs"
+								class="btn btn-primary w-fit"
 								role="button"
 								tabindex="0"
 								onclick={redirectToNotifications}
@@ -294,7 +294,7 @@
 				<div class="w-12 rounded">
 					<img
 					class="rounded-xl"
-					src={data.user.images != null ? data.user.images[0] : '/src/assets/GatoSexo.png'}
+					src={data.user.images != null ? data.user.images[0] : '/assets/GatoSexo.png'}
 					alt="User avatar"
 					/>
 				</div>

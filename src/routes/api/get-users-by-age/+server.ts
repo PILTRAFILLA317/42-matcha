@@ -37,6 +37,41 @@ async function removeBlockedUsers(users, locals) {
     return users;
 }
 
+function filterByPreference(users: User[], user: User): User[] {
+    const userPreference = user.sexualPreferences;
+    const userGender = user.gender;
+    if (userGender === true && userPreference === 'Heterosexual') {
+        users = users.filter(
+            (u: User) => u.gender === false && (u.sexual_preferences === 'Heterosexual' || u.sexual_preferences === 'Bisexual')
+        );
+    } else if (userGender === true && userPreference === 'Homosexual') {
+        users = users.filter(
+            (u: User) => u.gender === true && (u.sexual_preferences === 'Homosexual' || u.sexual_preferences === 'Bisexual')
+        );
+    } else if (userGender === true && userPreference === 'Bisexual') {
+        users = users.filter(
+            (u: User) =>
+                (u.gender === false && (u.sexual_preferences === 'Heterosexual' || u.sexual_preferences === 'Bisexual')) ||
+                (u.gender === true && (u.sexual_preferences === 'Homosexual' || u.sexual_preferences === 'Bisexual'))
+        );
+    } else if (userGender === false && userPreference === 'Heterosexual') {
+        users = users.filter(
+            (u: User) => u.gender === true && (u.sexual_preferences === 'Heterosexual' || u.sexual_preferences === 'Bisexual')
+        );
+    } else if (userGender === false && userPreference === 'Homosexual') {
+        users = users.filter(
+            (u: User) => u.gender === false && (u.sexual_preferences === 'Homosexual' || u.sexual_preferences === 'Bisexual')
+        );
+    } else if (userGender === false && userPreference === 'Bisexual') {
+        users = users.filter(
+            (u: User) =>
+                (u.gender === true && (u.sexual_preferences === 'Heterosexual' || u.sexual_preferences === 'Bisexual')) ||
+                (u.gender === false && (u.sexual_preferences === 'Homosexual' || u.sexual_preferences === 'Bisexual'))
+        );
+    }
+    return users;
+}
+
 export const POST = async ({ request, locals }) => {
     const userId = locals.user?.userId;
 
@@ -61,7 +96,8 @@ export const POST = async ({ request, locals }) => {
             return rest;
         });
         const filteredUsers = await removeBlockedUsers(usersWithoutId, locals);
-        return new Response(JSON.stringify(usersWithoutId), {
+        const filteredUsersByPreference = filterByPreference(filteredUsers, locals.user);
+        return new Response(JSON.stringify(filteredUsersByPreference), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json'

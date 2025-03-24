@@ -2,7 +2,7 @@
 	import type { PageData } from './$types';
 	import { onMount } from 'svelte';
 	let { data }: { data: PageData } = $props();
-	import NotificationIcon from '/src/assets/notifications.svg';
+	import NotificationIcon from '/assets/notifications.svg';
 
 	type Notification = {
 		message: string;

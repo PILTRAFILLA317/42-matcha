@@ -23,14 +23,14 @@
 			{#if seePassword}
 				<img
 					class="pl-5 h-[40px] self-center"
-					src="/src/assets/visible.png"
+					src="/assets/visible.png"
 					alt="made by https://www.flaticon.com/free-icons/close"
 					onclick={() => (seePassword = !seePassword)}
 				/>
 			{:else}
 				<img
 					class="pl-5 h-[40px] self-center"
-					src="/src/assets/eye.png"
+					src="/assets/eye.png"
 					alt="made my https://www.flaticon.com/authors/th-studio"
 					onclick={() => (seePassword = !seePassword)}
 				/>

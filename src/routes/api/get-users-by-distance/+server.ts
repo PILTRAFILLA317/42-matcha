@@ -49,6 +49,41 @@ function getDistance(lat1: number, lng1: number, lat2: number, lng2: number) {
     return Math.round(distance);
 }
 
+function filterByPreference(users: User[], user: User): User[] {
+    const userPreference = user.sexualPreferences;
+    const userGender = user.gender;
+    if (userGender === true && userPreference === 'Heterosexual') {
+        users = users.filter(
+            (u: User) => u.gender === false && (u.sexual_preferences === 'Heterosexual' || u.sexual_preferences === 'Bisexual')
+        );
+    } else if (userGender === true && userPreference === 'Homosexual') {
+        users = users.filter(
+            (u: User) => u.gender === true && (u.sexual_preferences === 'Homosexual' || u.sexual_preferences === 'Bisexual')
+        );
+    } else if (userGender === true && userPreference === 'Bisexual') {
+        users = users.filter(
+            (u: User) =>
+                (u.gender === false && (u.sexual_preferences === 'Heterosexual' || u.sexual_preferences === 'Bisexual')) ||
+                (u.gender === true && (u.sexual_preferences === 'Homosexual' || u.sexual_preferences === 'Bisexual'))
+        );
+    } else if (userGender === false && userPreference === 'Heterosexual') {
+        users = users.filter(
+            (u: User) => u.gender === true && (u.sexual_preferences === 'Heterosexual' || u.sexual_preferences === 'Bisexual')
+        );
+    } else if (userGender === false && userPreference === 'Homosexual') {
+        users = users.filter(
+            (u: User) => u.gender === false && (u.sexual_preferences === 'Homosexual' || u.sexual_preferences === 'Bisexual')
+        );
+    } else if (userGender === false && userPreference === 'Bisexual') {
+        users = users.filter(
+            (u: User) =>
+                (u.gender === true && (u.sexual_preferences === 'Heterosexual' || u.sexual_preferences === 'Bisexual')) ||
+                (u.gender === false && (u.sexual_preferences === 'Homosexual' || u.sexual_preferences === 'Bisexual'))
+        );
+    }
+    return users;
+}
+
 
 export const POST = async ({ request, locals }) => {
     const userId = locals.user?.userId;
@@ -89,8 +124,9 @@ export const POST = async ({ request, locals }) => {
             return userWithoutId;
         });
         const filteredUsers = await removeBlockedUsers(usersWithoutId, locals);
+        const filteredUsersByPreference = filterByPreference(filteredUsers, locals.user);
 
-        return new Response(JSON.stringify(filteredUsers), {
+        return new Response(JSON.stringify(filteredUsersByPreference), {
             status: 200,
             headers: {
                 'Content-Type': 'application/json'

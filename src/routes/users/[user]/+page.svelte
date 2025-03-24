@@ -1,7 +1,7 @@
 <script lang="ts">
-	import ChatIcon from '/src/assets/chat.svg';
-	import HeartFillIcon from '/src/assets/heart-fill.svg';
-	import HeartEmptyIcon from '/src/assets/heart-empty.svg';
+	import ChatIcon from '/assets/chat.svg';
+	import HeartFillIcon from '/assets/heart-fill.svg';
+	import HeartEmptyIcon from '/assets/heart-empty.svg';
 	import { onMount } from 'svelte';
 	import { notificationState } from '$lib/stores/notifications.svelte';
 	import { goto } from '$app/navigation';
@@ -298,7 +298,7 @@
 			{/each}
 			{#if currentUser.images == null}
 				<div id="slide1" class="carousel-item relative w-full">
-					<img src="/src/assets/GatoSexo.png" class="w-full" alt="Gato" />
+					<img src="/assets/GatoSexo.png" class="w-full" alt="Gato" />
 				</div>
 			{/if}
 		</div>
