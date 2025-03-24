@@ -73,7 +73,6 @@
 					const response = await res.json();
 					// Asegúrate de que response.body sea un array antes de asignarlo
 					chatMessages = Array.isArray(response.body) ? response.body : [];
-					// console.log('Mensajes obtenidos:', chatMessages);
 				} catch (e) {
 					// console.error('Error al obtener mensajes:', e);
 				}
