@@ -5,7 +5,7 @@
 	let { form }: { form: ActionData } = $props();
 </script>
 
-<div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
+<div class="md:mx-auto mx-5 max-w-md rounded-lg bg-sky-900  p-6 shadow-md">
 	<h2 class="mb-4 text-center text-2xl text-secondary">Recover Password</h2>
 	<form method="post" use:enhance>
 		<div class="mb-4">

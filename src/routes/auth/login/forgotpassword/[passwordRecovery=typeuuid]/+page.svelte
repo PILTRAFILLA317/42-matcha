@@ -8,7 +8,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<div class="mx-auto max-w-md rounded-lg bg-primary p-6 shadow-md">
+<div class="mx-auto max-w-md rounded-lg bg-sky-900 p-6 shadow-md">
 	<h2 class="mb-4 text-center text-2xl text-secondary">Recover Password</h2>
 	<form method="post" use:enhance>
 		<div class="mb-4 flex justify-between">

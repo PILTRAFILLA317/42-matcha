@@ -17,7 +17,7 @@ export const actions: Actions = {
 			const email = formData.get('email');
 			const recover_id = generateUserId();
 			if (email === null) return fail(401, {message: 'Email is required'});
-			const ret = recoverPassword(email.toString(), recover_id);
+			const ret = await recoverPassword(email.toString(), recover_id);
 			return ret;
 		} catch (error) {
 			return fail(401, { message: "Unexpected Error" });

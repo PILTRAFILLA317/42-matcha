@@ -4,47 +4,47 @@ import { fail } from '@sveltejs/kit';
 import Mailjet from 'node-mailjet';
 import type { Row } from 'postgres';
 
-function sendEmail(email: string, recover_id: string, user: Row) {
-	const email_body = `
-	<h3>Hello ${user.first_name} ${user.last_name},</br>
+async function sendEmail(email: string, recover_id: string, user: Row) {
+	try {
+		const email_body = `
+		<h3>Hello ${user.first_name} ${user.last_name},</br>
         you requested a password recovery for your account on your account: ${user.username}
 		<a href="http://${env.URL}/auth/login/forgotpassword/${recover_id}">
-			Click aqui para cambiar la contraseña :)
+		Click aqui para cambiar la contraseña :)
 		!</a></br>
-	</h3>
-    <h1>Si tienes la churra todo seca!</h1>
-	`;
-	const mailjet = Mailjet.apiConnect(env.MAILJET_API_KEY, env._MAILJET_API_KEY);
-	const request = mailjet.post('send', { version: 'v3.1' }).request({
-		Messages: [
-			{
-				From: {
-					Email: env.SENDER_EMAIL,
-					Name: "FollarhoySi's team"
-				},
-				To: [
-					{
-						Email: email,
-						Name: user.first_name
-					}
-				],
-				Subject: 'Password Recovery [FollarHoySi]',
-				TextPart: "Un saludo one salute from FollarHoySi's team!",
-				HTMLPart: email_body
-			}
-		]
-	});
-	request
-		.then((result) => {
-			return {status: 201, message: `Recovery email sent to ${email}`};
-		})
-		.catch((err) => {
-			return fail(401, {message: "Error sending email"});
+		</h3>
+		<h1>Si tienes la churra todo seca!</h1>
+		`;
+		const mailjet = Mailjet.apiConnect(env.MAILJET_API_KEY, env._MAILJET_API_KEY);
+		const request = await mailjet.post('send', { version: 'v3.1' }).request({
+			Messages: [
+				{
+					From: {
+						Email: env.SENDER_EMAIL,
+						Name: "FollarhoySi's team"
+					},
+					To: [
+						{
+							Email: email,
+							Name: user.first_name
+						}
+					],
+					Subject: 'Password Recovery [FollarHoySi]',
+					TextPart: "Un saludo one salute from FollarHoySi's team!",
+					HTMLPart: email_body
+				}
+			]
 		});
+		if (request.status !== 200)
+			return fail(401, { message: 'Error sending email' });
+		return { status: 201, message: `Recovery email sent to ${email}` };
+	} catch (error) {
+		return fail(401, { message: 'Error sending email' });
+	}
 }
 
 export async function recoverPassword(email: string, recover_id: string) {
-	try{
+	try {
 		const [user] = await db`SELECT * FROM users WHERE email = ${email}`;
 		if (!user) {
 			return fail(401, { message: 'Email not found' });
@@ -56,9 +56,10 @@ export async function recoverPassword(email: string, recover_id: string) {
 		if (!result) {
 			return fail(401, { message: 'Unexpected error, try again later' });
 		}
-		const ret = sendEmail(email, recover_id, user);
+		const ret = await sendEmail(email, recover_id, user);
+		console.log('first return value is: ', ret);
 		return ret;
-	} catch (error){
-		return fail(401, { message: "Unexpected error" });
+	} catch (error) {
+		return fail(401, { message: 'Unexpected error' });
 	}
 }

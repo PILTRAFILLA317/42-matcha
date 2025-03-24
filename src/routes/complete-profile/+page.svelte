@@ -42,7 +42,7 @@
 	>
 		<div class="mb-4 flex flex-row items-center justify-between">
 			<a
-				href="/settings"
+				href="/"
 				class="relative flex-none pt-1 text-white hover:text-gray-300"
 				aria-label="Back to settings"
 			>
