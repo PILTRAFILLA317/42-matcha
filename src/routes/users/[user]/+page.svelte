@@ -228,7 +228,7 @@
 
 	onMount(async () => {
 		if (!currentUser) {
-			
+			return;
 		} else {
 			if (currentUser?.username != registeredUser?.username) {
 				await profileVisit();

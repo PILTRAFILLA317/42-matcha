@@ -28,7 +28,7 @@
 	<!-- svelte-ignore event_directive_deprecated -->
 	<button
 		class="btn btn-primary w-full bg-red-500 hover:bg-red-600"
-		on:click={() => modal?.showModal()}>Delete User</button
+		onclick={() => modal?.showModal()}>Delete User</button
 	>
 	<dialog bind:this={modal} class="modal modal-bottom sm:modal-middle">
 		<div class="modal-box">

@@ -9,6 +9,7 @@ export const load: PageServerLoad = async (event) => {
     await auth.invalidateSession(event.locals.session.id);
     auth.deleteSessionTokenCookie(event);
 
+    // console.log("EEEEEEEONO");
     return redirect(302, '/auth/login');
 };
 
