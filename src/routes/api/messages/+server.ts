@@ -25,7 +25,7 @@ async function parseMessages(messages: postgres.RowList<postgres.Row[]>, myUserI
 	const user_2 = res[0].user_2;
 	for (let i = 0; i < messages.length; i++) {
 		parsedMessages.push({
-			sender: messages[i].sender == myUserId ? user_1 : user_2,
+			sender: messages[i].sender == myUserId ? user_2 : user_1,
 			content: messages[i].content
 		});
 	}

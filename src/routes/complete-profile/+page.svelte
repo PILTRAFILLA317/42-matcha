@@ -54,9 +54,10 @@
 		</div>
 		<!-- svelte-ignore a11y_missing_attribute -->
 		<div class="border-opacity-50 flex w-full flex-col">
+		{#if data.images}
 			<div class="carousel w-full">
 				{#each data.images as image, index}
-					<div id="item{index}" class="carousel-item relative w-full">
+					<div id="item{index}" class="carousel-item relative object-cover w-full h-[600px] flex-shrink-0 overflow-hidden">
 						<img src={image} class="w-full" />
 						<form use:enhance method="post">
 							<button
@@ -69,6 +70,7 @@
 					</div>
 				{/each}
 			</div>
+			{/if}
 			<div class="flex w-full justify-center gap-2 py-2">
 				{#each data.images as image, index}
 					<a href="#item{index}" class="btn btn-xs">{index + 1}</a>
