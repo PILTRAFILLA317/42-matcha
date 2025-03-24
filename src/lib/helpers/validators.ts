@@ -34,12 +34,9 @@ export function validateSexualPreference(spString: string): boolean {
 }
 
 export function validatePassword(password: string) {
-	if (typeof password === 'string' && password.length >= 6 && password.length <= 255) {
+	if (typeof password !== 'string')
 		return true;
-	}
-	// To-do: implementar mas comprobaciones,
-	// como que por lo menos haya una mayuscula y que por lo menos haya un numero
-	return false;
+	return /^(?=(.*\d))(?!.*\s)(?=(.*[A-Z]))(?=(.*[a-z]))(?=(.*[\W_])).{8,20}$/.test(password);
 }
 
 export function validatePasswords(password: unknown, repeat_password: unknown) {
@@ -52,15 +49,10 @@ export function validatePasswords(password: unknown, repeat_password: unknown) {
 	) {
 		return true;
 	}
-	// To-do: implementar mas comprobaciones,
-	// como que por lo menos haya una mayuscula y que por lo menos haya un numero
 	return false;
 }
 
 export function validateEmail(email: unknown): email is string {
-	// To-do: implementar una comprobacion mas precisa
-
-	//checks email type and lenght
 	if (typeof email !== 'string') return false;
 	if (email.length <= 3 || email.length >= 255) return false;
 	return (
