@@ -227,7 +227,7 @@
 	}
 
 	onMount(async () => {
-		if (!currentUser) {
+		if (!currentUser || !registeredUser) {
 			return;
 		} else {
 			if (currentUser?.username != registeredUser?.username) {
