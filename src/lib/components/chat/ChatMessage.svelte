@@ -10,7 +10,7 @@
 		<div class="chat-header">
 			{sender}
 		</div>
-		<div class="chat-bubble">
+		<div class="chat-bubble break-words whitespace-normal">
 			{message}
 		</div>
 	</div>
@@ -19,7 +19,7 @@
 		<div class="chat-header">
 			{sender}
 		</div>
-		<div class="chat-bubble bg-blue-600">
+		<div class="chat-bubble bg-blue-600 break-words whitespace-normal">
             {message}
         </div>
 	</div>
