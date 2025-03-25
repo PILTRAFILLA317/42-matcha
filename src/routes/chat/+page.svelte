@@ -204,13 +204,13 @@
 							maxlength="1000"
 							minlength="1"
 							type="text"
-							class="inputmessage bg-base-200 h-[100%] w-full rounded-lg text-white"
+							class="inputmessage bg-base-200 h-[100%] w-full rounded-lg text-white px-4 break-words whitespace-normal"
 							placeholder="Type a message..."
 						/>
 						<button
 							type="submit"
 							formaction={'?/sendMessage'}
-							class="bg-secondary !absolute right-1 h-[90%] w-[15%] rounded-xl text-white"
+							class="bg-secondary right-1 h-[100%] w-[20%] md:w-[15%] rounded-xl text-white"
 						>
 							Send
 						</button>
