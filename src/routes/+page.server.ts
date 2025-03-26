@@ -9,6 +9,12 @@ export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
 		return redirect(302, '/auth/login');
 	}
+	if (!event.locals.user.verified) {
+		return redirect(302, '/verify');
+	}
+	if (!event.locals.user.completed) {
+		return redirect(302, '/complete-profile');
+	}
 	return { user: event.locals.user };
 };
 

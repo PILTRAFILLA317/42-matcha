@@ -11,9 +11,9 @@ export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
 		return redirect(302, '/');
 	}
-	// if (event.locals.user.completed) {
-	// 	return redirect(302, '/');
-	// }
+	if (!event.locals.user.verified) {
+		return redirect(302, '/verify');
+	}
 	try {
 		const res = await db`
             SELECT profile_pictures FROM users
