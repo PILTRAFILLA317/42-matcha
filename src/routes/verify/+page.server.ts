@@ -1,6 +1,7 @@
 import { fail, redirect, type Actions } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
 import { generateUserId, sendVerificationEmail } from '$lib/helpers/user';
+import { db } from '$lib/server/db';
 
 export const load = (async (event) => {
     if (!event.locals.user) {
@@ -17,6 +18,10 @@ export const actions: Actions = {
         const user: User = event.locals.user;
         try{
             const verify_id = generateUserId();
+            await db`
+                INSERT INTO verification (verify_id, user_id)
+                VALUES (${verify_id}, ${user.userId})
+            `;
             sendVerificationEmail(
                 verify_id,
                 user.email as string,
@@ -28,7 +33,7 @@ export const actions: Actions = {
                     lastName: user.lastName as string
                 } as User
             );
-            return {status: 200, message: "Email Sent"};
+            return {status: 200, message: "Email Sent to " + user.email};
         } catch (error) {
             return (fail(400, {message: "Error Sending Email, try again later"}));
         }

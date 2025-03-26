@@ -1,8 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
     import { page } from '$app/stores';
-	import type { PageData, PageLoad } from './$types';
-	// import { env } from '$env/dynamic/private';
+	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
 	let isLoading = $state<boolean>(data.user?.verified === false ? true : false);

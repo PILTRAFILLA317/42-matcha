@@ -34,8 +34,8 @@ export const actions: Actions = {
 					parallelism: 1
 				});
 				await db`
-				INSERT INTO users (id, email, username, password, first_name, last_name, verified, age, gender, sexual_preferences, bio, profile_pictures)
-				VALUES (${user.login.uuid}, ${user.email}, ${user.login.username}, ${passwordHash}, ${user.name.first}, ${user.name.last}, ${true}, ${user.dob.age}, ${user.gender === 'female' ? false : true}, ${'Bisexual'}, ${anuelLetra}, ${defaultImage}::TEXT[])
+				INSERT INTO users (id, email, username, password, first_name, last_name, verified, age, gender, sexual_preferences, bio, profile_pictures, completed)
+				VALUES (${user.login.uuid}, ${user.email}, ${user.login.username}, ${passwordHash}, ${user.name.first}, ${user.name.last}, ${true}, ${user.dob.age}, ${user.gender === 'female' ? false : true}, ${'Bisexual'}, ${anuelLetra}, ${defaultImage}::TEXT[], ${true})
 				ON CONFLICT (id) DO NOTHING
 				`;
 			}
@@ -43,6 +43,5 @@ export const actions: Actions = {
 		} catch (error) {
 			return fail(500, { message: 'Error' });
 		}
-		return { status: 200, body: { message: 'Piola' } };
 	}
 };

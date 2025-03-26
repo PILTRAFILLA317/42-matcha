@@ -24,6 +24,9 @@
 		<li>
 			<a href="settings/email" class="breadcrumbs mb-4">✉️&emsp;&emsp;Email Settings</a>
 		</li>
+		<li>
+			<a href="settings/location" class="breadcrumbs mb-4">🌍&emsp;&emsp;Location Settings</a>
+		</li>
 	</ul>
 	<!-- svelte-ignore event_directive_deprecated -->
 	<button
