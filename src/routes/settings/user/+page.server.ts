@@ -17,6 +17,9 @@ export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
 		return redirect(302, '/');
 	}
+	if (!event.locals.user.verified) {
+		return redirect(302, '/verify');
+	}
 	if (!event.locals.user.completed) {
 		return redirect(302, '/complete-profile');
 	}
@@ -41,7 +44,7 @@ export const actions: Actions = {
 		}
 		try {
 			if (username !== null && username !== user.username) {
-				return await updateUsername(username.toString(), event);
+				await updateUsername(username.toString(), event);
 			}
 			if (firstName !== null && firstName !== user.firstName) {
 				await updateFirstName(firstName.toString(), event);

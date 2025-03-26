@@ -5,8 +5,8 @@ export const load: PageServerLoad = async ({ params, locals }) => {
 	try {
 		const mailReference = params.mailReference as string;
 		const result = await db`
-        SELECT user_id, verify_id FROM verification WHERE verify_id = ${mailReference}::uuid
-        `;
+            SELECT user_id, verify_id FROM verification WHERE verify_id = ${mailReference}::uuid
+            `;
 		if (result.length === 0) {
 			return { status: 404, error: 'Verification not found' };
 		}
