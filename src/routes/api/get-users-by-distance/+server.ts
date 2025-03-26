@@ -107,6 +107,8 @@ export const POST = async ({ request, locals }) => {
         SELECT *
         FROM users
         WHERE id != ${userId}
+        AND completed = true
+        AND verified = true
         AND location IS NOT NULL
         `;
 

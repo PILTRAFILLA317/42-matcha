@@ -87,6 +87,8 @@ export const POST = async ({ request, locals }) => {
         FROM users
         WHERE id != ${userId}
         AND age IS NOT NULL
+        AND completed = true
+        AND verified = true
         ORDER BY age DESC
         LIMIT ${userAmount}
         `;

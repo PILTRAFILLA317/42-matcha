@@ -199,9 +199,10 @@ function userDistanceCalc(currentUser: User, registeredUser: User) {
 }
 
 export async function userResearch(minAge: number, maxAge: number, minFR: number, maxFR: number, distance: number, tags: number[], currentUser: User) {
-  const users = await db`SELECT * FROM users`;
+  const users = await db`SELECT * FROM users
+        WHERE completed = true
+        AND verified = true`;
   const usersWithLocation = users.filter(user => user.location && user.username !== currentUser.username);
-
 
   const filteredUsers = usersWithLocation.filter(user =>
     user.age >= minAge &&
@@ -211,6 +212,7 @@ export async function userResearch(minAge: number, maxAge: number, minFR: number
     userDistanceCalc(user.location, currentUser.location) <= distance &&
     tags.every(tag => user.user_preferences.includes(tag))
   );
+
   const usersWithoutId = filteredUsers.map(user => {
     const { id, ...userWithoutId } = user;
     return userWithoutId;

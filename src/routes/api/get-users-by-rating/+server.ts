@@ -86,6 +86,8 @@ export const POST = async ({ request, locals }) => {
         SELECT *
         FROM users
         WHERE id != ${userId}
+        AND completed = true
+        AND verified = true
         AND total_likes IS NOT NULL
         ORDER BY total_likes DESC
         LIMIT ${userAmount}
