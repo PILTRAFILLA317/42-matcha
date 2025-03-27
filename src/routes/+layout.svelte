@@ -42,11 +42,6 @@
 
 	// Obtener ubicación al cargar la página
 	async function getLocation() {
-		// if (data.user?.location) {
-		// 	return;
-		// }
-
-		// console.log('Obteniendo ubicación...');
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
 				(pos) => {
@@ -76,10 +71,8 @@
 	async function setReadNotifications() {
 		try {
 			const res = await fetch(`/api/notifications/set-read?userId=${data.user?.userId}`);
-			// const resData = await res.json();
 
 			if (res.ok) {
-				// notifications = resData;
 				return;
 			} else {
 			}
