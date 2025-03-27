@@ -212,7 +212,9 @@
 			}
 			getUnreadNotifications();
 			getUnreadNotifications();
-			getLocation();
+			if (!data.user.manual_location) {
+				getLocation();
+			}
 			await startSSERequest();
 			return () => {
 				eventSource?.close();

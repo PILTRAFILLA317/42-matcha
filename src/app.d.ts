@@ -28,6 +28,7 @@ declare global {
 		images: string[] = [];
 		age: number = 0;
 		completed: boolean;
+		manual_location: boolean;
 	}
 	interface UserFront{
 		username: string;

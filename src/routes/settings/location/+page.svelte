@@ -84,8 +84,8 @@
 		{/if}
 	</div>
 	<form use:enhance method="POST" class="mt-4">
-		<button class="btn bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700" formaction="?/activateGPS">
-			Activate GPS
+		<button class="btn bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700" formaction="?/activateLocation">
+			Automatic Location
 		</button>
 	</form>
 </div>

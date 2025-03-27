@@ -70,7 +70,8 @@ export async function validateSessionToken(
 		images: userResult.profile_pictures,
 		location: userResult.location,
 		age: userResult.age,
-		completed: userResult.completed
+		completed: userResult.completed,
+		manual_location: userResult.manual_location
 	};
 
 	/*We compare the session's expiration date and if It has expired 

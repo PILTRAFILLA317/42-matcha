@@ -45,8 +45,7 @@
 				updateLocation(location);
 			} else {
 			}
-		} catch (err) {
-		}
+		} catch (err) {}
 	}
 
 	async function updateLocation(location: { latitude: number; longitude: number }) {
@@ -66,25 +65,26 @@
 			const data = await res.json();
 			if (res.ok) {
 			}
-		} catch (err) {
-		}
+		} catch (err) {}
 	}
 
 	onMount(() => {
 		if (data.user) {
-			if (!data.user.completed){
+			if (!data.user.completed) {
 				goto('/complete-profile');
 			}
 		}
 		if (data.user?.userId) {
 			// console.log('Obteniendo ubicación...');
-			getLocation();
+			if (!data.user.manual_location) {
+				getLocation();
+			}
 		}
 	});
 </script>
 
 <div class="flex flex-col items-center justify-center gap-7">
-	<h1 class="text-3xl md:text-4xl font-bold">Welcome {data.user.username}!</h1>
+	<h1 class="text-3xl font-bold md:text-4xl">Welcome {data.user.username}!</h1>
 	<p class="mt-4 text-lg">Hoy pillas seguro.</p>
 
 	<div class="flex flex-row items-center gap-8">
