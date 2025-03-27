@@ -12,6 +12,12 @@ export const actions: Actions = {
         const name = formData.get('name');
         const lat = formData.get('lat');
         const long = formData.get('long');
+        if (!name || !lat || !long) {
+            return;
+        }
+        if (Number(lat) === 0 && Number(long) === 0) {
+            return;
+        }
         await event.fetch('/api/location-update', {
             method: 'POST',
             headers: {
