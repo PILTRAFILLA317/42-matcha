@@ -35,7 +35,7 @@ async function sendEmail(email: string, recover_id: string, user: Row) {
 				}
 			]
 		});
-		if (request.status !== 200)
+		if (request.response.status !== 200)
 			return fail(401, { message: 'Error sending email' });
 		return { status: 201, message: `Recovery email sent to ${email}` };
 	} catch (error) {

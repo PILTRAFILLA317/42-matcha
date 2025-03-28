@@ -30,6 +30,25 @@ async function getChats(userId: string) {
 
 async function sendMessage(senderId: string, reciverUser: string, message: string) {
 	try {
+		let liked = 0;
+		const reciverUserId = await db`SELECT id FROM users WHERE username = ${reciverUser}`;
+		const logedUserLikes = await db`SELECT unnest(liked_users) AS liked_user FROM users WHERE id = ${senderId}`;
+		const reciverUserLikes = await db`SELECT unnest(liked_users) AS liked_user FROM users WHERE id = ${reciverUserId[0].id}`;
+		for (let i = 0; i < logedUserLikes.length; i++) {
+			if (logedUserLikes[i].liked_user === reciverUserId[0].id) {
+				liked++;
+				break;
+			}
+		}
+		for (let i = 0; i < reciverUserLikes.length; i++) {
+			if (reciverUserLikes[i].liked_user === senderId) {
+				liked++;
+				break;
+			}
+		}
+		if (liked != 2) {
+			return;
+		}
 		const res = await db`
             WITH receiver AS (
                 SELECT id FROM users WHERE username = ${reciverUser}

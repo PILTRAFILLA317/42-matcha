@@ -54,24 +54,8 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 }
 
 export async function isCompleted(user: User, session: Session): Promise<boolean> {
-	// console.log('isCompleted', user, session);
 	if (!user) return false;
 	if (!session) return false;
-	// if (
-	// 	!user.firstName ||
-	// 	!user.lastName ||
-	// 	!user.email ||
-	// 	!user.username ||
-	// 	!user.sexualPreferences ||
-	// 	!user.age ||
-	// 	user.gender == null ||
-	// 	!user.bio ||
-	// 	!user.userPreferences ||
-	// 	(user.userPreferences && user.userPreferences.length == 0) ||
-	// 	!user.images ||
-	// 	(user.images && user.images.length == 0)
-	// )
-	// 	return false;
 	try {
 		const res = await db<{ first_name: string; last_name: string; email: string; username: string; sexual_preferences: string; age: number; gender: string | null; bio: string; user_preferences: string[]; profile_pictures: string[] }[]>`
 			SELECT first_name, last_name, email, username, sexual_preferences, age, gender, bio, user_preferences, profile_pictures 

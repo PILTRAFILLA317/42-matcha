@@ -18,8 +18,9 @@ let globalListener: Promise<void> | null = null;
 async function getReciverID(chatID: string, userID: string) {
   const chat = await db`SELECT * FROM chats WHERE id = ${chatID}`;
   if (chat.length === 0) {
-    throw new Error('Chat not found');
-    // return;
+    // throw new Error('Chat not found');
+    console.error('Chat not found');
+    return;
   }
   const receiverID = chat[0].user_1 === userID ? chat[0].user_2 : chat[0].user_1;
   return receiverID;
@@ -32,6 +33,10 @@ async function setupGlobalListener() {
     const userId = JSON.parse(payload).sender;
     const chatID = JSON.parse(payload).chat_id;
     const reciver = await getReciverID(chatID, userId);
+    if (!reciver) {
+      console.error('Receiver not found');
+      return;
+    }
     const listener = activeListeners.get(reciver);
     const listener2 = activeListeners.get(userId);
     const receiverUser = await getUsernameById(reciver);

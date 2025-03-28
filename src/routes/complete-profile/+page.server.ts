@@ -11,9 +11,6 @@ export const load: PageServerLoad = async (event) => {
 	if (!event.locals.user) {
 		return redirect(302, '/');
 	}
-	if (!event.locals.user.verified) {
-		return redirect(302, '/verify');
-	}
 	try {
 		const res = await db`
             SELECT profile_pictures FROM users
@@ -28,7 +25,7 @@ export const load: PageServerLoad = async (event) => {
 export const actions: Actions = {
 	uploadPicture: async (event) => {
 		try {
-			if (!event.locals.user) {
+			if (!event.locals.user || !event.locals.session) {
 				return fail(401, { message: 'You must be logged in to upload a picture' });
 			}
 			const client = new S3Client({
@@ -54,7 +51,6 @@ export const actions: Actions = {
 					Key: filename,
 					Body: buffer,
 					ContentType: file.type
-					// SSEKMSKeyId: event.locals.user?.userId
 				})
 			);
 			const response = await db`
@@ -65,22 +61,18 @@ export const actions: Actions = {
 			if (res.$metadata.httpStatusCode != 200) {
 				return fail(401, { message: 'Error uploading file\n' + res.Code });
 			}
-			if (isCompleted(event.locals.user)) {
-				return {
-					status: 200,
-					message: 'File uploaded successfully uploaded' + filename,
-					redirect: '/'
-				};
-			}
-			return { status: 200, message: 'File uploaded successfully uploaded' + filename };
 		} catch (error) {
-			// console.log('Unexpected error: ', error);
 			if (error.code == '23514') return fail(401, { message: 'Max size of 5 images reached' });
 			return fail(401, { message: 'Unexpected error' });
 		}
+		const isComplete: boolean = await isCompleted(event.locals.user, event.locals.session);
+		if (isComplete) {
+			return redirect(302, '/');
+		}
+		return { status: 200, message: 'File uploaded successfully uploaded'};
 	},
 	deletePicture: async (event) => {
-		if (!event.locals.user) {
+		if (!event.locals.user || !event.locals.session) {
 			return fail(401, { message: 'You must be logged in to delete a picture' });
 		}
 		try {
@@ -92,9 +84,6 @@ export const actions: Actions = {
                     SET profile_pictures = array_remove(profile_pictures, profile_pictures[${idNum}])
                     WHERE id = ${event.locals.user.userId}
             `;
-			// console.log('response is: ', response);
-			// console.log('noseque parsed: ', event.locals.user.images[idNum - 1].split('/').pop());
-			// console.log('picture deleted');
 			const client = new S3Client({
 				region: env.SUPABASE_S3_REGION,
 				endpoint: env.SUPABASE_S3_ENDPOINT,
@@ -110,9 +99,15 @@ export const actions: Actions = {
 					Key: event.locals.user.images[idNum - 1].split('/').pop()
 				})
 			);
+			if ((event.locals.user.images.length - 1) === 0) {
+				await db`UPDATE users
+				SET completed = ${false}
+				WHERE id = ${event.locals.user.userId}
+				AND EXISTS (SELECT 1 FROM sessions WHERE id = ${event.locals.session.id} AND user_id = ${event.locals.user.userId});
+				`;
+			}
 			return { status: 200, message: 'Picture Deleted' };
 		} catch (error) {
-			// console.log('Unexpected error: ', error);
 			return fail(401, { message: 'Unexpected error: try again later' });
 		}
 	},
@@ -123,7 +118,9 @@ export const actions: Actions = {
 		const sexualPreference = formData.get('sexual_preferences') as string;
 		const bio = formData.get('bio');
 		const tags: string[] = formData.getAll('tags') as string[];
-		// console.log('tags', tags);
+		if (!event.locals.user || !event.locals.session) {
+			return fail(401, { message: 'You must be logged in to update your profile' });
+		}
 		if (user === null) {
 			return redirect(302, '/');
 		}
@@ -140,18 +137,13 @@ export const actions: Actions = {
 			if (!checkTags(tags, user.userPreferences)) {
 				await users.updateTags(tags, event);
 			}
-			// return { status: 201, message: 'User updated successfully' };
-			// return {
-			// 	status: 201,
-			// 	message: 'User updated successfully',
-			// 	redirect: '/'
-			// };
 		} catch (error) {
 			// console.log('Error updating user');
 			if (error.status == 302) redirect(302, '/');
 			return fail(400, { message: error instanceof Error ? error.message : String(error) });
 		}
-		if (await isCompleted(user, event.locals.session)) {
+		const isComplete = await isCompleted(user, event.locals.session);
+		if (isComplete) {
 			return redirect(302, '/');
 		}
 		return {

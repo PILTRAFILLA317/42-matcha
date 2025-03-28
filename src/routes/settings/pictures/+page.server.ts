@@ -72,7 +72,7 @@ export const actions: Actions = {
 		}
 	},
 	deletePicture: async (event) => {
-		if (!event.locals.user) {
+		if (!event.locals.user || !event.locals.session) {
 			return fail(401, { message: 'You must be logged in to delete a picture' });
 		}
 		try {
@@ -94,6 +94,13 @@ export const actions: Actions = {
 				forcePathStyle: true
 			});
 			client.send(new DeleteObjectCommand({Bucket: env.SUPABASE_S3_BUCKET_NAME, Key: event.locals.user.images[idNum - 1].split('/').pop()}));
+			if ((event.locals.user.images.length - 1) === 0){
+				await db`UPDATE users
+				SET completed = ${false}
+				WHERE id = ${event.locals.user.userId}
+				AND EXISTS (SELECT 1 FROM sessions WHERE id = ${event.locals.session.id} AND user_id = ${event.locals.user.userId});
+				`;
+			}
 			return { status: 200, message: 'Picture Deleted' };
 		} catch (error) {
 			return fail(401, { message: 'Unexpected error: try again later' });
