@@ -15,7 +15,7 @@ export function generateUserId() {
 
 export function sendVerificationEmail(verify_id: string, email: string, user: User) {
 	const email_body = `
-	<h3>Welcome to FollarHoySi, the increible pagina web to follar hoy
+	<h3>Welcome to Citer, the increible pagina web to follar hoy
 		<a href="http://${env.URL}/auth/register/${verify_id}">
 			Click aqui para confirmar la cuenta
 		!</a>
@@ -37,8 +37,8 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 						Name: user.firstName
 					}
 				],
-				Subject: 'Register confirmation [FollarHoySi]',
-				TextPart: "Un saludo one salute from FollarHoySi's team!",
+				Subject: 'Register confirmation [Citer]',
+				TextPart: "Un saludo one salute from Citer's team!",
 				HTMLPart: email_body
 			}
 		]

@@ -29,8 +29,8 @@ async function sendEmail(email: string, recover_id: string, user: Row) {
 							Name: user.first_name
 						}
 					],
-					Subject: 'Password Recovery [FollarHoySi]',
-					TextPart: "Un saludo one salute from FollarHoySi's team!",
+					Subject: 'Password Recovery [Citer]',
+					TextPart: "Un saludo one salute from Citer's team!",
 					HTMLPart: email_body
 				}
 			]
