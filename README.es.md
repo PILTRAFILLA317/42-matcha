@@ -144,15 +144,12 @@ src/
 
 ## 🖼️ Images / Imágenes
 
-Este proyecto incluye una carpeta `images/` para almacenar fotos y recursos visuales. Añadiré imágenes pronto. Si quieres añadir imágenes ahora, colócalas en la carpeta `images/` en la raíz del repositorio y referencia su ruta desde la carpeta `static/assets/` o desde `src` según necesites.
-
-- Ubicación de la carpeta: `images/` (raíz del proyecto)
-- Formatos recomendados: JPG, PNG, GIF
-- Notas: las imágenes de perfil se gestionan desde AWS S3 en la configuración de producción; en desarrollo puedes usar la carpeta `images/` localmente.
-
+<div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+  <img src="/images/chat.png" alt="chat" style="max-width:240px; height:auto; border-radius:8px;" />
+  <img src="/images/profile.png" alt="profile" style="max-width:240px; height:auto; border-radius:8px;" />
+</div>
 
 ## 🗃️ API Endpoints
-
 ### Autenticación
 
 - `POST /auth/login` - Inicio de sesión

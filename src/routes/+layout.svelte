@@ -221,10 +221,10 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<nav class="bg-white-100 flex items-center p-5 text-white">
-		<!-- <a href="/" class="justify-end text-xl">MatchPoint</a> -->
+	<nav class="bg-white-100 bg-base-300 flex items-center p-5 text-white">
+		<!-- <a href="/" class="justify-end text-xl">Matcha</a> -->
 		<a href="/">
-			<img src="/assets/logo.png" alt="MatchPoint" class="h-16 w-auto" />
+			<img src="/assets/logo.png" alt="Matcha" class="w-44 h-12 object-cover" />
 			<text class="text-xl font-bold">{$locationStore.latitude}</text>
 			<text class="text-xl font-bold">{$locationStore.longitude}</text>
 		</a>
@@ -289,7 +289,7 @@
 				<div class="w-12 rounded">
 					<img
 					class="rounded-xl"
-					src={data.user.images != null ? data.user.images[0] : '/assets/GatoSexo.png'}
+					src={data.user.images != null ? data.user.images[0] : '/assets/default-avatar.jpg'}
 					alt="User avatar"
 					/>
 				</div>
@@ -325,7 +325,13 @@
 		{@render children()}
 	</main>
 
+	<img
+		src="/assets/bg.png"
+		alt="Background pattern"
+		class="pointer-events-none fixed bottom-0 -z-20 left-0 h-full object-cover w-full opacity-10"
+	/>
+
 	<footer class="relative bottom-0 w-full bg-slate-700 p-4 text-center text-white">
-		<p>© 2025 - MatchPoint - Ningún derecho reservado realmente</p>
+		<p>© 2025 - Matcha - Ningún derecho reservado realmente</p>
 	</footer>
 </div>

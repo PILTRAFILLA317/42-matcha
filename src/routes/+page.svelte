@@ -85,7 +85,7 @@
 
 <div class="flex flex-col items-center justify-center gap-7">
 	<h1 class="text-3xl font-bold md:text-4xl">Welcome {data.user.username}!</h1>
-	<p class="mt-4 text-lg">Hoy pillas seguro.</p>
+	<p class="mt-4 text-lg">Find your perfect match!</p>
 
 	<div class="flex flex-row items-center gap-8">
 		<button

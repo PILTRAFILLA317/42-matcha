@@ -188,7 +188,7 @@
 			{/each}
 		</div>
 		<div
-			class="relative h-full w-4/6 md:w-5/6 flex-col justify-between rounded-lg bg-[url(https://i.kym-cdn.com/entries/icons/original/000/038/667/tco_-_2021-10-25T163043.660.jpg)] bg-cover"
+			class="relative h-full w-4/6 md:w-5/6 flex-col justify-between rounded-lg bg-[url(https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/Desktop.png)] bg-cover"
 		>
 			{#if activeChat}
 				<div class="relative flex h-[93%] flex-col-reverse overflow-auto">

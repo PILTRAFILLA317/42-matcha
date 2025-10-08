@@ -140,8 +140,15 @@ src/
     └── icons/            # App iconography
 ```
 
-## 🗃️ API Endpoints
+## �️ Images / Imágenes
 
+<div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+  <img src="images/chat.png" alt="chat" style="max-width:240px; height:auto; border-radius:8px;" />
+  <img src="images/profile.png" alt="profile" style="max-width:240px; height:auto; border-radius:8px;" />
+</div>
+
+
+## �🗃️ API Endpoints
 ### Authentication
 
 - `POST /auth/login` - Login

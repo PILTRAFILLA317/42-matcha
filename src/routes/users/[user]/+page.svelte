@@ -298,7 +298,7 @@
 			{/each}
 			{#if currentUser.images == null}
 				<div id="slide1" class="carousel-item relative w-full">
-					<img src="/assets/GatoSexo.png" class="w-full" alt="Gato" />
+					<img src="/assets/default-avatar.jpg" class="w-full" alt="Gato" />
 				</div>
 			{/if}
 		</div>

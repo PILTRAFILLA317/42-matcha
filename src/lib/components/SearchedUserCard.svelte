@@ -90,7 +90,7 @@
 			{/each}
 			{#if data.user?.profile_pictures == null}
 				<div id="slide1" class="carousel-item relative w-full">
-					<img src="/assets/GatoSexo.png" class="w-full" alt="Gato" />
+					<img src="/assets/default-avatar.jpg" class="w-full" alt="Gato" />
 				</div>
 			{/if}
 		</div>
@@ -309,7 +309,7 @@
 	/> -->
 	{#if data.user?.profile_pictures == null || data.user?.profile_pictures.length == 0}
 		<div id="slide1" class="carousel-item relative w-full">
-			<img src="/assets/GatoSexo.png" class="h-40 w-full rounded-lg" alt="Gato" />
+			<img src="/assets/default-avatar.jpg" class="h-40 w-full rounded-lg" alt="Gato" />
 		</div>
 	{:else}
 		<div class="carousel-item relative w-full">
