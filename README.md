@@ -1,313 +1,303 @@
-# Matcha - App de Citas Online
+# Matcha - Online Dating App
 
-Matcha es una aplicación web de citas moderna construida con **SvelteKit**, que permite a los usuarios encontrar conexiones románticas basándose en ubicación geográfica, intereses comunes y preferencias personales.
+Matcha is a modern online dating web application built with **SvelteKit** that helps users find romantic connections based on geographic location, shared interests, and personal preferences.
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Tech Stack
 
 ### Frontend
 
-- **SvelteKit 2.x** - Framework web moderno y reactivo
-- **Svelte 5.x** - Componentes con sistema de reactividad mejorado
-- **TailwindCSS 4.x** - Framework CSS utilitario
-- **DaisyUI 5.x** - Componentes UI pre-construidos para Tailwind
-- **TypeScript** - Tipado estático para JavaScript
+- **SvelteKit 2.x** - Modern reactive web framework
+- **Svelte 5.x** - Component framework with an improved reactivity system
+- **TailwindCSS 4.x** - Utility-first CSS framework
+- **DaisyUI 5.x** - Pre-built UI components for Tailwind
+- **TypeScript** - Static typing for JavaScript
 
 ### Backend
 
-- **SvelteKit Server** - API full-stack con server-side rendering
-- **PostgreSQL** - Base de datos relacional
-- **Node.js** con runtime de Bun
+- **SvelteKit Server** - Full-stack API with server-side rendering
+- **PostgreSQL** - Relational database
+- **Node.js** with Bun runtime
 
-### Servicios Externos
+### External Services
 
-- **AWS S3** - Almacenamiento de imágenes de perfil
-- **Mailjet** - Servicio de emails transaccionales
-- **Geolocation APIs** - Para ubicación geográfica automática y manual
+- **AWS S3** - Profile image storage
+- **Mailjet** - Transactional email service
+- **Geolocation APIs** - For automatic and manual geographic location
 
-### Autenticación y Seguridad
+### Authentication & Security
 
-- **Argon2** - Hash de contraseñas
-- **Oslo** - Utilidades criptográficas
-- **Sistema de sesiones** basado en tokens
+- **Argon2** - Password hashing
+- **Oslo** - Cryptographic utilities
+- **Token-based session** management
 
-## 🚀 Características Principales
+## 🚀 Main Features
 
-### 1. Sistema de Autenticación
+### 1. Authentication System
 
-- **Registro completo** con email, username, nombre, apellido y contraseña
-- **Verificación por email** con enlaces únicos
-- **Login seguro** con hash de contraseñas Argon2
-- **Recuperación de contraseña** vía email
-- **Logout** con un clic desde cualquier página
-- **Gestión de sesiones** con tokens seguros
+- **Full registration** with email, username, first and last name, and password
+- **Email verification** with unique links
+- **Secure login** using Argon2 password hashing
+- **Password recovery** via email
+- **One-click logout** from any page
+- **Session management** using secure tokens
 
-### 2. Perfil de Usuario Completo
+### 2. Full User Profile
 
-- **Información personal**: género, orientación sexual, biografía
-- **Sistema de tags/intereses** con más de 15 categorías predefinidas
-- **Galería de fotos**: hasta 5 imágenes (JPG, PNG, GIF)
-- **Ubicación geográfica**: automática por IP o manual
-- **Edición completa** de todos los datos del perfil
-- **Configuración de privacidad** y preferencias
+- **Personal information**: gender, sexual orientation, biography
+- **Tags/interests system** with 15+ predefined categories
+- **Photo gallery**: up to 5 images (JPG, PNG, GIF)
+- **Geographic location**: automatic by IP or manual
+- **Full edit** of profile data
+- **Privacy and preferences settings**
 
-### 3. Sistema de Descubrimiento Inteligente
+### 3. Smart Discovery System
 
-- **Algoritmo de matching** basado en:
-  - Proximidad geográfica
-  - Intereses comunes (tags)
-  - Rating de popularidad ("fame rating")
-  - Orientación sexual compatible
-- **Ordenamiento** por edad, distancia, rating y compatibilidad
-- **Filtros avanzados** por múltiples criterios
-- **Sugerencias personalizadas** según el perfil del usuario
+- **Matching algorithm** based on:
+  - Geographic proximity
+  - Shared interests (tags)
+  - Popularity rating ("fame rating")
+  - Compatible sexual orientation
+- **Sorting** by age, distance, rating and compatibility
+- **Advanced filters** across multiple criteria
+- **Personalized suggestions** based on the user's profile
 
-### 4. Búsqueda Avanzada
+### 4. Advanced Search
 
-- **Filtros por edad**: rango personalizable
-- **Filtros por distancia**: radio configurable
-- **Filtros por rating**: popularidad mínima/máxima
-- **Filtros por tags**: selección múltiple de intereses
-- **Resultados ordenables** y filtrados dinámicamente
+- **Age filters**: customizable range
+- **Distance filters**: configurable radius
+- **Rating filters**: min/max popularity
+- **Tags filters**: multi-select interests
+- **Sortable and dynamically filtered results**
 
-### 5. Interacciones Sociales
+### 5. Social Interactions
 
-- **Sistema de "likes"**: dar y quitar likes
-- **Matching**: cuando dos usuarios se gustan mutuamente
-- **Bloqueo de usuarios**: prevenir interacciones no deseadas
-- **Reporte de perfiles**: moderación de contenido falso
-- **Historial de visitas**: seguimiento de quién vio tu perfil
+- **Likes system**: give and remove likes
+- **Matching**: when two users like each other
+- **User blocking**: prevent unwanted interactions
+- **Report profiles**: moderation for fake content
+- **Visit history**: track who viewed your profile
 
-### 6. Chat en Tiempo Real
+### 6. Real-time Chat
 
-- **Mensajería instantánea** entre usuarios matched
-- **Server-Sent Events (SSE)** para notificaciones en tiempo real
-- **Interfaz de chat moderna** con historial de mensajes
-- **Indicadores de estado**: online/offline y última conexión
+- **Instant messaging** between matched users
+- **Server-Sent Events (SSE)** for real-time notifications
+- **Modern chat UI** with message history
+- **Status indicators**: online/offline and last seen
 
-### 7. Sistema de Notificaciones
+### 7. Notifications System
 
-Notificaciones en tiempo real para:
+Real-time notifications for:
 
-- ❤️ **Likes recibidos**
-- 👀 **Visitas al perfil**
-- 💘 **Nuevos matches**
+- ❤️ **Received likes**
+- 👀 **Profile visits**
+- 💘 **New matches**
 - 💔 **Unlikes**
-- 💬 **Mensajes de chat**
+- 💬 **Chat messages**
 
-### 8. Configuración y Privacidad
+### 8. Settings & Privacy
 
-- **Configuración de cuenta**: cambio de datos personales
-- **Gestión de contraseña**: cambio seguro con verificación
-- **Configuración de ubicación**: automática o manual
-- **Gestión de fotos**: subida, edición y eliminación
-- **Lista de usuarios bloqueados**
-- **Eliminación de cuenta**
+- **Account settings**: change personal data
+- **Password management**: secure change with verification
+- **Location settings**: automatic or manual
+- **Photo management**: upload, edit and delete
+- **Blocked users list**
+- **Account deletion**
 
-## 🗂️ Estructura del Proyecto
+## 🗂️ Project Structure
 
 ```
 src/
-├── app.html                 # Template HTML principal
-├── app.css                  # Estilos globales
-├── hooks.server.ts          # Hooks del servidor SvelteKit
+├── app.html                 # Main HTML template
+├── app.css                  # Global styles
+├── hooks.server.ts          # SvelteKit server hooks
 ├── lib/
-│   ├── components/          # Componentes reutilizables
-│   │   ├── chat/           # Componentes del chat
-│   │   └── common/         # Componentes comunes (UI)
-│   ├── helpers/            # Funciones utilitarias
-│   │   ├── validators.ts   # Validadores de formularios
-│   │   ├── user.ts        # Utilidades de usuario
-│   │   └── enum.ts        # Enums y constantes
-│   ├── server/            # Lógica del servidor
-│   │   ├── auth.ts        # Sistema de autenticación
-│   │   ├── users.ts       # Gestión de usuarios
-│   │   ├── utils.ts       # Utilidades del servidor
-│   │   └── db/            # Configuración de base de datos
-│   ├── stores/            # Stores de Svelte
-│   └── mail/              # Sistema de emails
-├── params/                # Parámetros de rutas personalizados
-├── routes/                # Rutas de la aplicación
-│   ├── auth/             # Autenticación (login, registro)
-│   ├── api/              # Endpoints API
-│   ├── chat/             # Sistema de mensajería
-│   ├── discover/         # Página de descubrimiento
-│   ├── search/           # Búsqueda avanzada
-│   ├── settings/         # Configuración de cuenta
-│   ├── users/[user]/     # Perfiles de usuario
-│   └── notifications/    # Centro de notificaciones
-└── static/               # Archivos estáticos
-    ├── assets/           # Imágenes y iconos
-    └── icons/            # Iconografía de la app
+│   ├── components/          # Reusable components
+│   │   ├── chat/           # Chat components
+│   │   └── common/         # Common UI components
+│   ├── helpers/            # Utility functions
+│   │   ├── validators.ts   # Form validators
+│   │   ├── user.ts        # User utilities
+│   │   └── enum.ts        # Enums and constants
+│   ├── server/            # Server logic
+│   │   ├── auth.ts        # Authentication system
+│   │   ├── users.ts       # User management
+│   │   ├── utils.ts       # Server utilities
+│   │   └── db/            # Database configuration
+│   ├── stores/            # Svelte stores
+│   └── mail/              # Email system
+├── params/                # Custom route parameters
+├── routes/                # Application routes
+│   ├── auth/             # Authentication (login, register)
+│   ├── api/              # API endpoints
+│   ├── chat/             # Messaging system
+│   ├── discover/         # Discovery page
+│   ├── search/           # Advanced search
+│   ├── settings/         # Account settings
+│   ├── users/[user]/     # User profiles
+│   └── notifications/    # Notifications center
+└── static/               # Static files
+    ├── assets/           # Images and icons
+    └── icons/            # App iconography
 ```
 
 ## 🗃️ API Endpoints
 
-### Autenticación
+### Authentication
 
-- `POST /auth/login` - Inicio de sesión
-- `POST /auth/register` - Registro de usuario
-- `GET /auth/register/[token]` - Verificación de email
-- `POST /auth/login/forgotpassword` - Recuperación de contraseña
+- `POST /auth/login` - Login
+- `POST /auth/register` - Register user
+- `GET /auth/register/[token]` - Email verification
+- `POST /auth/login/forgotpassword` - Password recovery
 
-### Usuarios
+### Users
 
-- `GET /users/[username]` - Ver perfil de usuario
-- `POST /api/visit` - Registrar visita a perfil
-- `POST /api/like-user` - Dar/quitar like
-- `POST /api/block-user` - Bloquear/desbloquear usuario
-- `POST /api/report-user` - Reportar usuario
+- `GET /users/[username]` - View user profile
+- `POST /api/visit` - Register profile visit
+- `POST /api/like-user` - Like/unlike a user
+- `POST /api/block-user` - Block/unblock a user
+- `POST /api/report-user` - Report a user
 
-### Descubrimiento
+### Discovery
 
-- `POST /api/get-users-by-distance` - Usuarios por proximidad
-- `POST /api/get-users-by-age` - Usuarios por edad
-- `POST /api/get-users-by-rating` - Usuarios por rating
-- `POST /api/user-research` - Búsqueda avanzada
+- `POST /api/get-users-by-distance` - Users by proximity
+- `POST /api/get-users-by-age` - Users by age
+- `POST /api/get-users-by-rating` - Users by rating
+- `POST /api/user-research` - Advanced search
 
-### Geolocalización
+### Geolocation
 
-- `GET /api/ip-location` - Ubicación por IP
-- `POST /api/location-update` - Actualizar ubicación
-- `GET /api/manual-location` - Búsqueda de ubicaciones
-- `POST /api/reverse-geocode` - Geocodificación inversa
+- `GET /api/ip-location` - IP-based location
+- `POST /api/location-update` - Update location
+- `GET /api/manual-location` - Manual location search
+- `POST /api/reverse-geocode` - Reverse geocoding
 
-### Chat y Notificaciones
+### Chat & Notifications
 
-- `GET /api/messages` - Obtener mensajes de chat
-- `POST /chat` - Enviar mensaje
-- `POST /api/match` - Verificar match
-- `GET /api/notifications/stream` - Stream de notificaciones SSE
-- `POST /api/notifications/set-read` - Marcar notificaciones como leídas
+- `GET /api/messages` - Get chat messages
+- `POST /chat` - Send message
+- `POST /api/match` - Check match
+- `GET /api/notifications/stream` - SSE notifications stream
+- `POST /api/notifications/set-read` - Mark notifications as read
 
-### Utilidades
+### Utilities
 
-- `GET /api/get-tags` - Obtener tags disponibles
-- `GET /api/get-blocked-users` - Lista de usuarios bloqueados
-- `GET /api/check-like` - Verificar si usuario está likeado
-- `GET /api/check-block` - Verificar si usuario está bloqueado
+- `GET /api/get-tags` - Get available tags
+- `GET /api/get-blocked-users` - List of blocked users
+- `GET /api/check-like` - Check if a user is liked
+- `GET /api/check-block` - Check if a user is blocked
 
-## 🚀 Instalación y Configuración
+## 🚀 Installation & Configuration
 
-### Prerrequisitos
+### Prerequisites
 
-- **Bun** (recomendado) o Node.js 18+
+- **Bun** (recommended) or Node.js 18+
 - **PostgreSQL** 13+
-- Cuentas en servicios externos (AWS S3, Mailjet, APIs de geolocalización)
+- Accounts on external services (AWS S3, Mailjet, Geolocation APIs)
 
-### Variables de Entorno
+### Environment Variables
 
 ```env
-DATABASE_URL=postgresql://usuario:contraseña@localhost:5432/matcha
-AWS_ACCESS_KEY_ID=tu_aws_access_key
-AWS_SECRET_ACCESS_KEY=tu_aws_secret_key
-AWS_REGION=tu_region
-AWS_BUCKET_NAME=tu_bucket
-MAILJET_API_KEY=tu_mailjet_api_key
-MAILJET_SECRET_KEY=tu_mailjet_secret
-IPGEOLOCATION_API_KEY=tu_ipgeolocation_key
-GEOAPIFY_API_KEY=tu_geoapify_key
+DATABASE_URL=postgresql://user:password@localhost:5432/matcha
+AWS_ACCESS_KEY_ID=your_aws_access_key
+AWS_SECRET_ACCESS_KEY=your_aws_secret_key
+AWS_REGION=your_region
+AWS_BUCKET_NAME=your_bucket
+MAILJET_API_KEY=your_mailjet_api_key
+MAILJET_SECRET_KEY=your_mailjet_secret
+IPGEOLOCATION_API_KEY=your_ipgeolocation_key
+GEOAPIFY_API_KEY=your_geoapify_key
 ```
 
-### Instalación
+### Installation
 
 ```bash
-# Clonar el repositorio
+# Clone the repository
 git clone https://github.com/PILTRAFILLA317/42-matcha.git
 cd 42-matcha
 
-# Instalar dependencias
+# Install dependencies
 bun install
 
-# Configurar base de datos
-# (Ejecutar scripts de migración según tu setup de PostgreSQL)
+# Configure database
+# (Run migration scripts according to your PostgreSQL setup)
 
-# Modo desarrollo
+# Development mode
 bun run dev
 
-# Construcción para producción
+# Build for production
 bun run build
 
-# Vista previa de producción
+# Preview production
 bun run preview
 ```
 
-## 🧩 Funcionalidades Técnicas Destacadas
+## 🧩 Technical Highlights
 
-### Sistema de Reactividad Avanzado
+### Advanced Reactivity System
 
-- **Svelte 5 Runes**: sistema de reactividad mejorado con `$state`, `$derived`, `$effect`
-- **Stores reactivos**: gestión de estado global con notificaciones en tiempo real
-- **SSE (Server-Sent Events)**: actualizaciones push sin polling
+- **Svelte 5 Runes**: improved reactivity system with `$state`, `$derived`, `$effect`
+- **Reactive stores**: global state management with real-time notifications
+- **SSE (Server-Sent Events)**: push updates without polling
 
-### Arquitectura de Componentes
+### Component Architecture
 
-- **Componentes modulares**: reutilización y mantenibilidad
-- **Props tipadas**: seguridad de tipos con TypeScript
-- **Composición avanzada**: componentes especializados para chat, búsqueda, etc.
+- **Modular components**: reuse and maintainability
+- **Typed props**: type safety with TypeScript
+- **Advanced composition**: components specialized for chat, search, etc.
 
-### Optimización de Performance
+### Performance Optimization
 
-- **Lazy loading**: carga diferida de imágenes y componentes
-- **Paginación inteligente**: para listas grandes de usuarios/notificaciones
-- **Caché de geolocalización**: optimización de consultas de ubicación
-- **Debouncing**: en búsquedas y actualizaciones en tiempo real
+- **Lazy loading**: deferred loading of images and components
+- **Smart pagination**: for large user/notification lists
+- **Geolocation caching**: optimize location queries
+- **Debouncing**: in search and real-time updates
 
-### Seguridad
+### Security
 
-- **Validación dual**: cliente y servidor
-- **Sanitización de inputs**: prevención de XSS e inyecciones
-- **Rate limiting**: protección contra spam y abuse
-- **Gestión segura de sesiones**: tokens con expiración
+- **Dual validation**: client and server
+- **Input sanitization**: prevent XSS and injection
+- **Rate limiting**: protection against spam and abuse
+- **Secure session management**: tokens with expiration
 
-## 👥 Experiencia de Usuario
+## 👥 User Experience
 
-### Diseño Responsive
+### Responsive Design
 
-- **Mobile-first**: optimizado para dispositivos móviles
-- **Design system consistente**: con DaisyUI y TailwindCSS
-- **Accesibilidad**: navegación por teclado y lectores de pantalla
+- **Mobile-first**: optimized for mobile devices
+- **Consistent design system**: DaisyUI + TailwindCSS
+- **Accessibility**: keyboard navigation and screen reader support
 
-### Flujo de Usuario Intuitivo
+### Intuitive User Flow
 
-1. **Onboarding**: registro → verificación → completar perfil
-2. **Descubrimiento**: sugerencias → filtros → matches
-3. **Interacción**: likes → matches → chat
-4. **Gestión**: configuración → privacidad → notificaciones
+1. **Onboarding**: register → verify → complete profile
+2. **Discovery**: suggestions → filters → matches
+3. **Interaction**: likes → matches → chat
+4. **Management**: settings → privacy → notifications
 
-### Feedback Visual
+### Visual Feedback
 
-- **Animaciones sutiles**: transiciones suaves con Svelte
-- **Estados de carga**: indicadores de progreso
-- **Notificaciones toast**: feedback inmediato de acciones
-- **Modales informativos**: confirmaciones y alertas
+- **Subtle animations**: smooth transitions with Svelte
+- **Loading states**: progress indicators
+- **Toast notifications**: immediate action feedback
+- **Informational modals**: confirmations and alerts
 
-## 🔄 Estado del Proyecto
+## 🔄 Project Status
 
-**Estado**: ✅ **Funcional y completo**
+**Status**: ✅ **Functional and complete**
 
-### Funcionalidades Implementadas
+### Implemented Features
 
-- ✅ Sistema completo de autenticación
-- ✅ Perfiles de usuario con fotos
-- ✅ Algoritmo de matching inteligente
-- ✅ Búsqueda avanzada con filtros
-- ✅ Chat en tiempo real
-- ✅ Notificaciones push con SSE
-- ✅ Geolocalización automática y manual
-- ✅ Sistema de likes/matches/bloqueos
-- ✅ Panel de configuración completo
-- ✅ Diseño responsive y accesible
-
-### Mejoras Potenciales
-
-- 📱 App móvil nativa (React Native/Flutter)
-- 🔍 Búsqueda por texto libre
-- 📊 Analytics y métricas de uso
-- 🤖 Sistema de moderación automática
-- 💎 Funcionalidades premium/suscripción
-- 🌍 Soporte multi-idioma
-- 📱 Notificaciones push nativas
+- ✅ Full authentication system
+- ✅ User profiles with photos
+- ✅ Smart matching algorithm
+- ✅ Advanced search with filters
+- ✅ Real-time chat
+- ✅ Push notifications with SSE
+- ✅ Automatic and manual geolocation
+- ✅ Likes/matches/blocking system
+- ✅ Full settings panel
+- ✅ Responsive and accessible design
 
 ---
 
-**Desarrollado para el proyecto 42 School - Un ejemplo completo de aplicación web moderna con SvelteKit** 💖
+**Developed for the 42 School project - A complete modern web application example built with SvelteKit** 💖

@@ -15,13 +15,13 @@ export function generateUserId() {
 
 export function sendVerificationEmail(verify_id: string, email: string, user: User) {
 	const email_body = `
-	<h3>Welcome to Citer, the increible pagina web to follar hoy
+	<h3>Welcome to Matcha, the increible pagina web to find your cita!</h3>
 		<a href="http://${env.URL}/auth/register/${verify_id}">
-			Click aqui para confirmar la cuenta
+			Click here to verify your account and start using Matcha
 		!</a>
 	</h3>
 	<br/>
-		Si tienes la churra todo seca!
+	<p>If you did not create an account, please ignore this email.</p>
 	`;
 	const mailjet = Mailjet.apiConnect(env.MAILJET_API_KEY, env._MAILJET_API_KEY);
 	const request = mailjet.post('send', { version: 'v3.1' }).request({
@@ -29,7 +29,7 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 			{
 				From: {
 					Email: env.SENDER_EMAIL,
-					Name: "FollarhoySi's team"
+					Name: "Matcha's team"
 				},
 				To: [
 					{
@@ -37,8 +37,8 @@ export function sendVerificationEmail(verify_id: string, email: string, user: Us
 						Name: user.firstName
 					}
 				],
-				Subject: 'Register confirmation [Citer]',
-				TextPart: "Un saludo one salute from Citer's team!",
+				Subject: 'Register confirmation [Matcha]',
+				TextPart: "Greetings from Matcha's team!",
 				HTMLPart: email_body
 			}
 		]

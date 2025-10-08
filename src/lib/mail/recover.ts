@@ -21,7 +21,7 @@ async function sendEmail(email: string, recover_id: string, user: Row) {
 				{
 					From: {
 						Email: env.SENDER_EMAIL,
-						Name: "FollarhoySi's team"
+						Name: "Matcha's team"
 					},
 					To: [
 						{
@@ -29,8 +29,8 @@ async function sendEmail(email: string, recover_id: string, user: Row) {
 							Name: user.first_name
 						}
 					],
-					Subject: 'Password Recovery [Citer]',
-					TextPart: "Un saludo one salute from Citer's team!",
+					Subject: 'Password Recovery [Matcha]',
+					TextPart: "Un saludo one salute from Matcha's team!",
 					HTMLPart: email_body
 				}
 			]
